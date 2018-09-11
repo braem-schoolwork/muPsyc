@@ -17,4 +17,5 @@
 #include "Composition.h"
 #include "Functions.h"
 
+#include "MidiFile.h"
 #include "MidIO.h"
