@@ -18,6 +18,7 @@ namespace music {
 		void setType(unsigned int t) { this->t = t; }
 		void setDots(unsigned int d) { this->d = d; }
 
+		bool isDotted() const { return d > 0; }
 		void addDot() { d++; }
 		void removeDot() { d--; }
 		void removeAllDots() { d = 0; }

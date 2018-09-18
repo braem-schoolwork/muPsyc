@@ -33,6 +33,14 @@ namespace music {
 		void setTieEnd(bool tie_end) { this->tie_end = tie_end; }
 		void setVelocity(unsigned char velocity) { v = velocity; }
 
+		bool isDotted() const { return d.isDotted(); }
+		void addDot() { d.addDot(); }
+		void removeDot() { d.removeDot(); }
+		void removeAllDots() { d.removeAllDots(); }
+
+		void doubleDuration() { d.doubleDuration(); }
+		void halfDuration() { d.halfDuration(); }
+
 		bool operator==(const Note &other) const;
 		bool operator!=(const Note &other) const;
 		bool operator>=(const Note &other) const;

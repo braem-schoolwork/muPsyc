@@ -6,6 +6,7 @@
 #include "Pitches.h"
 #include "PitchClasses.h"
 #include "Instruments.h"
+#include "Intervals.h"
 
 #include "Pitch.h"
 #include "Duration.h"
@@ -17,5 +18,4 @@
 #include "Composition.h"
 #include "Functions.h"
 
-#include "MidiFile.h"
 #include "MidIO.h"

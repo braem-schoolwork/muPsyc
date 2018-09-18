@@ -17,7 +17,22 @@ namespace music {
 		std::string name() const { return n; }
 		unsigned char instrument() const { return i; }
 		std::vector<Measure> measures() const { return m; }
-		int size() const { return m.size(); }
+		int numMeasures() const { return m.size(); }
+
+		bool replaceMeasureAt(unsigned int index, Measure measure) {
+			if (index >= numMeasures()) return false;
+			else { m[index] = measure; return true; }
+		}
+		void addMeasure(Measure measure) { m.push_back(measure); }
+		void addMeasures(std::vector<Measure> measures) { m.insert(m.begin(), measures.begin(), measures.end()); }
+		bool addMeasureAt(unsigned int index, Measure measure) {
+			if (index >= numMeasures()) return false;
+			else { m.insert(m.begin() + index, measure); return true; }
+		}
+		bool removeMeasureAt(unsigned int index) {
+			if (index >= numMeasures()) return false;
+			else { m.erase(m.begin() + index); return true; }
+		}
 
 		void setName(std::string name) { n = name; }
 		void setInstrument(unsigned char instrument) { i = instrument; }

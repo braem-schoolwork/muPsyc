@@ -176,11 +176,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GeneticAlgorithm.cpp" />
+    <ClCompile Include="Mutation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MusicDS\MusicDS.vcxproj">
       <Project>{e047d423-f79a-4c13-a202-8c50aee7a19b}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Chromosome.h" />
+    <ClInclude Include="Crossover.h" />
+    <ClInclude Include="Mutation.h" />
+    <ClInclude Include="Operators.h" />
+    <ClInclude Include="Population.h" />
+    <ClInclude Include="Selection.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

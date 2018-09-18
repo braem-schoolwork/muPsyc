@@ -25,9 +25,25 @@ namespace music {
 			: ts(timeSig), s(scale), n(notes) {}
 
 		Key scale() const { return s; }
+		Key key() const { return s; }
 		TimeSignature timeSignature() const { return ts; }
 		std::vector<Note> notes() const { return n; }
 		unsigned int numNotes() const { return n.size(); }
+
+		bool replaceNoteAt(unsigned int index, Note note) {
+			if (index >= numNotes()) return false;
+			else { n[index] = note; return true; }
+		}
+		void addNote(Note note) { n.push_back(note); }
+		void addNotes(std::vector<Note> notes) { n.insert(n.begin(), notes.begin(), notes.end()); }
+		bool addNoteAt(unsigned int index, Note note) {
+			if (index >= numNotes()) return false;
+			else { n.insert(n.begin() + index, note); return true; }
+		}
+		bool removeNoteAt(unsigned int index) {
+			if (index >= numNotes()) return false;
+			else { n.erase(n.begin() + index); return true; }
+		}
 
 		void setTimeSignature(TimeSignature timeSig) { ts = timeSig; }
 		void setNotes(std::vector<Note> notes) { n = notes; }

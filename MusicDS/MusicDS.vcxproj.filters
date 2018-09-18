@@ -72,6 +72,9 @@
     <ClInclude Include="include\TimeSignature.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Intervals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Composition.cpp">
