@@ -24,6 +24,8 @@ namespace music {
 		unsigned int octave() const { return oct; }
 		unsigned int midi() const { return m; }
 
+		Pitch mean(Pitch pitch);
+
 		void setPitchClass(unsigned int pc) {
 			this->pc = pc;
 			setNewMidiVal();

@@ -31,6 +31,8 @@ namespace music {
 
 		unsigned int tickLength() const;
 
+		static bool add(Duration first, Duration second, Duration *result);
+
 		bool operator==(const Duration &other) const;
 		bool operator!=(const Duration &other) const;
 		bool operator>=(const Duration &other) const;

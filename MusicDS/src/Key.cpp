@@ -126,3 +126,9 @@ void music::Key::meanPitch(Pitch pitch1, Pitch pitch2, Pitch *mean) {
 	int pc = pitchClass(degMean % sc_UP.size());
 	mean->setPCandOctave(pc, oct);
 }
+
+void music::Key::meanPitch(Note note1, Note note2, Note * mean) {
+	Pitch newPitch;
+	meanPitch(note1.pitch(), note2.pitch(), &newPitch);
+	mean->setPitch(newPitch);
+}

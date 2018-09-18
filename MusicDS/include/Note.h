@@ -27,6 +27,8 @@ namespace music {
 		bool isTieEnd() const { return tie_end; }
 		bool isTie() const { return tie_start || tie_end; }
 
+		void removeTies() { tie_start = false; tie_end = false; }
+
 		void setPitch(Pitch pitch) { p = pitch; }
 		void setDuration(Duration duration) { d = duration; }
 		void setTieStart(bool tie_start) { this->tie_start = tie_start; }

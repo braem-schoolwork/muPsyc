@@ -129,6 +129,7 @@ namespace music {
 		void transpose(Note *note, int degree);
 
 		void meanPitch(Pitch pitch1, Pitch pitch2, Pitch *mean);
+		void meanPitch(Note note1, Note note2, Note *mean);
 	};
 	std::ostream& operator<<(std::ostream &strm, const Key &key);
 }

@@ -10,6 +10,8 @@ namespace geneticalgorithm {
 				namespace helper {
 					void getRandomNoteIndex(Chromosome chromosome,
 						unsigned int *partIndex, unsigned int *measureIndex, unsigned int *noteIndex);
+					void getRandomNoteIndices(Chromosome chromosome,
+						unsigned int *partIndex, unsigned int *measureIndex, unsigned int *noteIndex1, unsigned int *noteIndex2);
 					void transposeRandomNote(Chromosome *chromosome, unsigned int degree);
 				}
 				//single note mutations. f:N->N

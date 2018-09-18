@@ -21,6 +21,10 @@ std::ostream & music::operator<<(std::ostream & strm, const Pitch& p) {
 	return strm << output << p.octave();
 }
 
+music::Pitch music::Pitch::mean(Pitch pitch) {
+	return Pitch((this->m + pitch.m) / 2);
+}
+
 bool music::Pitch::operator==(const Pitch & other) const {
 	if (this->m == other.m)
 		return true;
