@@ -30,19 +30,58 @@ namespace music {
 		std::vector<Note> notes() const { return n; }
 		unsigned int numNotes() const { return n.size(); }
 
+		bool findStartTie(unsigned int noteIndex, unsigned int *tieStart) {
+			unsigned int tiestartIndex = noteIndex;
+			while (tiestartIndex >= 0) {
+				if (n[tiestartIndex].isTieStart()) break;
+				if (n[tiestartIndex].isTieEnd() || tiestartIndex == 0) return false;
+				tiestartIndex--;
+			}
+			*tieStart = tiestartIndex; return true;
+		}
+		bool findEndTie(unsigned int noteIndex, unsigned int *tieEnd) {
+			unsigned int tieendIndex = noteIndex;
+			while (tieendIndex < numNotes()) {
+				if (n[tieendIndex].isTieEnd()) break;
+				if (n[tieendIndex].isTieStart() || tieendIndex == numNotes() - 1) return false;
+				tieendIndex++;
+			}
+			*tieEnd = tieendIndex; return true;
+		}
+		bool removeTieAt(unsigned int noteIndex) {
+			unsigned int tieStart, tieEnd;
+			bool b1 = findStartTie(noteIndex, &tieStart);
+			bool b2 = findEndTie(noteIndex, &tieEnd);
+			if (!b1 || !b2) return false;
+			n[tieStart].setTieStart(false);
+			n[tieEnd].setTieEnd(false);
+			return true;
+		}
+
 		bool replaceNoteAt(unsigned int index, Note note) {
 			if (index >= numNotes()) return false;
-			else { n[index] = note; return true; }
+			if (n[index] != note) removeTieAt(index);
+			n[index] = note; return true;
 		}
 		void addNote(Note note) { n.push_back(note); }
 		void addNotes(std::vector<Note> notes) { n.insert(n.begin(), notes.begin(), notes.end()); }
 		bool addNoteAt(unsigned int index, Note note) {
 			if (index >= numNotes()) return false;
-			else { n.insert(n.begin() + index, note); return true; }
+			n.insert(n.begin() + index, note); return true;
 		}
 		bool removeNoteAt(unsigned int index) {
 			if (index >= numNotes()) return false;
-			else { n.erase(n.begin() + index); return true; }
+			if (n[index].isTieStart()) {
+				unsigned int tieIndex;
+				findEndTie(index, &tieIndex);
+				n[tieIndex].setTieEnd(false);
+			}
+			if (n[index].isTieEnd()) {
+				unsigned int tieIndex;
+				findStartTie(index, &tieIndex);
+				n[tieIndex].setTieStart(false);
+			}
+			n.erase(n.begin() + index); return true;
 		}
 
 		void setTimeSignature(TimeSignature timeSig) { ts = timeSig; }
