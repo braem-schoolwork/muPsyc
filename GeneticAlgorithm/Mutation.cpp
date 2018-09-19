@@ -108,7 +108,7 @@ Chromosome geneticalgorithm::operators::mutation::sub::delay(Chromosome chromoso
 	comp.addNoteAt(partIndex, measureIndex, noteIndex, newNote2);
 	return Chromosome(comp);
 }
-//TODO: REMOVE TIES BEFORE THIS NOTE
+
 Chromosome geneticalgorithm::operators::mutation::sub::merge(Chromosome chromosome) {
 	unsigned int partIndex, measureIndex, noteIndex1, noteIndex2; Composition comp = chromosome.composition();
 	helper::getRandomNoteIndices(chromosome, &partIndex, &measureIndex, &noteIndex1, &noteIndex2);
@@ -122,13 +122,54 @@ Chromosome geneticalgorithm::operators::mutation::sub::merge(Chromosome chromoso
 		comp.replaceNoteAt(partIndex, measureIndex, noteIndex1, newNote);
 		comp.removeNoteAt(partIndex, measureIndex, noteIndex2);
 	}
-	else {
-		//have to use a tie
+	else { //have to use a tie
 		selectedNote1.setPitch(newPitch); selectedNote2.setPitch(newPitch);
 		selectedNote1.setTieStart(true); selectedNote2.setTieEnd(true);
 		comp.replaceNoteAt(partIndex, measureIndex, noteIndex1, selectedNote1);
-		comp.replaceNoteAt(partIndex, measureIndex, noteIndex1, selectedNote2);
+		comp.replaceNoteAt(partIndex, measureIndex, noteIndex2, selectedNote2);
 	}
+	return Chromosome(comp);
+}
+
+Chromosome geneticalgorithm::operators::mutation::sub::removeNote(Chromosome chromosome) {
+	unsigned int partIndex, measureIndex, noteIndex1, noteIndex2; Composition comp = chromosome.composition();
+	helper::getRandomNoteIndices(chromosome, &partIndex, &measureIndex, &noteIndex1, &noteIndex2);
+	bool b = boolDist(mt);
+	unsigned int removeIndex = b ? noteIndex1 : noteIndex2;
+	unsigned int keepIndex = b ? noteIndex2 : noteIndex1;
+	Note removedNote = comp.parts()[partIndex].measures()[measureIndex].notes()[removeIndex];
+	Note keptNote = comp.parts()[partIndex].measures()[measureIndex].notes()[keepIndex];
+	Duration newDuration;
+	if (Duration::add(keptNote.duration(), removedNote.duration(), &newDuration)) {
+		Note newNote = Note(keptNote.pitch(), newDuration);
+		comp.replaceNoteAt(partIndex, measureIndex, keepIndex, newNote);
+		comp.removeNoteAt(partIndex, measureIndex, removeIndex);
+	}
+	else { //have to use a tie
+		Note first = comp.parts()[partIndex].measures()[measureIndex].notes()[noteIndex1];
+		Note second = comp.parts()[partIndex].measures()[measureIndex].notes()[noteIndex2];
+		first.setTieStart(true); second.setTieEnd(true);
+		comp.replaceNoteAt(partIndex, measureIndex, noteIndex1, first);
+		comp.replaceNoteAt(partIndex, measureIndex, noteIndex2, second);
+	}
+	return Chromosome(comp);
+}
+
+Chromosome geneticalgorithm::operators::mutation::sub::passingTone(Chromosome chromosome) {
+	unsigned int partIndex, measureIndex, noteIndex1, noteIndex2; Composition comp = chromosome.composition();
+	helper::getRandomNoteIndices(chromosome, &partIndex, &measureIndex, &noteIndex1, &noteIndex2);
+	bool b = boolDist(mt);
+	unsigned int halfIndex = b ? noteIndex1 : noteIndex2;
+	unsigned int keepIndex = b ? noteIndex2 : noteIndex1;
+	Note halvedNote = comp.parts()[partIndex].measures()[measureIndex].notes()[halfIndex];
+	Note keptNote = comp.parts()[partIndex].measures()[measureIndex].notes()[keepIndex];
+	Key key = comp.parts()[partIndex].measures()[measureIndex].key();
+	halvedNote.halfDuration();
+	Note middleNote;
+	key.meanPitch(halvedNote, keptNote, &middleNote);
+	middleNote.setDuration(halvedNote.duration());
+	comp.replaceNoteAt(partIndex, measureIndex, halfIndex, halvedNote);
+	comp.addNoteAt(partIndex, measureIndex, noteIndex1, middleNote);
 	return Chromosome(comp);
 }
 
