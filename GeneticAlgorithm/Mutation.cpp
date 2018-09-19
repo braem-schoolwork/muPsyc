@@ -173,6 +173,44 @@ Chromosome geneticalgorithm::operators::mutation::sub::passingTone(Chromosome ch
 	return Chromosome(comp);
 }
 
+Chromosome geneticalgorithm::operators::mutation::sub::forceStepwise(Chromosome chromosome) {
+	unsigned int partIndex, measureIndex, noteIndex1, noteIndex2; Composition comp = chromosome.composition();
+	helper::getRandomNoteIndices(chromosome, &partIndex, &measureIndex, &noteIndex1, &noteIndex2);
+	bool up = boolDist(mt), b = boolDist(mt), which = boolDist(mt);
+	unsigned int halfIndex = b ? noteIndex1 : noteIndex2;
+	unsigned int keepIndex = b ? noteIndex2 : noteIndex1;
+	unsigned int stayIndex = which ? halfIndex : keepIndex;
+	unsigned int changeIndex = which ? keepIndex : halfIndex;
+	Note halvedNote = comp.parts()[partIndex].measures()[measureIndex].notes()[halfIndex];
+	Note keptNote = comp.parts()[partIndex].measures()[measureIndex].notes()[keepIndex];
+	Key key = comp.parts()[partIndex].measures()[measureIndex].key();
+
+	//half duration of one of the notes (random)
+	halvedNote.halfDuration();
+	Note middleNote;
+	middleNote.setDuration(halvedNote.duration());
+
+	//keep one note the same (stayNote), and move the other depending on direction
+	Note stayNote = which ? halvedNote : keptNote;
+	Note changeNote = which ? keptNote : halvedNote;
+	Pitch changedPitch = stayNote.pitch();
+	Pitch middlePitch = stayNote.pitch();
+	if (up) { //ascending
+		if (stayIndex > changeIndex) { key.transpose(&changedPitch, -2); key.transpose(&middlePitch, -1); }
+		else { key.transpose(&changedPitch, 2); key.transpose(&middlePitch, 1); }
+	}
+	else { //descending
+		if (stayIndex > changeIndex) { key.transpose(&changedPitch, 2); key.transpose(&middlePitch, 1); }
+		else { key.transpose(&changedPitch, -2); key.transpose(&middlePitch, -1); }
+	}
+	changeNote.setPitch(changedPitch);
+	middleNote.setPitch(middlePitch);
+
+	comp.replaceNoteAt(partIndex, measureIndex, changeIndex, changeNote);
+	comp.addNoteAt(partIndex, measureIndex, noteIndex1, middleNote);
+	return Chromosome(comp);
+}
+
 void geneticalgorithm::operators::mutation::sub::helper::getRandomNoteIndex(Chromosome chromosome, unsigned int * partIndex,
 	unsigned int * measureIndex, unsigned int * noteIndex) {
 	std::uniform_int_distribution<int> partDist(0, chromosome.composition().numParts() - 1);
