@@ -34,6 +34,27 @@ namespace music {
 			else { m.erase(m.begin() + index); return true; }
 		}
 
+		bool replaceNoteAt(unsigned int measureIndex, unsigned int noteIndex, Note note) {
+			if (measureIndex >= numMeasures()) return false;
+			return m[measureIndex].replaceNoteAt(noteIndex, note);
+		}
+		bool addNote(unsigned int measureIndex, Note note) {
+			if (measureIndex >= numMeasures()) return false;
+			m[measureIndex].addNote(note); return true;
+		}
+		bool addNotes(unsigned int measureIndex, std::vector<Note> notes) {
+			if (measureIndex >= numMeasures()) return false;
+			m[measureIndex].addNotes(notes); return true;
+		}
+		bool addNoteAt(unsigned int measureIndex, unsigned int noteIndex, Note note) {
+			if (measureIndex >= numMeasures()) return false;
+			return m[measureIndex].addNoteAt(noteIndex, note);
+		}
+		bool removeNoteAt(unsigned int measureIndex, unsigned int noteIndex) {
+			if (measureIndex >= numMeasures()) return false;
+			return m[measureIndex].removeNoteAt(noteIndex);
+		}
+
 		void setName(std::string name) { n = name; }
 		void setInstrument(unsigned char instrument) { i = instrument; }
 		void setMeasures(std::vector<Measure> measures) { m = measures; }

@@ -58,38 +58,47 @@ namespace music {
 		}
 
 		bool replaceMeasureAt(unsigned int partIndex, unsigned int measureIndex, Measure measure) {
-			if (partIndex >= numParts() || measureIndex >= numMeasures()) return false;
-			else { p[partIndex].replaceMeasureAt(measureIndex, measure); return true; }
+			if (partIndex >= numParts()) return false;
+			return p[partIndex].replaceMeasureAt(measureIndex, measure);
 		}
+		bool addMeasure(unsigned int partIndex, Measure measure) { 
+			if (partIndex >= numParts()) return false;
+			p[partIndex].addMeasure(measure); return true;
+		}
+		bool addMeasures(unsigned int partIndex, std::vector<Measure> measures) { 
+			if (partIndex >= numParts()) return false;
+			p[partIndex].addMeasures(measures); return true;
+		}
+		bool addMeasureAt(unsigned int partIndex, unsigned int measureIndex, Measure measure) {
+			if (partIndex >= numParts()) return false;
+			return p[partIndex].addMeasureAt(measureIndex, measure);
+		}
+		bool removeMeasureAt(unsigned int partIndex, unsigned int measureIndex) {
+			if (partIndex >= numParts()) return false;
+			return p[partIndex].removeMeasureAt(measureIndex);
+		}
+
 		bool replaceNoteAt(unsigned int partIndex, unsigned int measureIndex, unsigned int noteIndex, Note note) {
-			if (partIndex >= numParts() || measureIndex >= numMeasures() 
-				|| noteIndex >= p[partIndex].measures()[measureIndex].numNotes()) return false;
-			else { 
-				Measure measure = p[partIndex].measures()[measureIndex];
-				measure.replaceNoteAt(noteIndex, note);
-				replaceMeasureAt(partIndex, measureIndex, measure); 
-				return true; 
-			}
+			if (partIndex >= numParts()) return false;
+			return p[partIndex].replaceNoteAt(measureIndex, noteIndex, note);
 		}
-		bool removeNoteAt(unsigned int partIndex, unsigned int measureIndex, unsigned int noteIndex) {
-			if (partIndex >= numParts() || measureIndex >= numMeasures()
-				|| noteIndex >= p[partIndex].measures()[measureIndex].numNotes()) return false;
-			else {
-				Measure measure = p[partIndex].measures()[measureIndex];
-				measure.removeNoteAt(noteIndex);
-				replaceMeasureAt(partIndex, measureIndex, measure);
-			}
+		bool addNote(unsigned int partIndex, unsigned int measureIndex, Note note) {
+			if (partIndex >= numParts()) return false;
+			return p[partIndex].addNote(measureIndex, note);
+		}
+		bool addNotes(unsigned int partIndex, unsigned int measureIndex, std::vector<Note> notes) {
+			if (partIndex >= numParts()) return false;
+			return p[partIndex].addNotes(measureIndex, notes);
 		}
 		bool addNoteAt(unsigned int partIndex, unsigned int measureIndex, unsigned int noteIndex, Note note) {
-			if (partIndex >= numParts() || measureIndex >= numMeasures()
-				|| noteIndex >= p[partIndex].measures()[measureIndex].numNotes()) return false;
-			else {
-				Measure measure = p[partIndex].measures()[measureIndex];
-				measure.addNoteAt(noteIndex, note);
-				replaceMeasureAt(partIndex, measureIndex, measure);
-				return true;
-			}
+			if (partIndex >= numParts()) return false;
+			return p[partIndex].addNoteAt(measureIndex, noteIndex, note);
 		}
+		bool removeNoteAt(unsigned int partIndex, unsigned int measureIndex, unsigned int noteIndex) {
+			if (partIndex >= numParts()) return false;
+			return p[partIndex].removeNoteAt(measureIndex, noteIndex);
+		}
+
 	};
 	std::ostream& operator<<(std::ostream &strm, const Composition &c);
 }
