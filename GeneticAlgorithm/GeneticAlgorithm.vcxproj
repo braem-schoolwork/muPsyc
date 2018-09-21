@@ -175,7 +175,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CompositionGenerator.cpp" />
     <ClCompile Include="Crossover.cpp" />
+    <ClCompile Include="Device.cpp" />
     <ClCompile Include="GeneticAlgorithm.cpp" />
     <ClCompile Include="Mutation.cpp" />
   </ItemGroup>
@@ -186,7 +188,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chromosome.h" />
+    <ClInclude Include="CompositionGenerator.h" />
     <ClInclude Include="Crossover.h" />
+    <ClInclude Include="Device.h" />
+    <ClInclude Include="InitParams.h" />
     <ClInclude Include="Mutation.h" />
     <ClInclude Include="Operators.h" />
     <ClInclude Include="Parameters.h" />

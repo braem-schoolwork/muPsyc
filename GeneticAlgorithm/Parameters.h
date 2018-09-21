@@ -1,9 +1,12 @@
 #pragma once
+#include "InitParams.h"
 #include <algorithm>
 
 namespace geneticalgorithm {
 	class Parameters {
 	public:
+		initialization::InitParams initParams;
+
 		char* instruments;
 
 		unsigned int populationSize;
