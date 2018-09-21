@@ -188,7 +188,9 @@
     <ClInclude Include="Crossover.h" />
     <ClInclude Include="Mutation.h" />
     <ClInclude Include="Operators.h" />
+    <ClInclude Include="Parameters.h" />
     <ClInclude Include="Population.h" />
+    <ClInclude Include="RouletteSelection.h" />
     <ClInclude Include="Selection.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

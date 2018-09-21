@@ -169,7 +169,7 @@ Chromosome geneticalgorithm::operators::mutation::sub::passingTone(Chromosome ch
 	key.meanPitch(halvedNote, keptNote, &middleNote);
 	middleNote.setDuration(halvedNote.duration());
 	comp.replaceNoteAt(partIndex, measureIndex, halfIndex, halvedNote);
-	comp.addNoteAt(partIndex, measureIndex, noteIndex1, middleNote);
+	comp.addNoteAt(partIndex, measureIndex, noteIndex2, middleNote);
 	return Chromosome(comp);
 }
 
@@ -207,7 +207,8 @@ Chromosome geneticalgorithm::operators::mutation::sub::forceStepwise(Chromosome 
 	middleNote.setPitch(middlePitch);
 
 	comp.replaceNoteAt(partIndex, measureIndex, changeIndex, changeNote);
-	comp.addNoteAt(partIndex, measureIndex, noteIndex1, middleNote);
+	comp.replaceNoteAt(partIndex, measureIndex, stayIndex, stayNote);
+	comp.addNoteAt(partIndex, measureIndex, noteIndex2, middleNote);
 	return Chromosome(comp);
 }
 
@@ -243,4 +244,8 @@ void geneticalgorithm::operators::mutation::sub::helper::transposeRandomNote(Chr
 	selectedKey.transpose(&selectedNote, degree);
 	comp.replaceNoteAt(partIndex, measureIndex, noteIndex, selectedNote);
 	chromosome->setComposition(comp);
+}
+
+Chromosome geneticalgorithm::operators::mutation::mutate(Chromosome *chromosome) {
+
 }
