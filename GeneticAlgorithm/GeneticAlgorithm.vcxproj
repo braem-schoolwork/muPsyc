@@ -191,6 +191,7 @@
     <ClInclude Include="CompositionGenerator.h" />
     <ClInclude Include="Crossover.h" />
     <ClInclude Include="Device.h" />
+    <ClInclude Include="FitnessInfo.h" />
     <ClInclude Include="InitParams.h" />
     <ClInclude Include="Mutation.h" />
     <ClInclude Include="Operators.h" />
