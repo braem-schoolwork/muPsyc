@@ -100,6 +100,22 @@ unsigned int music::Key::closestPitchClassInDownwardsScale(Pitch pitch) {
 	return closestPitchClassInDownwardsScale(pitch.pitchClass());
 }
 
+void music::Key::forceInKey(Pitch *pitch) {
+	pitch->setPitchClass(closestPitchClassInKey(*pitch));
+}
+
+void music::Key::forceInScale(Pitch * pitch) {
+	forceInKey(pitch);
+}
+
+void music::Key::forceInUpwardsScale(Pitch * pitch) {
+	forceInKey(pitch);
+}
+
+void music::Key::forceInDownwardsScale(Pitch * pitch) {
+	pitch->setPitchClass(closestPitchClassInDownwardsScale(*pitch));
+}
+
 void music::Key::transpose(Pitch *pitch, int deg) {
 	int pcIndex = closestDegree(pitch->pitchClass());
 	int scaleSize = sc_UP.size();

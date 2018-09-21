@@ -13,6 +13,7 @@ namespace music {
 		unsigned int n_pcs;
 
 	public:
+		Key() : n_pcs(0) {}
 		Key(std::string name, std::vector<unsigned int> pitchClasses) : n(name), sc_UP(pitchClasses),
 			sc_DN(pitchClasses), n_pcs(pitchClasses.size()) {}
 		Key(std::string name, std::vector<unsigned int> pitchClassesUp, std::vector<unsigned int> pitchClassesDown)
@@ -86,6 +87,14 @@ namespace music {
 			sc_DN = scaleDown;
 			n_pcs = scaleUp.size();
 		}
+		void setUpwardsScale(std::vector<unsigned int> scaleUp) {
+			sc_UP = scaleUp;
+			n_pcs = scaleUp.size();
+		}
+		void setDownwardsScale(std::vector<unsigned int> scaleDown) {
+			sc_DN = scaleDown;
+			n_pcs = scaleDown.size();
+		}
 		void setScale(std::vector<unsigned int> scale) { sc_UP = scale; sc_DN = scale; n_pcs = scale.size(); }
 		void setName(std::string name) { n = name; }
 
@@ -124,6 +133,11 @@ namespace music {
 		unsigned int closestPitchClassInScale(Pitch pitch);
 		unsigned int closestPitchClassInUpwardsScale(Pitch pitch);
 		unsigned int closestPitchClassInDownwardsScale(Pitch pitch);
+
+		void forceInKey(Pitch *pitch);
+		void forceInScale(Pitch *pitch);
+		void forceInUpwardsScale(Pitch *pitch);
+		void forceInDownwardsScale(Pitch *pitch);
 
 		void transpose(Pitch *pitch, int degree);
 		void transpose(Note *note, int degree);
