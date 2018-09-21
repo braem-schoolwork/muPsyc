@@ -14,8 +14,10 @@ namespace geneticalgorithm {
 
 		music::Composition composition() const { return c; }
 		fitness::FitnessInfo fitnessInfo() const { return f; }
+		double fitness() const { return f.fitness; }
 
 		void setComposition(music::Composition composition) { c = composition; }
-		void setFitness(fitness::FitnessInfo fitnessInfo) { f = fitnessInfo; }
+		void setFitnessInfo(fitness::FitnessInfo fitnessInfo) { f = fitnessInfo; }
+		void setFitness(double fitness) { f.fitness = fitness; }
 	};
 }
