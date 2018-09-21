@@ -14,8 +14,24 @@ namespace geneticalgorithm {
 
 		double fitness() const { return f; }
 		std::vector<Chromosome> chromosomes() const { return c; }
+		unsigned int size() const { return c.size(); }
 
 		void setFitness(double fitness) { f = fitness; }
 		void setChromosomes(std::vector<Chromosome> chromosomes) { c = chromosomes; }
+
+		bool replaceChromosomeAt(unsigned int index, Chromosome chromosome) {
+			if (index >= size()) return false;
+			else { c[index] = chromosome; return true; }
+		}
+		void addPart(Chromosome chromosome) { c.push_back(chromosome); }
+		void addParts(std::vector<Chromosome> chromosomes) { c.insert(c.begin(), chromosomes.begin(), chromosomes.end()); }
+		bool addPartAt(unsigned int index, Chromosome chromosome) {
+			if (index >= size()) return false;
+			else { c.insert(c.begin() + index, chromosome); return true; }
+		}
+		bool removePartAt(unsigned int index) {
+			if (index >= size()) return false;
+			else { c.erase(c.begin() + index); return true; }
+		}
 	};
 }
