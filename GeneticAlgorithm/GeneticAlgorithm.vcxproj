@@ -180,6 +180,7 @@
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="GeneticAlgorithm.cpp" />
     <ClCompile Include="Mutation.cpp" />
+    <ClCompile Include="Selection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MusicDS\MusicDS.vcxproj">
