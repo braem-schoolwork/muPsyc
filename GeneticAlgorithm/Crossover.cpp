@@ -1,12 +1,10 @@
 #include "MusicDS.h"
 #include "Crossover.h"
+#include "Device.h"
 #include <random>
 
 using namespace geneticalgorithm;
 using namespace music;
-
-std::random_device rd;
-std::mt19937 mt(rd());
 
 Chromosome geneticalgorithm::operators::crossover::cross(Chromosome parent1, Chromosome parent2) {
 	std::uniform_int_distribution<unsigned int> partDist(0, parent1.composition().numParts() - 1);

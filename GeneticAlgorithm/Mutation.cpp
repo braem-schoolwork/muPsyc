@@ -1,16 +1,12 @@
+#include "Mutation.h"
 #include "MusicDS.h"
 #include "Chromosome.h"
-#include "Mutation.h"
 #include "RouletteSelection.h"
 #include <random>
 #include <stdexcept>
 
 using namespace geneticalgorithm;
 using namespace music;
-
-std::random_device rd;
-std::mt19937 mt(rd());
-std::uniform_int_distribution<int> boolDist(0, 1);
 
 Chromosome geneticalgorithm::operators::mutation::sub::leap(Chromosome chromosome) {
 	Chromosome newChromosome = Chromosome(chromosome);
