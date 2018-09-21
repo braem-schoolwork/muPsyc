@@ -1,7 +1,8 @@
 #pragma once
-#include "MusicDS.h"
 #include "Chromosome.h"
+#include "Parameters.h"
 #include <random>
+#include <vector>
 
 namespace geneticalgorithm {
 	namespace operators {
@@ -30,7 +31,20 @@ namespace geneticalgorithm {
 				Chromosome passingTone(Chromosome chromosome);
 				Chromosome forceStepwise(Chromosome chromosome);
 			}
-			Chromosome mutate(Chromosome *chromosome);
+			//sub operator indices
+			unsigned const int soi_leap = 0;
+			unsigned const int soi_lowerNeighbor = 1;
+			unsigned const int soi_upperNeighbor = 2;
+			unsigned const int soi_arpeggiate = 3;
+			unsigned const int soi_split = 4;
+			unsigned const int soi_anticipation = 5;
+			unsigned const int soi_delay = 6;
+			unsigned const int soi_merge = 7;
+			unsigned const int soi_removeNote = 8;
+			unsigned const int soi_passingTone = 9;
+			unsigned const int soi_forceStepwise = 10;
+			Chromosome mutate(Chromosome chromosome, std::vector<double> operatorProbabilities);
+			std::vector<Chromosome> mutateElites(std::vector<Chromosome> elites, Parameters params);
 		}
 	}
 }

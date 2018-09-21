@@ -1,7 +1,9 @@
 #include "MusicDS.h"
 #include "Chromosome.h"
 #include "Mutation.h"
+#include "RouletteSelection.h"
 #include <random>
+#include <stdexcept>
 
 using namespace geneticalgorithm;
 using namespace music;
@@ -246,6 +248,33 @@ void geneticalgorithm::operators::mutation::sub::helper::transposeRandomNote(Chr
 	chromosome->setComposition(comp);
 }
 
-Chromosome geneticalgorithm::operators::mutation::mutate(Chromosome *chromosome) {
+Chromosome geneticalgorithm::operators::mutation::mutate(Chromosome chromosome, std::vector<double> operatorProbabilities) {
+	unsigned int operatorIndex = algorithm::roulleteSelect(operatorProbabilities);
+	switch (operatorIndex) {
+	case soi_leap: return sub::leap(chromosome);
+	case soi_lowerNeighbor: return sub::lowerNeighbor(chromosome);
+	case soi_upperNeighbor: return sub::upperNeighbor(chromosome);
+	case soi_arpeggiate: return sub::arpeggiate(chromosome);
+	case soi_split: return sub::split(chromosome);
+	case soi_anticipation: return sub::anticipation(chromosome);
+	case soi_delay: return sub::delay(chromosome);
+	case soi_merge: return sub::merge(chromosome);
+	case soi_removeNote: return sub::removeNote(chromosome);
+	case soi_passingTone: return sub::passingTone(chromosome);
+	case soi_forceStepwise: return sub::forceStepwise(chromosome);
+	default: throw std::invalid_argument("Operator Index Out of Range");
+	}
+}
 
+std::vector<Chromosome> geneticalgorithm::operators::mutation::mutateElites(std::vector<Chromosome> elites, Parameters params) {
+	std::vector<Chromosome> mutations;
+	std::uniform_int_distribution<int> eliteDist(0, elites.size() - 1);
+	for (int i = 0; i < params.numMutations; i++)
+		mutations.push_back(
+			mutate(elites[eliteDist(mt)], 
+			std::vector<double> { params.op_leap, params.op_lowerNeighbor, params.op_upperNeighbor, params.op_arpeggiate,
+				params.op_split, params.op_anticipation, params.op_delay, params.op_merge, params.op_removeNote,
+				params.op_passingTone, params.op_forceStepwise} )
+		);
+	return mutations;
 }
