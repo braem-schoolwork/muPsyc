@@ -71,5 +71,8 @@
     <ClInclude Include="FitnessInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Fitness.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
