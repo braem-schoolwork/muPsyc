@@ -18,6 +18,12 @@ namespace music {
 		unsigned char instrument() const { return i; }
 		std::vector<Measure> measures() const { return m; }
 		int numMeasures() const { return m.size(); }
+		std::vector<Note> notes() const {
+			std::vector<Note> rtn;
+			for (Measure measure : m)
+				rtn.insert(rtn.end(), measure.notes().begin(), measure.notes().end());
+			return rtn;
+		}
 
 		bool replaceMeasureAt(unsigned int index, Measure measure) {
 			if (index >= numMeasures()) return false;
