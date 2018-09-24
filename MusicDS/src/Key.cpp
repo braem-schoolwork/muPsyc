@@ -135,11 +135,11 @@ void music::Key::transpose(Note *note, int degree) {
 }
 
 void music::Key::meanPitch(Pitch pitch1, Pitch pitch2, Pitch *mean) {
-	int absDegree1 = closestDegree(pitch1.pitchClass()) + (pitch1.octave() * sc_UP.size());
-	int absDegree2 = closestDegree(pitch2.pitchClass()) + (pitch2.octave() * sc_UP.size());
-	int degMean = (absDegree1 + absDegree2) / 2;
-	int oct = degMean / sc_UP.size();
-	int pc = pitchClass(degMean % sc_UP.size());
+	unsigned int absDegree1 = closestDegree(pitch1.pitchClass()) + (pitch1.octave() * sc_UP.size());
+	unsigned int absDegree2 = closestDegree(pitch2.pitchClass()) + (pitch2.octave() * sc_UP.size());
+	unsigned int degMean = (absDegree1 + absDegree2) / 2;
+	unsigned int oct = degMean / sc_UP.size();
+	unsigned int pc = pitchClass(degMean % sc_UP.size());
 	mean->setPCandOctave(pc, oct);
 }
 
@@ -147,4 +147,8 @@ void music::Key::meanPitch(Note note1, Note note2, Note * mean) {
 	Pitch newPitch;
 	meanPitch(note1.pitch(), note2.pitch(), &newPitch);
 	mean->setPitch(newPitch);
+}
+
+void music::Key::meanPitch(Note note1, Note note2, Pitch * mean) {
+	meanPitch(note1.pitch(), note2.pitch(), mean);
 }
