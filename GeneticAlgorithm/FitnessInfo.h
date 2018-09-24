@@ -6,6 +6,10 @@ namespace geneticalgorithm {
 		public:
 			double fitness;
 
+			double registralCompassFitness;
+			double leapLengtheningFitness;
+			double partCrossingFitness;
+
 			FitnessInfo() {}
 		};
 	}

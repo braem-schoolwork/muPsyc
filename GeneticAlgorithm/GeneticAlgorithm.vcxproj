@@ -178,6 +178,7 @@
     <ClCompile Include="CompositionGenerator.cpp" />
     <ClCompile Include="Crossover.cpp" />
     <ClCompile Include="Device.cpp" />
+    <ClCompile Include="Fitness.cpp" />
     <ClCompile Include="GeneticAlgorithm.cpp" />
     <ClCompile Include="Mutation.cpp" />
     <ClCompile Include="Selection.cpp" />

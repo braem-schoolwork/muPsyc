@@ -8,23 +8,24 @@ namespace geneticalgorithm {
 	namespace fitness {
 		namespace rules {
 			namespace huron {
-				FitnessInfo registralCompass(music::Part part);
-				FitnessInfo commonTone(music::Part part);
-				FitnessInfo conjunctMovement(music::Part part);
-				FitnessInfo leapLengthening(music::Part part);
 
-				FitnessInfo partCrossing(music::Part lowerPart, music::Part upperPart);
-				FitnessInfo pitchOverlapping(music::Part lowerPart, music::Part upperPart);
-				FitnessInfo semblantMotion(music::Part lowerPart, music::Part upperPart);
-				FitnessInfo parallelMotion(music::Part lowerPart, music::Part upperPart);
-				FitnessInfo avoidSemblantApproachBetweenFusedIntervals(music::Part lowerPart, music::Part upperPart);
-				FitnessInfo exposedIntervals(music::Part lowerPart, music::Part upperPart);
-				FitnessInfo fusedIntervals(music::Part lowerPart, music::Part upperPart);
-				FitnessInfo avoidTonalFusion(music::Part lowerPart, music::Part upperPart);
-				FitnessInfo obliqueApproachToFusedIntervals(music::Part lowerPart, music::Part upperPart);
-				FitnessInfo avoidDisjunctApproachToFusedIntervals(music::Part lowerPart, music::Part upperPart);
+				void registralCompass(music::Part part, FitnessInfo *fitnessInfo);
+				void commonTone(music::Part part, FitnessInfo *fitnessInfo);
+				void conjunctMovement(music::Part part, FitnessInfo *fitnessInfo);
+				void leapLengthening(music::Part part, FitnessInfo *fitnessInfo);
 
-				FitnessInfo chordSpacingRule(music::Composition composition);
+				void partCrossing(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
+				void pitchOverlapping(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
+				void semblantMotion(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
+				void parallelMotion(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
+				void avoidSemblantApproachBetweenFusedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
+				void exposedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
+				void fusedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
+				void avoidTonalFusion(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
+				void obliqueApproachToFusedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
+				void avoidDisjunctApproachToFusedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
+
+				void chordSpacingRule(music::Composition composition, FitnessInfo *fitnessInfo);
 			}
 		}
 		FitnessInfo evaluate(Chromosome chromosome, Parameters params);
