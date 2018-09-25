@@ -39,9 +39,9 @@ double music::Duration::realDuration() {
 }
 
 unsigned int music::Duration::tickLength() const {
-	int tick = (t * MAX_DURATION);
+	int tick = MAX_DURATION / t;
 	for (int i = 0; i < d; i++) //add another note of half duration (defn of dot)
-		tick += (t * 2 * (i + 1)) * MAX_DURATION;
+		tick += MAX_DURATION / (t * 2 * (i + 1));
 	return tick;
 }
 
