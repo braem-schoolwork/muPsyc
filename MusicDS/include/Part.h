@@ -20,8 +20,11 @@ namespace music {
 		unsigned int numMeasures() const { return m.size(); }
 		std::vector<Note> notes() const {
 			std::vector<Note> rtn;
-			for (Measure measure : m)
-				rtn.insert(rtn.end(), measure.notes().begin(), measure.notes().end());
+			for (Measure measure : m) {
+				std::vector<Note> noteVec = measure.notes();
+				rtn.reserve(rtn.size() + noteVec.size());
+				rtn.insert(rtn.end(), noteVec.begin(), noteVec.end());
+			}
 			return rtn;
 		}
 		unsigned int tickLength() const {
