@@ -9,6 +9,8 @@ namespace geneticalgorithm {
 			double registralCompassFitness;
 			double leapLengtheningFitness;
 			double partCrossingFitness;
+			double pitchOverlappingFitness;
+			double semblantMotionFitness;
 
 			FitnessInfo() {}
 		};
