@@ -111,3 +111,11 @@ bool music::Note::operator<(const Duration & other) const {
 		return true;
 	else return false;
 }
+
+unsigned int music::Note::operator-(const Pitch & other) const {
+	return this->p - other;
+}
+
+unsigned int music::Note::operator-(const Note & other) const {
+	return this->p - other.p;
+}
