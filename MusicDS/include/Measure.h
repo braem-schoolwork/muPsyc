@@ -29,6 +29,7 @@ namespace music {
 		TimeSignature timeSignature() const { return ts; }
 		std::vector<Note> notes() const { return n; }
 		unsigned int numNotes() const { return n.size(); }
+		unsigned int tickLength() const { return ts.tickLength(); }
 
 		bool findStartTie(unsigned int noteIndex, unsigned int *tieStart) {
 			unsigned int tiestartIndex = noteIndex;

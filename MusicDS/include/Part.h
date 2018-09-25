@@ -17,11 +17,17 @@ namespace music {
 		std::string name() const { return n; }
 		unsigned char instrument() const { return i; }
 		std::vector<Measure> measures() const { return m; }
-		int numMeasures() const { return m.size(); }
+		unsigned int numMeasures() const { return m.size(); }
 		std::vector<Note> notes() const {
 			std::vector<Note> rtn;
 			for (Measure measure : m)
 				rtn.insert(rtn.end(), measure.notes().begin(), measure.notes().end());
+			return rtn;
+		}
+		unsigned int tickLength() const {
+			double rtn = 0.0;
+			for (Measure measure : m)
+				rtn += measure.tickLength();
 			return rtn;
 		}
 
