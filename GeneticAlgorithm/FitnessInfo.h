@@ -11,6 +11,8 @@ namespace geneticalgorithm {
 			double partCrossingFitness;
 			double pitchOverlappingFitness;
 			double semblantMotionFitness;
+			double parallelMotionFitness;
+			double avoidSemblantApproachBetweenFusedIntervalsFitness;
 
 			FitnessInfo() {}
 		};
