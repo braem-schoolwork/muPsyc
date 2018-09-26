@@ -16,6 +16,9 @@ namespace music {
 		unsigned int tickLength() const {
 			return num * (MAX_DURATION / den);
 		}
+		unsigned int beatTickLength() const {
+			return MAX_DURATION / den;
+		}
 
 		void setNumber(unsigned int number) { num = number; }
 		void setDelineation(unsigned int delineation) { den = delineation; }
