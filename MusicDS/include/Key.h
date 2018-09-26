@@ -111,6 +111,28 @@ namespace music {
 		bool isInUpwardScale(Note note) const { return isInUpwardScale(note.pitch().pitchClass()); }
 		bool isInDownwardScale(Note note) const { return isInDownwardScale(note.pitch().pitchClass()); }
 
+		unsigned int nextPitchClass(unsigned int pc);
+		unsigned int nextUpwardsPitchClass(unsigned int pc);
+		unsigned int nextDownwardsPitchClass(unsigned int pc);
+		unsigned int prevPitchClass(unsigned int pc);
+		unsigned int prevUpwardsPitchClass(unsigned int pc);
+		unsigned int prevDownwardsPitchClass(unsigned int pc);
+		unsigned int nextPitchClass(Pitch pitch);
+		unsigned int nextUpwardsPitchClass(Pitch pitch);
+		unsigned int nextDownwardsPitchClass(Pitch pitch);
+		unsigned int prevPitchClass(Pitch pitch);
+		unsigned int prevUpwardsPitchClass(Pitch pitch);
+		unsigned int prevDownwardsPitchClass(Pitch pitch);
+
+		Pitch nextPitchInKey(Pitch pitch);
+		Pitch nextPitchInScale(Pitch pitch);
+		Pitch nextUpwardsPitchInScale(Pitch pitch);
+		Pitch nextDownwardsPitchInScale(Pitch pitch);
+		Pitch prevPitchInKey(Pitch pitch);
+		Pitch prevPitchInScale(Pitch pitch);
+		Pitch prevUpwardsPitchInScale(Pitch pitch);
+		Pitch prevDownwardsPitchInScale(Pitch pitch);
+
 		unsigned int degree(unsigned int pc);
 		unsigned int degreeUpwards(unsigned int pc);
 		unsigned int degreeDownwards(unsigned int pc);

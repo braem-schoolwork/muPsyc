@@ -4,6 +4,106 @@ std::ostream & music::operator<<(std::ostream & strm, const Key & key) {
 	return strm << key.name();
 }
 
+unsigned int music::Key::nextPitchClass(unsigned int pc) {
+	unsigned int deg = closestDegree(pc) + 1;
+	if (deg == sc_UP.size()) deg = 0;
+	return sc_UP[deg];
+}
+
+unsigned int music::Key::nextUpwardsPitchClass(unsigned int pc) {
+	return nextPitchClass(pc);
+}
+
+unsigned int music::Key::nextDownwardsPitchClass(unsigned int pc) {
+	unsigned int deg = closestDegree(pc) + 1;
+	if (deg == sc_DN.size()) deg = 0;
+	return sc_DN[deg];
+}
+
+unsigned int music::Key::prevPitchClass(unsigned int pc) {
+	unsigned int deg = closestDegree(pc);
+	if (deg == 0) deg = sc_UP.size() - 1;
+	return sc_UP[deg];
+}
+
+unsigned int music::Key::prevUpwardsPitchClass(unsigned int pc) {
+	return prevPitchClass(pc);
+}
+
+unsigned int music::Key::prevDownwardsPitchClass(unsigned int pc) {
+	unsigned int deg = closestDegree(pc);
+	if (deg == 0) deg = sc_DN.size() - 1;
+	return sc_DN[deg];
+}
+
+unsigned int music::Key::nextPitchClass(Pitch pitch) {
+	return nextPitchClass(pitch.pitchClass());
+}
+
+unsigned int music::Key::nextUpwardsPitchClass(Pitch pitch) {
+	return nextUpwardsPitchClass(pitch.pitchClass());
+}
+
+unsigned int music::Key::nextDownwardsPitchClass(Pitch pitch) {
+	return nextDownwardsPitchClass(pitch.pitchClass());
+}
+
+unsigned int music::Key::prevPitchClass(Pitch pitch) {
+	return prevPitchClass(pitch.pitchClass());
+}
+
+unsigned int music::Key::prevUpwardsPitchClass(Pitch pitch) {
+	return prevUpwardsPitchClass(pitch.pitchClass());
+}
+
+unsigned int music::Key::prevDownwardsPitchClass(Pitch pitch) {
+	return prevDownwardsPitchClass(pitch.pitchClass());
+}
+
+music::Pitch music::Key::nextPitchInKey(Pitch pitch) {
+	unsigned int npc = nextPitchClass(pitch.pitchClass());
+	unsigned int oct = pitch.octave();
+	if (pitch.pitchClass() > npc) oct++;
+	return Pitch(npc, oct);
+}
+
+music::Pitch music::Key::nextPitchInScale(Pitch pitch) {
+	return nextPitchInKey(pitch);
+}
+
+music::Pitch music::Key::nextUpwardsPitchInScale(Pitch pitch) {
+	return nextPitchInKey(pitch);
+}
+
+music::Pitch music::Key::nextDownwardsPitchInScale(Pitch pitch) {
+	unsigned int npc = nextDownwardsPitchClass(pitch.pitchClass());
+	unsigned int oct = pitch.octave();
+	if (pitch.pitchClass() > npc) oct++;
+	return Pitch(npc, oct);
+}
+
+music::Pitch music::Key::prevPitchInKey(Pitch pitch) {
+	unsigned int ppc = prevPitchClass(pitch.pitchClass());
+	unsigned int oct = pitch.octave();
+	if (pitch.pitchClass() < ppc) oct--;
+	return Pitch(ppc, oct);
+}
+
+music::Pitch music::Key::prevPitchInScale(Pitch pitch) {
+	return prevPitchInKey(pitch);
+}
+
+music::Pitch music::Key::prevUpwardsPitchInScale(Pitch pitch) {
+	return prevPitchInKey(pitch);
+}
+
+music::Pitch music::Key::prevDownwardsPitchInScale(Pitch pitch) {
+	unsigned int ppc = prevDownwardsPitchClass(pitch.pitchClass());
+	unsigned int oct = pitch.octave();
+	if (pitch.pitchClass() < ppc) oct--;
+	return Pitch(ppc, oct);
+}
+
 unsigned int music::Key::degree(unsigned int pc) {
 	std::vector<unsigned int>::iterator itr = std::find(sc_UP.begin(), sc_UP.end(), pc);
 	if (itr != sc_UP.cend())
