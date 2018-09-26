@@ -13,6 +13,12 @@ namespace geneticalgorithm {
 			double semblantMotionFitness;
 			double parallelMotionFitness;
 			double avoidSemblantApproachBetweenFusedIntervalsFitness;
+			double exposedIntervalsFitness;
+			double fusedIntervalsFitness;
+			double avoidTonalFusionFitness;
+			double obliqueApproachToFusedIntervalsFitness;
+			double avoidDisjunctApproachToFusedIntervalsFitness;
+			double chordSpacingFitness;
 
 			FitnessInfo() {}
 		};
