@@ -8,6 +8,7 @@ namespace geneticalgorithm {
 	namespace fitness {
 		namespace rules {
 			namespace huron {
+				unsigned const int numHuronFitnessRules = 13;
 				namespace helper {
 					bool isFusedInterval(music::Note lower, music::Note upper);
 					bool isSimilarMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper);
