@@ -409,37 +409,54 @@ void geneticalgorithm::fitness::rules::huron::avoidDisjunctApproachToFusedInterv
 }
 
 void geneticalgorithm::fitness::rules::huron::chordSpacing(music::Composition composition, FitnessInfo * fitnessInfo) {
-	double fitness = 0.0;
-	unsigned int numTested = 0;
-	for (unsigned int measureIndex = 0; measureIndex < composition.numMeasures(); measureIndex++) {
-		unsigned int tick = 0, measureTickLength = composition.parts()[0].measures()[measureIndex].tickLength(),
-			lowestNoteIndex = 0, lowerNoteIndex = 0, lowestTickTotal = 0, lowerTickTotal = 0, 
-			beatTickLength = composition.parts()[0].measures()[measureIndex].beatTickLength();
-		while (tick < measureTickLength) {
-			Note lowestNote = composition.parts()[0].measures()[measureIndex].notes()[lowestNoteIndex];
-			Note lowerNote = composition.parts()[1].measures()[measureIndex].notes()[lowerNoteIndex];
-			bool onBeat = lowestTickTotal % beatTickLength == 0 && lowerTickTotal % beatTickLength == 0;
-
-			if (onBeat) {
-				fitness += lowestNote + CHRINT_OCTAVE <= lowerNote ? 1.0 : 0.0;
-				numTested++;
-			}
-
-			unsigned int lowestTick = lowestNote.duration().tickLength();
-			unsigned int lowerTick = lowerNote.duration().tickLength();
-			if (lowestTickTotal + lowestTick > lowerTickTotal + lowerTick) {
-				tick += lowerTick; lowerNoteIndex++; lowerTickTotal += lowerTick;
-			}
-			else if (lowerTickTotal + lowerTick > lowestTickTotal + lowestTick) {
-				tick += lowestTick; lowestNoteIndex++; lowestTickTotal += lowestTick;
-			}
-			else {
-				tick += lowerTick; lowerNoteIndex++; lowerTickTotal += lowerTick;
-				lowestNoteIndex++; lowestTickTotal += lowestTick;
-			}
+	//TODO: Move this into a different function that's responsible for calculating all fitness rules
+	//TODO: Change fitness rules functions to not deal with iteration (slow)
+	std::vector<std::vector<Note>> notes = composition.notes();
+	std::vector<unsigned int> noteIndices(composition.numParts(), 0);
+	std::vector<unsigned int> tickTotals(composition.numParts(), 0);
+	std::vector<Note> pastNotes(composition.numParts());
+	std::vector<unsigned int> measureTickLengths = composition.measureTickLengths();
+	std::vector<bool> syncs(composition.numParts() - 1, false);
+	std::vector<bool> hasNoteChanged(composition.numParts(), false);
+	unsigned int tick = 0, partTickLength = composition.parts()[0].tickLength(), measureIndex = 0, measureTick = 0;
+	while (tick < partTickLength) {
+		std::vector<Note> currentNotes;
+		for (unsigned int partIndex = 0; partIndex < noteIndices.size(); partIndex++) {
+			currentNotes.push_back(notes[partIndex][noteIndices[partIndex]]);
+			if (partIndex < noteIndices.size() - 1) //if note tick totals sync up, they both occured
+				syncs[partIndex] = tickTotals[partIndex] == tickTotals[partIndex + 1];
 		}
+		Key key = composition.parts()[0].measures()[measureIndex].key();
+
+		/*
+		std::cout << pastNotes << ".......PAST\n";
+		std::cout << currentNotes << "......" << syncs[0] << syncs[1] << syncs[2] <<
+			"......." << hasNoteChanged[0] << hasNoteChanged[1] << hasNoteChanged[2] << hasNoteChanged[3] << "\n";
+		*/
+
+		//calculate note ticks (new tick totals)
+		std::vector<unsigned int> noteTicks;
+		for (unsigned int partIndex = 0; partIndex < tickTotals.size(); partIndex++)
+			noteTicks.push_back(notes[partIndex][noteIndices[partIndex]].tickLength() + tickTotals[partIndex]);
+		//find minimum tick values
+		unsigned int minValue = noteTicks[0], minValIndex = 0;
+		for(unsigned int partIndex = 1; partIndex < noteTicks.size(); partIndex++)
+			if (noteTicks[partIndex] < minValue) { minValue = noteTicks[partIndex]; minValIndex = partIndex; }
+
+		//note has the lowest tick total = move the index forward
+		for (unsigned int partIndex = 0; partIndex < noteTicks.size(); partIndex++) {
+			if (noteTicks[partIndex] == minValue) {
+				noteIndices[partIndex]++;
+				pastNotes[partIndex] = currentNotes[partIndex];
+				tickTotals[partIndex] = noteTicks[partIndex];
+				hasNoteChanged[partIndex] = true;
+			}
+			else hasNoteChanged[partIndex] = false;
+		}
+		tick = minValue;
+		if (tick / (measureIndex + 1) >= measureTickLengths[measureIndex])
+			measureIndex++;
 	}
-	fitnessInfo->chordSpacingFitness = fitness / static_cast<double>(numTested);
 }
 
 bool geneticalgorithm::fitness::rules::huron::helper::isFusedInterval(music::Note lower, music::Note upper) {
