@@ -8,7 +8,13 @@ namespace geneticalgorithm {
 	namespace fitness {
 		namespace rules {
 			namespace huron {
-
+				namespace helper {
+					bool isFusedInterval(music::Note lower, music::Note upper);
+					bool isSimilarMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper);
+					bool isParallelMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper);
+					bool isStepwiseMotion(music::Note past, music::Note present, music::Key key);
+					bool isObliqueMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper);
+				}
 				void registralCompass(music::Part part, FitnessInfo *fitnessInfo);
 				void commonTone(music::Part part, FitnessInfo *fitnessInfo);
 				void conjunctMovement(music::Part part, FitnessInfo *fitnessInfo);
@@ -25,7 +31,7 @@ namespace geneticalgorithm {
 				void obliqueApproachToFusedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
 				void avoidDisjunctApproachToFusedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
 
-				void chordSpacingRule(music::Composition composition, FitnessInfo *fitnessInfo);
+				void chordSpacing(music::Composition composition, FitnessInfo *fitnessInfo);
 			}
 		}
 		FitnessInfo evaluate(Chromosome chromosome, Parameters params);

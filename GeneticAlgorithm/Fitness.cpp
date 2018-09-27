@@ -67,11 +67,11 @@ void geneticalgorithm::fitness::rules::huron::pitchOverlapping(music::Part lower
 	unsigned int numTested = 0;
 	std::vector<Note> lowerNotes = lowerPart.notes();
 	std::vector<Note> upperNotes = upperPart.notes();
-	unsigned int tick = 0, upperNoteIndex = 0, lowerNoteIndex = 0, measureTickLength = lowerPart.tickLength(),
+	unsigned int tick = 0, upperNoteIndex = 0, lowerNoteIndex = 0, partTickLength = lowerPart.tickLength(),
 		lowerTickTotal = 0, upperTickTotal = 0;
 	bool didBothMove = false;
 	Note pastLowerNote, pastUpperNote;
-	while (tick < measureTickLength) {
+	while (tick < partTickLength) {
 		Note lowerNote = lowerNotes[lowerNoteIndex];
 		Note upperNote = upperNotes[upperNoteIndex];
 		didBothMove = lowerTickTotal == upperTickTotal;
@@ -102,22 +102,19 @@ void geneticalgorithm::fitness::rules::huron::semblantMotion(music::Part lowerPa
 	unsigned int numTested = 0;
 	std::vector<Note> lowerNotes = lowerPart.notes();
 	std::vector<Note> upperNotes = upperPart.notes();
-	unsigned int tick = 0, upperNoteIndex = 0, lowerNoteIndex = 0, measureTickLength = lowerPart.tickLength(),
+	unsigned int tick = 0, upperNoteIndex = 0, lowerNoteIndex = 0, partTickLength = lowerPart.tickLength(),
 		lowerTickTotal = 0, upperTickTotal = 0;
 	bool didBothMove = false;
 	Note pastLowerNote, pastUpperNote;
-	while (tick < measureTickLength) {
+	while (tick < partTickLength) {
 		Note lowerNote = lowerNotes[lowerNoteIndex];
 		Note upperNote = upperNotes[upperNoteIndex];
 		didBothMove = lowerTickTotal == upperTickTotal;
 
-		if (lowerNoteIndex > 0 && upperNoteIndex > 0) {
-			if (didBothMove) { //skip in between notes (they inflate fitness)
-				if ((pastLowerNote > lowerNote && pastUpperNote > upperNote) ||
-					(pastLowerNote < lowerNote && pastUpperNote < upperNote))
-					fitness += 1.0;
-				numTested++;
-			}
+		if (lowerNoteIndex > 0 && upperNoteIndex > 0 && didBothMove) { //skip in between notes (they inflate fitness)
+			fitness += helper::isSimilarMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote) ||
+				helper::isParallelMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote) ? 0.0 : 1.0;
+			numTested++;
 		}
 
 		unsigned int lowerTick = lowerNote.duration().tickLength();
@@ -141,26 +138,20 @@ void geneticalgorithm::fitness::rules::huron::parallelMotion(music::Part lowerPa
 	unsigned int numTested = 0;
 	std::vector<Note> lowerNotes = lowerPart.notes();
 	std::vector<Note> upperNotes = upperPart.notes();
-	unsigned int tick = 0, upperNoteIndex = 0, lowerNoteIndex = 0, measureTickLength = lowerPart.tickLength(),
+	unsigned int tick = 0, upperNoteIndex = 0, lowerNoteIndex = 0, partTickLength = lowerPart.tickLength(),
 		lowerTickTotal = 0, upperTickTotal = 0;
 	bool didBothMove = false;
 	Note pastLowerNote, pastUpperNote;
-	while (tick < measureTickLength) {
+	while (tick < partTickLength) {
 		Note lowerNote = lowerNotes[lowerNoteIndex];
 		Note upperNote = upperNotes[upperNoteIndex];
 		didBothMove = lowerTickTotal == upperTickTotal;
 
-		if (lowerNoteIndex > 0 && upperNoteIndex > 0) {
-			if (didBothMove) {
-				if ((pastLowerNote > lowerNote && pastUpperNote > upperNote) ||
-					(pastLowerNote < lowerNote && pastUpperNote < upperNote)) {
-					if (pastLowerNote - lowerNote != pastUpperNote - upperNote) { //similar not parallel
-						fitness += 0.5; //penalize similar less than parallel
-					}
-				}
-				else fitness += 1.0;
-				numTested++;
-			}
+		if (lowerNoteIndex > 0 && upperNoteIndex > 0 && didBothMove) {
+			if (helper::isSimilarMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote)) fitness += 0.5;
+			else if (helper::isParallelMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote)) fitness += 0.0;
+			else fitness += 1.0;
+			numTested++;
 		}
 
 		unsigned int lowerTick = lowerNote.duration().tickLength();
@@ -184,18 +175,20 @@ void geneticalgorithm::fitness::rules::huron::avoidSemblantApproachBetweenFusedI
 	unsigned int numTested = 0;
 	std::vector<Note> lowerNotes = lowerPart.notes();
 	std::vector<Note> upperNotes = upperPart.notes();
-	unsigned int tick = 0, upperNoteIndex = 0, lowerNoteIndex = 0, measureTickLength = lowerPart.tickLength(),
+	unsigned int tick = 0, upperNoteIndex = 0, lowerNoteIndex = 0, partTickLength = lowerPart.tickLength(),
 		lowerTickTotal = 0, upperTickTotal = 0;
 	bool didBothMove = false;
 	Note pastLowerNote, pastUpperNote;
-	while (tick < measureTickLength) {
+	while (tick < partTickLength) {
 		Note lowerNote = lowerNotes[lowerNoteIndex];
 		Note upperNote = upperNotes[upperNoteIndex];
 		didBothMove = lowerTickTotal == upperTickTotal;
 
-		if (lowerNoteIndex > 0 && upperNoteIndex > 0) {
-			if (didBothMove) {
-				
+		if (lowerNoteIndex > 0 && upperNoteIndex > 0 && didBothMove) {
+			if (helper::isFusedInterval(lowerNote, upperNote)) {
+				fitness += helper::isSimilarMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote) ||
+					helper::isParallelMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote) ? 0.0 : 1.0;
+				numTested++;
 			}
 		}
 
@@ -213,4 +206,265 @@ void geneticalgorithm::fitness::rules::huron::avoidSemblantApproachBetweenFusedI
 		}
 	}
 	fitnessInfo->avoidSemblantApproachBetweenFusedIntervalsFitness = fitness / static_cast<double>(numTested);
+}
+
+void geneticalgorithm::fitness::rules::huron::exposedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo * fitnessInfo) {
+	double fitness = 0.0;
+	unsigned int numTested = 0;
+	std::vector<Note> lowerNotes = lowerPart.notes();
+	std::vector<Note> upperNotes = upperPart.notes();
+	unsigned int tick = 0, upperNoteIndex = 0, lowerNoteIndex = 0, partTickLength = lowerPart.tickLength(),
+		lowerTickTotal = 0, upperTickTotal = 0, measureIndex = 0;
+	bool didBothMove = false;
+	Note pastLowerNote, pastUpperNote;
+	while (tick < partTickLength) {
+		Note lowerNote = lowerNotes[lowerNoteIndex];
+		Note upperNote = upperNotes[upperNoteIndex];
+		didBothMove = lowerTickTotal == upperTickTotal;
+
+		if (lowerNoteIndex > 0 && upperNoteIndex > 0 && didBothMove) {
+			Key key = lowerPart.measures()[measureIndex].key();
+			if (helper::isFusedInterval(lowerNote, upperNote)) {
+				if (helper::isStepwiseMotion(pastLowerNote, lowerNote, key) ||
+					helper::isStepwiseMotion(pastUpperNote, upperNote, key)) {
+					fitness += 1.0;
+				}
+				numTested++;
+			}
+		}
+
+		unsigned int lowerTick = lowerNote.duration().tickLength();
+		unsigned int upperTick = upperNote.duration().tickLength();
+		if (lowerTickTotal + lowerTick > upperTickTotal + upperTick) {
+			tick += upperTick; upperNoteIndex++; pastUpperNote = upperNote; upperTickTotal += upperTick;
+		}
+		else if (upperTickTotal + upperTick > lowerTickTotal + lowerTick) {
+			tick += lowerTick; lowerNoteIndex++; pastLowerNote = lowerNote; lowerTickTotal += lowerTick;
+		}
+		else {
+			tick += upperTick; lowerNoteIndex++; upperNoteIndex++; pastLowerNote = lowerNote; pastUpperNote = upperNote;
+			upperTickTotal += upperTick; lowerTickTotal += lowerTick;
+		}
+		if (lowerNoteIndex >= lowerPart.measures()[measureIndex].numNotes() ||
+			upperNoteIndex >= upperPart.measures()[measureIndex].numNotes())
+			measureIndex++;
+	}
+	fitnessInfo->exposedIntervalsFitness = fitness / static_cast<double>(numTested);
+}
+
+void geneticalgorithm::fitness::rules::huron::fusedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo * fitnessInfo) {
+	double fitness = 0.0;
+	unsigned int numTested = 0;
+	std::vector<Note> lowerNotes = lowerPart.notes();
+	std::vector<Note> upperNotes = upperPart.notes();
+	unsigned int tick = 0, upperNoteIndex = 0, lowerNoteIndex = 0, partTickLength = lowerPart.tickLength(),
+		lowerTickTotal = 0, upperTickTotal = 0;
+	bool didBothMove = false;
+	while (tick < partTickLength) {
+		Note lowerNote = lowerNotes[lowerNoteIndex];
+		Note upperNote = upperNotes[upperNoteIndex];
+		didBothMove = lowerTickTotal == upperTickTotal;
+
+		if (didBothMove) {
+			fitness += helper::isFusedInterval(lowerNote, upperNote) ? 0.0 : 1.0;
+			numTested++;
+		}
+
+		unsigned int lowerTick = lowerNote.duration().tickLength();
+		unsigned int upperTick = upperNote.duration().tickLength();
+		if (lowerTickTotal + lowerTick > upperTickTotal + upperTick) {
+			tick += upperTick; upperNoteIndex++; upperTickTotal += upperTick;
+		}
+		else if (upperTickTotal + upperTick > lowerTickTotal + lowerTick) {
+			tick += lowerTick; lowerNoteIndex++; lowerTickTotal += lowerTick;
+		}
+		else {
+			tick += upperTick; lowerNoteIndex++; upperNoteIndex++;
+			upperTickTotal += upperTick; lowerTickTotal += lowerTick;
+		}
+	}
+	fitnessInfo->fusedIntervalsFitness = fitness / static_cast<double>(numTested);
+}
+
+void geneticalgorithm::fitness::rules::huron::avoidTonalFusion(music::Part lowerPart, music::Part upperPart, FitnessInfo * fitnessInfo) {
+	double fitness = 0.0;
+	unsigned int numTested = 0;
+	std::vector<Note> lowerNotes = lowerPart.notes();
+	std::vector<Note> upperNotes = upperPart.notes();
+	unsigned int tick = 0, upperNoteIndex = 0, lowerNoteIndex = 0, partTickLength = lowerPart.tickLength(),
+		lowerTickTotal = 0, upperTickTotal = 0;
+	bool didBothMove = false;
+	while (tick < partTickLength) {
+		Note lowerNote = lowerNotes[lowerNoteIndex];
+		Note upperNote = upperNotes[upperNoteIndex];
+		didBothMove = lowerTickTotal == upperTickTotal;
+
+		if (didBothMove) {
+			unsigned int midiVal = lowerNote - upperNote;
+			if (midiVal == CHRINT_UNISON) fitness += 0.0;
+			else if (midiVal % 12 == 0) fitness += 0.3; //octave
+			else if (midiVal % 12 == CHRINT_5TH) fitness += 0.6;
+			else fitness += 1.0;
+			numTested++;
+		}
+
+		unsigned int lowerTick = lowerNote.duration().tickLength();
+		unsigned int upperTick = upperNote.duration().tickLength();
+		if (lowerTickTotal + lowerTick > upperTickTotal + upperTick) {
+			tick += upperTick; upperNoteIndex++; upperTickTotal += upperTick;
+		}
+		else if (upperTickTotal + upperTick > lowerTickTotal + lowerTick) {
+			tick += lowerTick; lowerNoteIndex++; lowerTickTotal += lowerTick;
+		}
+		else {
+			tick += upperTick; lowerNoteIndex++; upperNoteIndex++;
+			upperTickTotal += upperTick; lowerTickTotal += lowerTick;
+		}
+	}
+	fitnessInfo->avoidTonalFusionFitness = fitness / static_cast<double>(numTested);
+}
+
+void geneticalgorithm::fitness::rules::huron::obliqueApproachToFusedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo * fitnessInfo) {
+	double fitness = 0.0;
+	unsigned int numTested = 0;
+	std::vector<Note> lowerNotes = lowerPart.notes();
+	std::vector<Note> upperNotes = upperPart.notes();
+	unsigned int tick = 0, upperNoteIndex = 0, lowerNoteIndex = 0, partTickLength = lowerPart.tickLength(),
+		lowerTickTotal = 0, upperTickTotal = 0, measureIndex = 0;
+	bool didBothMove = false;
+	Note pastLowerNote, pastUpperNote;
+	while (tick < partTickLength) {
+		Note lowerNote = lowerNotes[lowerNoteIndex];
+		Note upperNote = upperNotes[upperNoteIndex];
+		didBothMove = lowerTickTotal == upperTickTotal;
+
+		if (lowerNoteIndex > 0 && upperNoteIndex > 0 && didBothMove) {
+			Key key = lowerPart.measures()[measureIndex].key();
+			if (helper::isFusedInterval(lowerNote, upperNote)) {
+				fitness += helper::isObliqueMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote) ? 1.0 : 0.0;
+				numTested++;
+			}
+		}
+
+		unsigned int lowerTick = lowerNote.duration().tickLength();
+		unsigned int upperTick = upperNote.duration().tickLength();
+		if (lowerTickTotal + lowerTick > upperTickTotal + upperTick) {
+			tick += upperTick; upperNoteIndex++; pastUpperNote = upperNote; upperTickTotal += upperTick;
+		}
+		else if (upperTickTotal + upperTick > lowerTickTotal + lowerTick) {
+			tick += lowerTick; lowerNoteIndex++; pastLowerNote = lowerNote; lowerTickTotal += lowerTick;
+		}
+		else {
+			tick += upperTick; lowerNoteIndex++; upperNoteIndex++; pastLowerNote = lowerNote; pastUpperNote = upperNote;
+			upperTickTotal += upperTick; lowerTickTotal += lowerTick;
+		}
+		if (lowerNoteIndex >= lowerPart.measures()[measureIndex].numNotes() ||
+			upperNoteIndex >= upperPart.measures()[measureIndex].numNotes())
+			measureIndex++;
+	}
+	fitnessInfo->obliqueApproachToFusedIntervalsFitness = fitness / static_cast<double>(numTested);
+}
+
+void geneticalgorithm::fitness::rules::huron::avoidDisjunctApproachToFusedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo * fitnessInfo) {
+	double fitness = 0.0;
+	unsigned int numTested = 0;
+	std::vector<Note> lowerNotes = lowerPart.notes();
+	std::vector<Note> upperNotes = upperPart.notes();
+	unsigned int tick = 0, upperNoteIndex = 0, lowerNoteIndex = 0, partTickLength = lowerPart.tickLength(),
+		lowerTickTotal = 0, upperTickTotal = 0, measureIndex = 0;
+	bool didBothMove = false;
+	Note pastLowerNote, pastUpperNote;
+	while (tick < partTickLength) {
+		Note lowerNote = lowerNotes[lowerNoteIndex];
+		Note upperNote = upperNotes[upperNoteIndex];
+		didBothMove = lowerTickTotal == upperTickTotal;
+
+		if (lowerNoteIndex > 0 && upperNoteIndex > 0 && didBothMove) {
+			Key key = lowerPart.measures()[measureIndex].key();
+			if (helper::isFusedInterval(lowerNote, upperNote)) {
+				if (helper::isObliqueMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote)) fitness += 1.0;
+				else if (helper::isStepwiseMotion(pastLowerNote, lowerNote, key)
+					|| helper::isStepwiseMotion(pastUpperNote, upperNote, key)) fitness += 1.0;
+				numTested++;
+			}
+		}
+
+		unsigned int lowerTick = lowerNote.duration().tickLength();
+		unsigned int upperTick = upperNote.duration().tickLength();
+		if (lowerTickTotal + lowerTick > upperTickTotal + upperTick) {
+			tick += upperTick; upperNoteIndex++; pastUpperNote = upperNote; upperTickTotal += upperTick;
+		}
+		else if (upperTickTotal + upperTick > lowerTickTotal + lowerTick) {
+			tick += lowerTick; lowerNoteIndex++; pastLowerNote = lowerNote; lowerTickTotal += lowerTick;
+		}
+		else {
+			tick += upperTick; lowerNoteIndex++; upperNoteIndex++; pastLowerNote = lowerNote; pastUpperNote = upperNote;
+			upperTickTotal += upperTick; lowerTickTotal += lowerTick;
+		}
+		if (lowerNoteIndex >= lowerPart.measures()[measureIndex].numNotes() ||
+			upperNoteIndex >= upperPart.measures()[measureIndex].numNotes())
+			measureIndex++;
+	}
+	fitnessInfo->avoidDisjunctApproachToFusedIntervalsFitness = fitness / static_cast<double>(numTested);
+}
+
+void geneticalgorithm::fitness::rules::huron::chordSpacing(music::Composition composition, FitnessInfo * fitnessInfo) {
+	double fitness = 0.0;
+	unsigned int numTested = 0;
+	for (unsigned int measureIndex = 0; measureIndex < composition.numMeasures(); measureIndex++) {
+		unsigned int tick = 0, measureTickLength = composition.parts()[0].measures()[measureIndex].tickLength(),
+			lowestNoteIndex = 0, lowerNoteIndex = 0, lowestTickTotal = 0, lowerTickTotal = 0, 
+			beatTickLength = composition.parts()[0].measures()[measureIndex].beatTickLength();
+		while (tick < measureTickLength) {
+			Note lowestNote = composition.parts()[0].measures()[measureIndex].notes()[lowestNoteIndex];
+			Note lowerNote = composition.parts()[1].measures()[measureIndex].notes()[lowerNoteIndex];
+			bool onBeat = lowestTickTotal % beatTickLength == 0 && lowerTickTotal % beatTickLength == 0;
+
+			if (onBeat) {
+				fitness += lowestNote + CHRINT_OCTAVE <= lowerNote ? 1.0 : 0.0;
+				numTested++;
+			}
+
+			unsigned int lowestTick = lowestNote.duration().tickLength();
+			unsigned int lowerTick = lowerNote.duration().tickLength();
+			if (lowestTickTotal + lowestTick > lowerTickTotal + lowerTick) {
+				tick += lowerTick; lowerNoteIndex++; lowerTickTotal += lowerTick;
+			}
+			else if (lowerTickTotal + lowerTick > lowestTickTotal + lowestTick) {
+				tick += lowestTick; lowestNoteIndex++; lowestTickTotal += lowestTick;
+			}
+			else {
+				tick += lowerTick; lowerNoteIndex++; lowerTickTotal += lowerTick;
+				lowestNoteIndex++; lowestTickTotal += lowestTick;
+			}
+		}
+	}
+	fitnessInfo->chordSpacingFitness = fitness / static_cast<double>(numTested);
+}
+
+bool geneticalgorithm::fitness::rules::huron::helper::isFusedInterval(music::Note lower, music::Note upper) {
+	switch ((upper - lower) % 12) {
+	case CHRINT_UNISON:
+	case CHRINT_5TH: return true;
+	default: return false;
+	}
+}
+
+bool geneticalgorithm::fitness::rules::huron::helper::isSimilarMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper) {
+	return ((pastLower > lower && pastUpper > upper) || (pastLower < lower && pastUpper < upper))
+		&& pastLower - lower != pastUpper - upper; //not parallel
+}
+
+bool geneticalgorithm::fitness::rules::huron::helper::isParallelMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper) {
+	return ((pastLower > lower && pastUpper > upper) || (pastLower < lower && pastUpper < upper))
+		&& pastLower - lower == pastUpper - upper; //parallel
+}
+
+bool geneticalgorithm::fitness::rules::huron::helper::isStepwiseMotion(music::Note past, music::Note present, music::Key key) {
+	return key.nextPitchInKey(past.pitch()) == present.pitch() || key.prevPitchInKey(past.pitch()) == present.pitch();
+}
+
+bool geneticalgorithm::fitness::rules::huron::helper::isObliqueMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper) {
+	return (pastLower - lower == 0 && pastUpper - upper > 0) ||
+		(pastUpper - upper == 0 && pastLower - lower > 0);
 }
