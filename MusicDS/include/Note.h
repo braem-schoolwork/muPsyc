@@ -67,6 +67,7 @@ namespace music {
 		//difference
 		unsigned int operator-(const Pitch& other) const;
 		unsigned int operator-(const Note& other) const;
+		Note operator+(const unsigned int& amt) const;
 	};
 	std::ostream& operator<<(std::ostream &strm, const Note &n);
 }

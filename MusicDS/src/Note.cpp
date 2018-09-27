@@ -119,3 +119,9 @@ unsigned int music::Note::operator-(const Pitch & other) const {
 unsigned int music::Note::operator-(const Note & other) const {
 	return this->p - other.p;
 }
+
+music::Note music::Note::operator+(const unsigned int & amt) const {
+	Note rtn = *this;
+	rtn.p += amt;
+	return rtn;
+}
