@@ -31,6 +31,12 @@ namespace music {
 		BPM bpm() const { return b; }
 		unsigned int numParts() const { return p.size(); }
 		unsigned int numMeasures() const { return p[0].numMeasures(); }
+		std::vector<unsigned int> measureTickLengths() const {
+			std::vector<unsigned int> rtn(p[0].numMeasures());
+			for (unsigned int measureIndex = 0; measureIndex < p.size(); measureIndex++)
+				rtn[measureIndex] = p[0].measures()[measureIndex].tickLength();
+			return rtn;
+		}
 		std::vector<std::vector<Note>> notes() const {
 			std::vector<std::vector<Note>> rtn;
 			for (Part part : p) rtn.push_back(part.notes());
