@@ -26,6 +26,7 @@ namespace music {
 		bool isTieStart() const { return tie_start; }
 		bool isTieEnd() const { return tie_end; }
 		bool isTie() const { return tie_start || tie_end; }
+		unsigned int tickLength() const { return d.tickLength(); }
 
 		void removeTies() { tie_start = false; tie_end = false; }
 
