@@ -94,7 +94,7 @@ bool music::Duration::operator!=(const Duration & other) const {
 //for <, <=, >, >= : a half note will never be as long or longer than a whole note
 // & vice versa; lower t will always be longer
 bool music::Duration::operator>=(const Duration & other) const {
-	if (t < other.t)
+	if (*this > other)
 		return true;
 	else if (*this == other)
 		return true;
@@ -104,11 +104,15 @@ bool music::Duration::operator>=(const Duration & other) const {
 bool music::Duration::operator>(const Duration & other) const {
 	if (t < other.t)
 		return true;
+	else if (t == other.t) {
+		if (d > other.d) return true;
+		else return false;
+	}
 	else return false;
 }
 
 bool music::Duration::operator<=(const Duration & other) const {
-	if (t > other.t)
+	if (*this < other)
 		return true;
 	else if (*this == other)
 		return true;
@@ -118,6 +122,10 @@ bool music::Duration::operator<=(const Duration & other) const {
 bool music::Duration::operator<(const Duration & other) const {
 	if (t > other.t)
 		return true;
+	else if (t == other.t) {
+		if (d < other.d) return true;
+		else return false;
+	}
 	else return false;
 }
 
