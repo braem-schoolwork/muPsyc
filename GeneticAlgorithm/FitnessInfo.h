@@ -6,6 +6,7 @@ namespace geneticalgorithm {
 		public:
 			double fitness;
 
+			unsigned const int numHuronFitnessRules = 13;
 			double registralCompassFitness;
 			double leapLengtheningFitness;
 			double partCrossingFitness;
@@ -19,6 +20,13 @@ namespace geneticalgorithm {
 			double obliqueApproachToFusedIntervalsFitness;
 			double avoidDisjunctApproachToFusedIntervalsFitness;
 			double chordSpacingFitness;
+
+			void setOverallFitness() {
+				fitness = (registralCompassFitness + leapLengtheningFitness + partCrossingFitness +
+					pitchOverlappingFitness + semblantMotionFitness + parallelMotionFitness + avoidSemblantApproachBetweenFusedIntervalsFitness +
+					exposedIntervalsFitness + fusedIntervalsFitness + avoidTonalFusionFitness + obliqueApproachToFusedIntervalsFitness +
+					avoidDisjunctApproachToFusedIntervalsFitness + chordSpacingFitness) / static_cast<double>(numHuronFitnessRules);
+			}
 
 			FitnessInfo() {}
 		};
