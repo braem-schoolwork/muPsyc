@@ -8,7 +8,6 @@ namespace geneticalgorithm {
 	namespace fitness {
 		namespace rules {
 			namespace huron {
-				unsigned const int numHuronFitnessRules = 13;
 				namespace helper {
 					bool isFusedInterval(music::Note lower, music::Note upper);
 					bool isSimilarMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper);
@@ -16,25 +15,26 @@ namespace geneticalgorithm {
 					bool isStepwiseMotion(music::Note past, music::Note present, music::Key key);
 					bool isObliqueMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper);
 				}
-				void registralCompass(music::Part part, FitnessInfo *fitnessInfo);
+				double registralCompass(music::Note note);
 				void commonTone(music::Part part, FitnessInfo *fitnessInfo);
 				void conjunctMovement(music::Part part, FitnessInfo *fitnessInfo);
-				void leapLengthening(music::Part part, FitnessInfo *fitnessInfo);
+				double leapLengthening(music::Note note1, music::Note note2);
 
-				void partCrossing(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
-				void pitchOverlapping(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
-				void semblantMotion(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
-				void parallelMotion(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
-				void avoidSemblantApproachBetweenFusedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
-				void exposedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
-				void fusedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
-				void avoidTonalFusion(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
-				void obliqueApproachToFusedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
-				void avoidDisjunctApproachToFusedIntervals(music::Part lowerPart, music::Part upperPart, FitnessInfo *fitnessInfo);
+				double partCrossing(music::Note lowerNote, music::Note upperNote);
+				double pitchOverlapping(music::Note lowerNote, music::Note upperNote);
+				double semblantMotion(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote);
+				double parallelMotion(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote);
+				double avoidSemblantApproachBetweenFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote);
+				double exposedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote, music::Key key);
+				double fusedIntervals(music::Note lowerNote, music::Note upperNote);
+				double avoidTonalFusion(music::Note lowerNote, music::Note upperNote);
+				double obliqueApproachToFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote);
+				double avoidDisjunctApproachToFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote, music::Key key);
 
-				void chordSpacing(music::Composition composition, FitnessInfo *fitnessInfo);
+				double chordSpacing(std::vector<music::Note> notes);
 			}
+			void applyHuronsRules(music::Composition composition, FitnessInfo *fitnessInfo);
 		}
-		FitnessInfo evaluate(Chromosome chromosome, Parameters params);
+		void evaluate(Chromosome *chromosome, Parameters params);
 	}
 }
