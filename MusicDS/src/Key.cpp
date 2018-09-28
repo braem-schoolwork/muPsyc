@@ -140,7 +140,7 @@ unsigned int music::Key::closestDegree(unsigned int pc) {
 			return i;
 		}
 	}
-	return sc_UP.size() - 1;
+	return sc_UP[sc_UP.size() - 1];
 }
 
 unsigned int music::Key::closestUpwardsDegree(unsigned int pc) {
@@ -153,7 +153,7 @@ unsigned int music::Key::closestDownwardsDegree(unsigned int pc) {
 			return i;
 		}
 	}
-	return sc_DN.size() - 1;
+	return sc_DN[sc_DN.size() - 1];
 }
 
 unsigned int music::Key::closestDegree(Pitch pitch) {
