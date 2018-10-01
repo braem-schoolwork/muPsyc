@@ -17,6 +17,7 @@ namespace geneticalgorithm {
 		unsigned int size() const { return c.size(); }
 
 		void setFitness(double fitness) { f = fitness; }
+		void addToFitness(double fitness) { f += fitness; }
 		void setChromosomes(std::vector<Chromosome> chromosomes) { c = chromosomes; }
 
 		bool replaceChromosomeAt(unsigned int index, Chromosome chromosome) {
@@ -33,5 +34,9 @@ namespace geneticalgorithm {
 			if (index >= size()) return false;
 			else { c.erase(c.begin() + index); return true; }
 		}
+		void clearChromosomes() { c.clear(); }
+
+		Chromosome& operator[](unsigned int i) { return c[i]; }
+		const Chromosome& operator[](unsigned int i)const { return c[i]; }
 	};
 }
