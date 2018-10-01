@@ -6,7 +6,7 @@ namespace geneticalgorithm {
 		public:
 			double fitness;
 
-			unsigned const int numHuronFitnessRules = 13;
+			unsigned int numHuronFitnessRules = 13;
 			double registralCompassFitness;
 			double leapLengtheningFitness;
 			double partCrossingFitness;
