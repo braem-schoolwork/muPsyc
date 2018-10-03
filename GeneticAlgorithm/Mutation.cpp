@@ -265,12 +265,12 @@ Chromosome geneticalgorithm::operators::mutation::mutate(Chromosome chromosome, 
 std::vector<Chromosome> geneticalgorithm::operators::mutation::mutateElites(std::vector<Chromosome> elites, Parameters params) {
 	std::vector<Chromosome> mutations;
 	std::uniform_int_distribution<int> eliteDist(0, elites.size() - 1);
+	std::vector<double> operatorProbs = { params.op_leap, params.op_lowerNeighbor, params.op_upperNeighbor, params.op_arpeggiate,
+				params.op_split, params.op_anticipation, params.op_delay, params.op_merge, params.op_removeNote,
+				params.op_passingTone, params.op_forceStepwise };
 	for (int i = 0; i < params.numMutations; i++)
 		mutations.push_back(
-			mutate(elites[eliteDist(mt)], 
-			std::vector<double> { params.op_leap, params.op_lowerNeighbor, params.op_upperNeighbor, params.op_arpeggiate,
-				params.op_split, params.op_anticipation, params.op_delay, params.op_merge, params.op_removeNote,
-				params.op_passingTone, params.op_forceStepwise} )
+			mutate(elites[eliteDist(mt)], operatorProbs )
 		);
 	return mutations;
 }
