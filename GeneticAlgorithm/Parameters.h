@@ -7,8 +7,6 @@ namespace geneticalgorithm {
 	public:
 		initialization::InitParams initParams;
 
-		char* instruments;
-
 		unsigned int populationSize;
 		unsigned int numGenerations;
 
@@ -17,6 +15,7 @@ namespace geneticalgorithm {
 		unsigned int numCrossovers;
 
 		//operator probabilities
+		unsigned int numMutationSubOperators = 9;
 		double op_leap;
 		double op_lowerNeighbor;
 		double op_upperNeighbor;
