@@ -6,12 +6,12 @@
 using namespace music;
 
 music::Composition geneticalgorithm::initialization::generateComposition(InitParams params) {
-	std::vector<Part> parts;
+	std::vector<Part> parts(params.numParts);
 	for (int p = 0; p < params.numParts; p++) {
 		std::uniform_int_distribution<unsigned int> 
 			midiDist(params.lowerBounds[p].midi(), params.upperBounds[p].midi());
 		Part part = Part(params.partNames[p], params.instruments[p]);
-		std::vector<Measure> measures;
+		std::vector<Measure> measures(params.numMeasures);
 		for (int m = 0; m < params.numMeasures; m++) {
 			std::vector<Note> notes;
 			for (int n = 0; n < params.timeSig.number(); n++) {
@@ -19,9 +19,9 @@ music::Composition geneticalgorithm::initialization::generateComposition(InitPar
 				params.key.forceInKey(&randPitch);
 				notes.push_back(Note(randPitch, Duration(params.timeSig.delineation())));
 			}
-			measures.push_back(Measure(params.timeSig, params.key, notes));
+			measures[m] = Measure(params.timeSig, params.key, notes);
 		}
-		parts.push_back(Part(params.partNames[p], params.instruments[p], measures));
+		parts[p] = Part(params.partNames[p], params.instruments[p], measures);
 	}
 	return Composition(params.name, parts, params.bpm);
 }
