@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "BPM.h"
 
 namespace music {
 	class Duration {
@@ -28,6 +29,8 @@ namespace music {
 
 		void fraction(unsigned int* numerator, unsigned int* denominator) const;
 		double realDuration();
+		double getMillis(BPM bpm);
+		double getSeconds(BPM bpm);
 
 		unsigned int tickLength() const;
 

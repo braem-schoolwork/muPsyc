@@ -38,6 +38,14 @@ double music::Duration::realDuration() {
 	return static_cast<double>(num) / static_cast<double>(den);
 }
 
+double music::Duration::getMillis(BPM bpm) {
+	return getSeconds(bpm) * 1000.0;
+}
+
+double music::Duration::getSeconds(BPM bpm) {
+	return realDuration() * (1.0 / bpm.delineation()) * (1.0 / bpm.seconds()) * 60.0;
+}
+
 unsigned int music::Duration::tickLength() const {
 	int tick = MAX_DURATION / t;
 	for (int i = 0; i < d; i++) //add another note of half duration (defn of dot)
