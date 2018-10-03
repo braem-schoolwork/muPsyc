@@ -6,6 +6,8 @@
 #include "FitnessInfo.h"
 #include "Fitness.h"
 #include "RunInfo.h"
+#include "Parameters.h"
+#include "GeneticAlgorithm.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -22,15 +24,36 @@ int main() {
 	initParams.instruments = instr;
 	initParams.key = CMAJKEY;
 	initParams.timeSig = TimeSignature(4, 4);
-	initParams.bpm = BPM(60);
+	initParams.bpm = BPM(60, 4);
 	initParams.numParts = 4;
 	initParams.numMeasures = 4;
 	initParams.lowerBounds = { C4, C4, C4, C4 };
 	initParams.upperBounds = { C6, C6, C6, C6 };
 
-	Composition comp = initialization::generateComposition(initParams);
+	Parameters params;
+	params.initParams = initParams;
+	params.populationSize = 60;
+	params.numGenerations = 100;
 
-	IO::writeCompositionToMIDI("test.mid", comp);
+	params.numElites = 10;
+	params.numMutations = 25;
+	params.numCrossovers = 25;
+	
+	params.op_leap = 0.125;
+	params.op_upperNeighbor = 0.0625;
+	params.op_lowerNeighbor = 0.0625;
+	params.op_arpeggiate = 0.125;
+	params.op_split = 0.125;
+	params.op_anticipation = 0.0;
+	params.op_delay = 0.0;
+	params.op_merge = 0.125;
+	params.op_removeNote = 0.125;
+	params.op_passingTone = 0.125;
+	params.op_forceStepwise = 0.125;
+
+	RunInfo runInfo = runGA(params);
+
+	IO::writeCompositionToMIDI("test.mid", runInfo.best.composition());
 
 	return 0;
 }
