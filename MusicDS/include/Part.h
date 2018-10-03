@@ -11,6 +11,7 @@ namespace music {
 		std::vector<Measure> m;
 
 	public:
+		Part() : n(""), i(0) {}
 		Part(std::string name, unsigned char instrument) : n(name), i(instrument) {}
 		Part(std::string name, unsigned char instrument, std::vector<Measure> measures) : n(name), i(instrument), m(measures) {}
 
