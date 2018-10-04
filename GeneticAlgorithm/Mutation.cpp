@@ -121,10 +121,12 @@ Chromosome geneticalgorithm::operators::mutation::sub::merge(Chromosome chromoso
 		comp.removeNoteAt(partIndex, measureIndex, noteIndex2);
 	}
 	else { //have to use a tie
+		/*
 		selectedNote1.setPitch(newPitch); selectedNote2.setPitch(newPitch);
 		selectedNote1.setTieStart(true); selectedNote2.setTieEnd(true);
 		comp.replaceNoteAt(partIndex, measureIndex, noteIndex1, selectedNote1);
 		comp.replaceNoteAt(partIndex, measureIndex, noteIndex2, selectedNote2);
+		*/
 	}
 	return Chromosome(comp);
 }
