@@ -175,37 +175,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CompositionGenerator.cpp" />
-    <ClCompile Include="Crossover.cpp" />
-    <ClCompile Include="Device.cpp" />
-    <ClCompile Include="Fitness.cpp" />
-    <ClCompile Include="GeneticAlgorithm.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Mutation.cpp" />
-    <ClCompile Include="RouletteSelection.cpp" />
-    <ClCompile Include="Selection.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\MusicDS\MusicDS.vcxproj">
       <Project>{e047d423-f79a-4c13-a202-8c50aee7a19b}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Chromosome.h" />
-    <ClInclude Include="CompositionGenerator.h" />
-    <ClInclude Include="Crossover.h" />
-    <ClInclude Include="Device.h" />
-    <ClInclude Include="Fitness.h" />
-    <ClInclude Include="FitnessInfo.h" />
-    <ClInclude Include="GeneticAlgorithm.h" />
-    <ClInclude Include="InitParams.h" />
-    <ClInclude Include="Mutation.h" />
-    <ClInclude Include="Operators.h" />
-    <ClInclude Include="Parameters.h" />
-    <ClInclude Include="Population.h" />
-    <ClInclude Include="RouletteSelection.h" />
-    <ClInclude Include="RunInfo.h" />
-    <ClInclude Include="Selection.h" />
+    <ClInclude Include="include\Chromosome.h" />
+    <ClInclude Include="include\CompositionGenerator.h" />
+    <ClInclude Include="include\Crossover.h" />
+    <ClInclude Include="include\Device.h" />
+    <ClInclude Include="include\Fitness.h" />
+    <ClInclude Include="include\FitnessInfo.h" />
+    <ClInclude Include="include\GeneticAlgorithm.h" />
+    <ClInclude Include="include\InitParams.h" />
+    <ClInclude Include="include\Mutation.h" />
+    <ClInclude Include="include\Operators.h" />
+    <ClInclude Include="include\Parameters.h" />
+    <ClInclude Include="include\Population.h" />
+    <ClInclude Include="include\RouletteSelection.h" />
+    <ClInclude Include="include\RunInfo.h" />
+    <ClInclude Include="include\Selection.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\CompositionGenerator.cpp" />
+    <ClCompile Include="source\Crossover.cpp" />
+    <ClCompile Include="source\Device.cpp" />
+    <ClCompile Include="source\Fitness.cpp" />
+    <ClCompile Include="source\GeneticAlgorithm.cpp" />
+    <ClCompile Include="source\Main.cpp" />
+    <ClCompile Include="source\Mutation.cpp" />
+    <ClCompile Include="source\RouletteSelection.cpp" />
+    <ClCompile Include="source\Selection.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
