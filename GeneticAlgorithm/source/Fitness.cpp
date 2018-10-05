@@ -148,9 +148,10 @@ void geneticalgorithm::fitness::rules::applyHuronsRules(music::Composition compo
 		Key key = composition.parts()[0].measures()[measureIndex].key(); //key of current measure
 
 		//CALCULATE HURONS RULES
-		bool didAllMove = true;
+		bool didAllMove = true, didBassMove = hasNoteChanged[0]; unsigned int howManyMoved = 0;
 		for (unsigned int partIndex = 0; partIndex < hasNoteChanged.size(); partIndex++) {
 			didAllMove = didAllMove && hasNoteChanged[partIndex];
+			if (hasNoteChanged[partIndex]) howManyMoved++;
 			if (hasNoteChanged[partIndex]) {
 				rcFit += huron::registralCompass(currentNotes[partIndex]); rcCtr++;
 				if (noteIndices[partIndex] > 0) { //previous note exists
@@ -180,9 +181,12 @@ void geneticalgorithm::fitness::rules::applyHuronsRules(music::Composition compo
 				}
 			}
 		}
-		if (didAllMove) {
-			csFit += huron::chordSpacing(currentNotes);
-			csCtr++;
+		if (howManyMoved >= 3) { //chord
+			if (didBassMove) { //chordspacing only applies to bass voice
+				csFit += huron::chordSpacing(currentNotes);
+				csCtr++;
+			}
+
 		}
 		/*
 		std::cout << pastNotes << ".......PAST\n";
