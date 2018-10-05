@@ -8,6 +8,55 @@ namespace geneticalgorithm {
 	namespace fitness {
 		namespace rules {
 			namespace huron {
+				/*
+				--------BASE PRINCIPLES/RULES--------
+				Registral Compass Rule: voice-leading best practiced between F2 and G5
+				Leap-lengthening rule: where wide leaps are unavoidable, use long durations for either
+				one or both of the tones forming the leap
+
+				Part crossing rule: avoid crossing of parts wrt pitch
+				Pitch overlapping rule: avoid overlapping parts in which a pitch in an ostensibly lower voice
+				is higher than the subsequent pich in an ostensibly higher voice
+				Semblant motion rule: avoid similar or parallel pitch motion between concurrent voices
+				Parallel motion rule: avoid parallel motion more than similar motion
+				Avoid Semblant approach between fused intervals rule: avoid similar pitch
+				motion in which the voices employ unisons, octaves, fifths
+				Exposed intervals rule: when approaching unisons, octaves, or fifths by similar motion,
+				at least one of the voices should move by step
+				Parallel unisons, octaves, fifths rule: avoid them
+				Avoid tonal fusion rule: avoid unisons more than octaves, octaves more than fifths, fifths more than others
+				Oblique approach to fused intervals rule: when approaching unisons, octaves, or fifths,
+				it's better to retain the same pitch in one of the voices (oblique)
+				Avoid Disjunct approach to fused intervals rule: if it not possible to approach unisons,
+				octaves, fifths by retaining the same pitch (oblique), use step motion
+
+				Chord Spacing Rule: in general, chordal tones should be space with wider intervals between the lower voices
+				(Bass should be at least 1 octave below tenor). Huron's distribution applies to pure tones not complex
+
+				Common tone rule: pitch classes common to successive sonorities are best retained as a
+				single pitch that remains in the same voice
+				Conjunct Movement Rule: if a voice cannot retain the same pitch, should move by step
+
+				-------AUXILIARY PRINCIPLES/RULES------
+				Asynchronous Preparation of Tonal Fusion Rule: When approaching fused intervals, avoid synchronous note onsets
+				fugues 40/60, chorales 70/30 (synchronous vs. asynchronous)
+				Principle of Limited Density: Keep number of concurrent voices/parts three or fewer (if want to be easily distinguished)
+				Principle of Timbral Differentiation: each part should maintain a unique timbral character (if want high perceptual independence)
+				Source Location Principle (uncodable)
+
+				-------EMBELLISHMENT PROVED HYPOTHESES------
+				H1. Eembellishment tones will reduce the average melodic interval size within voices.
+				Improves pitch proximity principle and thus enhances stream segregation
+				H2. Embellishment tones will tend to reduce the total duration of duplicated pitches (unisons). Avoidance of unisons..
+				H3. Embellishment tones will tend to reduce the total duration of duplicated pitch classes (unisons, octaves, fifteenths, etc)
+				H4. The voice or part most likely to be embellished will be one that duplicates a pitch class. 
+				Not significant in alto voice. Perhaps do a probabilistic selection here
+				H5. In the absence of embellishment tones, the average pitch movement correlations between parts will increase. (more parallel/similar motion)
+				H6. The proportion of asynchronous onsets should be similar in each of the concurrent voices.
+				H7. That for all moments in a work, the most probable next asynchronous onset will occur in that musical part/voice
+				which has gone the longest without an asynchronous onset. Not significant in Bass
+				*/
+
 				namespace helper {
 					bool isFusedInterval(music::Note lower, music::Note upper);
 					bool isSimilarMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper);
@@ -16,8 +65,6 @@ namespace geneticalgorithm {
 					bool isObliqueMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper);
 				}
 				double registralCompass(music::Note note);
-				void commonTone(music::Part part, FitnessInfo *fitnessInfo);
-				void conjunctMovement(music::Part part, FitnessInfo *fitnessInfo);
 				double leapLengthening(music::Note note1, music::Note note2);
 
 				double partCrossing(music::Note lowerNote, music::Note upperNote);
@@ -26,12 +73,20 @@ namespace geneticalgorithm {
 				double parallelMotion(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote);
 				double avoidSemblantApproachBetweenFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote);
 				double exposedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote, music::Key key);
+				double parallelFusedIntervals(music::Note lowerNote, music::Note upperNote);
 				double fusedIntervals(music::Note lowerNote, music::Note upperNote);
 				double avoidTonalFusion(music::Note lowerNote, music::Note upperNote);
 				double obliqueApproachToFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote);
 				double avoidDisjunctApproachToFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote, music::Key key);
 
 				double chordSpacing(std::vector<music::Note> notes);
+
+				//require there to be a concrete chord progression
+				double commonTone(std::vector<music::Note> prevChord, std::vector<music::Note> nextChord);
+				double conjunctMovement(std::vector<music::Note> prevChord, std::vector<music::Note> nextChord);
+
+				//auxiliary principles
+				double onsetSynchrony(music::BPM bpm, music::Note note1, music::Note note2);
 			}
 			void applyHuronsRules(music::Composition composition, FitnessInfo *fitnessInfo);
 		}
