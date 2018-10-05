@@ -9,7 +9,7 @@ namespace geneticalgorithm {
 		namespace rules {
 			namespace huron {
 				/*
-				--------BASE PRINCIPLES/RULES--------
+				--------BASE PRINCIPLES/RULES (HURON 2001)--------
 				Registral Compass Rule: voice-leading best practiced between F2 and G5
 				Leap-lengthening rule: where wide leaps are unavoidable, use long durations for either
 				one or both of the tones forming the leap
@@ -37,14 +37,29 @@ namespace geneticalgorithm {
 				single pitch that remains in the same voice
 				Conjunct Movement Rule: if a voice cannot retain the same pitch, should move by step
 
-				-------AUXILIARY PRINCIPLES/RULES------
+				-------AUXILIARY PRINCIPLES/RULES (HURON 2001)------
 				Asynchronous Preparation of Tonal Fusion Rule: When approaching fused intervals, avoid synchronous note onsets
 				fugues 40/60, chorales 70/30 (synchronous vs. asynchronous)
 				Principle of Limited Density: Keep number of concurrent voices/parts three or fewer (if want to be easily distinguished)
 				Principle of Timbral Differentiation: each part should maintain a unique timbral character (if want high perceptual independence)
 				Source Location Principle (uncodable)
 
-				-------EMBELLISHMENT PROVED HYPOTHESES------
+				--------UNIVERSALS (BROWN & JORDANA 2011)-------
+				[1] = all musical utterances; [2] = all musical systems/styles
+				- large intervals followed by small intervals in reverse direction (leap resolution) [2]
+				- repetitive rhythmic patterns [2]
+				- scales have unequal intervals [2]
+				- phrase organization [1]
+				- beginning, middle, end (sometimes no end) structure [2]
+				- 4 fold repetition into phrase structures (4,8,12,16 measures) [2]
+				- small intervals in melodic motion (stepwise) [2]
+				- internal repetition generally with variation [2]
+				- higher = louder, faster = loud (correlated) [1]
+				- predominance of descending contours alone or descending following ascending [2]
+				- scales 7 or less degrees [2]
+				- few duration values in works [2]
+
+				-------EMBELLISHMENT PROVED HYPOTHESES FROM BACH (HURON 2007)------
 				H1. Eembellishment tones will reduce the average melodic interval size within voices.
 				Improves pitch proximity principle and thus enhances stream segregation
 				H2. Embellishment tones will tend to reduce the total duration of duplicated pitches (unisons). Avoidance of unisons..
