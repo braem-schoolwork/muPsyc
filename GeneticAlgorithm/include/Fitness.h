@@ -115,10 +115,10 @@ namespace geneticalgorithm {
 				double contour(std::vector<std::vector<int>> conts);
 			}
 
-			void applyHurons2001Rules(music::Composition composition, FitnessInfo *fitnessInfo);
-			void applyBrownJordana2011Rules(music::Composition composition, FitnessInfo *fitnessInfo);
+			void applyHurons2001Rules(music::Composition composition, FitnessInfo *fitnessInfo, Parameters params);
+			void applyBrownJordana2011Rules(music::Composition composition, FitnessInfo *fitnessInfo, Parameters params);
 
-			void applyAllRules(music::Composition composition, FitnessInfo *fitnessInfo);
+			void applyAllRules(music::Composition composition, FitnessInfo *fitnessInfo, Parameters params);
 		}
 		void evaluate(Chromosome *chromosome, Parameters params);
 	}

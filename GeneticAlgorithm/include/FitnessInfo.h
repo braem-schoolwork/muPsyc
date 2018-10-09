@@ -8,7 +8,7 @@ namespace geneticalgorithm {
 			double huron2001Fitness;
 			double brownJordana2011Fitness;
 
-			unsigned int numHuron2001FitnessRules = 13;
+			unsigned int numHuron2001FitnessRules = 14;
 			double registralCompassFitness;
 			double leapLengtheningFitness;
 			double partCrossingFitness;
@@ -17,11 +17,13 @@ namespace geneticalgorithm {
 			double parallelMotionFitness;
 			double avoidSemblantApproachBetweenFusedIntervalsFitness;
 			double exposedIntervalsFitness;
-			double fusedIntervalsFitness;
+			double parallelFusedIntervalsFitness;
 			double avoidTonalFusionFitness;
 			double obliqueApproachToFusedIntervalsFitness;
 			double avoidDisjunctApproachToFusedIntervalsFitness;
 			double chordSpacingFitness;
+
+			double onsetSynchronizationFitness;
 
 			unsigned int numBrownJordana2011FitnessRules = 4;
 			double largeLeapResolutionFitness;
@@ -33,8 +35,9 @@ namespace geneticalgorithm {
 			void setHuron2001Fitness() {
 				huron2001Fitness = (registralCompassFitness + leapLengtheningFitness + partCrossingFitness +
 					pitchOverlappingFitness + semblantMotionFitness + parallelMotionFitness + avoidSemblantApproachBetweenFusedIntervalsFitness +
-					exposedIntervalsFitness + fusedIntervalsFitness + avoidTonalFusionFitness + obliqueApproachToFusedIntervalsFitness +
-					avoidDisjunctApproachToFusedIntervalsFitness + chordSpacingFitness) / static_cast<double>(numHuron2001FitnessRules);
+					exposedIntervalsFitness + parallelFusedIntervalsFitness + avoidTonalFusionFitness + obliqueApproachToFusedIntervalsFitness +
+					avoidDisjunctApproachToFusedIntervalsFitness + chordSpacingFitness + onsetSynchronizationFitness) 
+					/ static_cast<double>(numHuron2001FitnessRules);
 				fitness = huron2001Fitness;
 			}
 			void setBrownJordana2011Fitness() {
@@ -45,9 +48,9 @@ namespace geneticalgorithm {
 			void setOverallFitness() {
 				fitness = (registralCompassFitness + leapLengtheningFitness + partCrossingFitness +
 					pitchOverlappingFitness + semblantMotionFitness + parallelMotionFitness + avoidSemblantApproachBetweenFusedIntervalsFitness +
-					exposedIntervalsFitness + fusedIntervalsFitness + avoidTonalFusionFitness + obliqueApproachToFusedIntervalsFitness +
-					avoidDisjunctApproachToFusedIntervalsFitness + chordSpacingFitness + largeLeapResolutionFitness + unequalIntevalsFitness +
-					scale7orLessDegreesFitness + limitedDurationValuesFitness)
+					exposedIntervalsFitness + parallelFusedIntervalsFitness + avoidTonalFusionFitness + obliqueApproachToFusedIntervalsFitness +
+					avoidDisjunctApproachToFusedIntervalsFitness + chordSpacingFitness + onsetSynchronizationFitness + largeLeapResolutionFitness +
+					unequalIntevalsFitness + scale7orLessDegreesFitness + limitedDurationValuesFitness)
 					/ static_cast<double>(numHuron2001FitnessRules + numBrownJordana2011FitnessRules);
 			}
 

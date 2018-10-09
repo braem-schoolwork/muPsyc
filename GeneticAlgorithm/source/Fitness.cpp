@@ -129,13 +129,14 @@ bool geneticalgorithm::fitness::rules::huron2001::onSync(music::BPM bpm, music::
 	return abs(millis1 - millis2) < 100;
 }
 
-void geneticalgorithm::fitness::rules::applyHurons2001Rules(music::Composition composition, FitnessInfo * fitnessInfo) {
+void geneticalgorithm::fitness::rules::applyHurons2001Rules(music::Composition composition, FitnessInfo * fitnessInfo, Parameters params) {
 	//fitness accumulators for each rule
 	double rcFit = 0.0, llFit = 0.0, pcFit = 0.0, poFit = 0.0, smFit = 0.0, pmFit = 0.0,
-		asabfiFit = 0.0, eiFit = 0.0, fiFit = 0.0, atfFit = 0.0, oatfiFit = 0.0, adatfiFit = 0.0, csFit = 0.0;
+		asabfiFit = 0.0, eiFit = 0.0, fiFit = 0.0, atfFit = 0.0, oatfiFit = 0.0, adatfiFit = 0.0, csFit = 0.0,
+		onsetSync = 0.0;
 	//number of times each rule is calculated
 	unsigned int rcCtr = 0, llCtr = 0, pcCtr = 0, poCtr = 0, smCtr = 0, pmCtr = 0,
-		asabfiCtr = 0, eiCtr = 0, fiCtr = 0, atfCtr = 0, oatfiCtr = 0, adatfiCtr = 0, csCtr = 0;
+		asabfiCtr = 0, eiCtr = 0, fiCtr = 0, atfCtr = 0, oatfiCtr = 0, adatfiCtr = 0, csCtr = 0, onsetSyncCtr = 0;
 	std::vector<std::vector<Note>> notes = composition.notes(); //all notes in part
 	std::vector<unsigned int> noteIndices(composition.numParts(), 0); //indices of each note
 	std::vector<unsigned int> partTickTotals(composition.numParts(), 0); //holds overall ticks of each part
@@ -144,6 +145,7 @@ void geneticalgorithm::fitness::rules::applyHurons2001Rules(music::Composition c
 	std::vector<bool> syncs(composition.numParts() - 1, false); //mask of what combination of notes have moved together
 	std::vector<bool> hasNoteChanged(composition.numParts(), false); //mask of what notes have moved in a tick
 	unsigned int tick = 0, partTickLength = composition.parts()[0].tickLength(), measureIndex = 0, measureTick = 0; //ticks
+	Key key = composition.parts()[0].measures()[measureIndex].key(); //key of current measure
 	while (tick < partTickLength) { //iterate through entire part
 		std::vector<Note> currentNotes; //holds notes currently being played
 		for (unsigned int partIndex = 0; partIndex < noteIndices.size(); partIndex++) {
@@ -151,7 +153,6 @@ void geneticalgorithm::fitness::rules::applyHurons2001Rules(music::Composition c
 			if (partIndex < noteIndices.size() - 1) //if note tick totals sync up, they both occured
 				syncs[partIndex] = partTickTotals[partIndex] == partTickTotals[partIndex + 1];
 		}
-		Key key = composition.parts()[0].measures()[measureIndex].key(); //key of current measure
 
 		//CALCULATE HURONS RULES
 		bool didAllMove = true, didBassMove = hasNoteChanged[0]; unsigned int howManyMoved = 0;
@@ -194,6 +195,7 @@ void geneticalgorithm::fitness::rules::applyHurons2001Rules(music::Composition c
 			}
 
 		}
+		onsetSync = static_cast<double>(howManyMoved) / static_cast<double>(currentNotes.size()); onsetSyncCtr++;
 
 		//calculate note ticks (new tick totals)
 		std::vector<unsigned int> noteTicks;
@@ -215,8 +217,13 @@ void geneticalgorithm::fitness::rules::applyHurons2001Rules(music::Composition c
 		}
 		tick = minValue;
 		//update measure index
-		if (tick / (measureIndex + 1) >= measureTickLengths[measureIndex]) measureIndex++;
+		if (tick / (measureIndex + 1) >= measureTickLengths[measureIndex]) {
+			measureIndex++;
+			key = composition.parts()[0].measures()[measureIndex].key();
+		}
 	}
+	onsetSync /= static_cast<double>(onsetSyncCtr);
+
 	fitnessInfo->registralCompassFitness = rcFit / static_cast<double>(rcCtr);
 	fitnessInfo->leapLengtheningFitness = llFit / static_cast<double>(llCtr);
 	fitnessInfo->partCrossingFitness = pcFit / static_cast<double>(pcCtr);
@@ -225,15 +232,16 @@ void geneticalgorithm::fitness::rules::applyHurons2001Rules(music::Composition c
 	fitnessInfo->parallelMotionFitness = pmFit / static_cast<double>(pmCtr);
 	fitnessInfo->avoidSemblantApproachBetweenFusedIntervalsFitness = asabfiFit / static_cast<double>(asabfiCtr);
 	fitnessInfo->exposedIntervalsFitness = eiFit / static_cast<double>(eiCtr);
-	fitnessInfo->fusedIntervalsFitness = fiFit / static_cast<double>(fiCtr);
+	fitnessInfo->parallelFusedIntervalsFitness = fiFit / static_cast<double>(fiCtr);
 	fitnessInfo->avoidTonalFusionFitness = atfFit / static_cast<double>(atfCtr);
 	fitnessInfo->obliqueApproachToFusedIntervalsFitness = oatfiFit / static_cast<double>(oatfiCtr);
 	fitnessInfo->avoidDisjunctApproachToFusedIntervalsFitness = adatfiFit / static_cast<double>(adatfiCtr);
 	fitnessInfo->chordSpacingFitness = csFit / static_cast<double>(csCtr);
+	fitnessInfo->onsetSynchronizationFitness = onsetSync >= params.onsetSyncLowerBound && onsetSync <= params.onsetSyncUpperBound ? 1.0 : 0.0;
 	fitnessInfo->setHuron2001Fitness();
 }
 
-void geneticalgorithm::fitness::rules::applyBrownJordana2011Rules(music::Composition composition, FitnessInfo * fitnessInfo) {
+void geneticalgorithm::fitness::rules::applyBrownJordana2011Rules(music::Composition composition, FitnessInfo * fitnessInfo, Parameters params) {
 	//fitness accumulators for each rule
 	double llrFit = 0.0, ueiFit = 0.0, s7ldFit = 0.0, ldvFit = 0.0, cFit = 0.0;
 	//number of times each rule is calculated
@@ -250,6 +258,7 @@ void geneticalgorithm::fitness::rules::applyBrownJordana2011Rules(music::Composi
 	std::vector<bool> syncs(composition.numParts() - 1, false); //mask of what combination of notes have moved together
 	std::vector<bool> hasNoteChanged(composition.numParts(), false); //mask of what notes have moved in a tick
 	unsigned int tick = 0, partTickLength = composition.parts()[0].tickLength(), measureIndex = 0, measureTick = 0; //ticks
+	Key key = composition.parts()[0].measures()[measureIndex].key(); //key of current measure
 	while (tick < partTickLength) { //iterate through entire part
 		std::vector<Note> currentNotes; //holds notes currently being played
 		for (unsigned int partIndex = 0; partIndex < noteIndices.size(); partIndex++) {
@@ -257,7 +266,6 @@ void geneticalgorithm::fitness::rules::applyBrownJordana2011Rules(music::Composi
 			if (partIndex < noteIndices.size() - 1) //if note tick totals sync up, they both occured
 				syncs[partIndex] = partTickTotals[partIndex] == partTickTotals[partIndex + 1];
 		}
-		Key key = composition.parts()[0].measures()[measureIndex].key(); //key of current measure
 
 		//CALCULATE UNIVERSALS
 		for (unsigned int partIndex = 0; partIndex < hasNoteChanged.size(); partIndex++) {
@@ -308,6 +316,7 @@ void geneticalgorithm::fitness::rules::applyBrownJordana2011Rules(music::Composi
 			//key related fitness tests
 			ueiFit += brownjordana2011::unequalIntervals(key); ueiCtr++;
 			s7ldFit += brownjordana2011::scale7orLessDegrees(key); s7ldCtr++;
+			key = composition.parts()[0].measures()[measureIndex].key(); //new key
 		}
 	}
 	ldvFit += brownjordana2011::limitedDurationValues(knownDurations); ldvCtr++;
@@ -349,7 +358,7 @@ bool geneticalgorithm::fitness::rules::huron2001::helper::isObliqueMotion(music:
 
 void geneticalgorithm::fitness::evaluate(Chromosome * chromosome, Parameters params) {
 	FitnessInfo fitnessInfo;
-	rules::applyHurons2001Rules(chromosome->composition(), &fitnessInfo);
+	rules::applyHurons2001Rules(chromosome->composition(), &fitnessInfo, params);
 	chromosome->setFitnessInfo(fitnessInfo);
 }
 
