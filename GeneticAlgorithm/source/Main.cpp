@@ -38,6 +38,9 @@ int main() {
 	params.numElites = 10;
 	params.numMutations = 25;
 	params.numCrossovers = 25;
+
+	params.onsetSyncLowerBound = 0.3;
+	params.onsetSyncUpperBound = 0.6;
 	
 	params.op_leap = 0.125;
 	params.op_upperNeighbor = 0.0625;
