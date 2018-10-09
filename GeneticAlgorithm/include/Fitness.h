@@ -85,7 +85,7 @@ namespace geneticalgorithm {
 				double conjunctMovement(std::vector<music::Note> prevChord, std::vector<music::Note> nextChord);
 
 				//auxiliary principles
-				double onsetSynchrony(music::BPM bpm, music::Note note1, music::Note note2);
+				bool onSync(music::BPM bpm, music::Note note1, music::Note note2);
 			}
 
 			/*

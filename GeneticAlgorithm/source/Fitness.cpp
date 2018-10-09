@@ -123,6 +123,12 @@ double geneticalgorithm::fitness::rules::huron2001::chordSpacing(std::vector<mus
 	return bassMidiVal + CHRINT_OCTAVE <= aboveMidiVal ? 1.0 : 0.0;
 }
 
+bool geneticalgorithm::fitness::rules::huron2001::onSync(music::BPM bpm, music::Note note1, music::Note note2) {
+	double millis1 = note1.getMillis(bpm);
+	double millis2 = note2.getMillis(bpm);
+	return abs(millis1 - millis2) < 100;
+}
+
 void geneticalgorithm::fitness::rules::applyHurons2001Rules(music::Composition composition, FitnessInfo * fitnessInfo) {
 	//fitness accumulators for each rule
 	double rcFit = 0.0, llFit = 0.0, pcFit = 0.0, poFit = 0.0, smFit = 0.0, pmFit = 0.0,
@@ -188,11 +194,6 @@ void geneticalgorithm::fitness::rules::applyHurons2001Rules(music::Composition c
 			}
 
 		}
-		/*
-		std::cout << pastNotes << ".......PAST\n";
-		std::cout << currentNotes << "......" << syncs[0] << syncs[1] << syncs[2] <<
-			"......." << hasNoteChanged[0] << hasNoteChanged[1] << hasNoteChanged[2] << hasNoteChanged[3] << "\n";
-		*/
 
 		//calculate note ticks (new tick totals)
 		std::vector<unsigned int> noteTicks;
@@ -293,6 +294,7 @@ void geneticalgorithm::fitness::rules::applyBrownJordana2011Rules(music::Composi
 		for (unsigned int partIndex = 0; partIndex < noteTicks.size(); partIndex++) {
 			if (noteTicks[partIndex] == minValue) {
 				noteIndices[partIndex]++;
+				doublyPastNotes[partIndex] = pastNotes[partIndex];
 				pastNotes[partIndex] = currentNotes[partIndex];
 				partTickTotals[partIndex] = noteTicks[partIndex];
 				hasNoteChanged[partIndex] = true;
