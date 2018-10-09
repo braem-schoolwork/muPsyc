@@ -4,11 +4,11 @@
 using namespace music;
 
 
-double geneticalgorithm::fitness::rules::huron::registralCompass(music::Note note) {
+double geneticalgorithm::fitness::rules::huron2001::registralCompass(music::Note note) {
 	return note <= G5 && note >= F2 ? 1.0 : 0.0;
 }
 
-double geneticalgorithm::fitness::rules::huron::leapLengthening(music::Note note1, music::Note note2) {
+double geneticalgorithm::fitness::rules::huron2001::leapLengthening(music::Note note1, music::Note note2) {
 	unsigned int diff = (note2 - note1);
 	switch (diff) {
 	case CHRINT_UNISON: 
@@ -53,26 +53,26 @@ double geneticalgorithm::fitness::rules::huron::leapLengthening(music::Note note
 	}
 }
 
-double geneticalgorithm::fitness::rules::huron::partCrossing(music::Note lowerNote, music::Note upperNote) {
+double geneticalgorithm::fitness::rules::huron2001::partCrossing(music::Note lowerNote, music::Note upperNote) {
 	return lowerNote <= upperNote ? 1.0 : 0.0;
 }
 
-double geneticalgorithm::fitness::rules::huron::pitchOverlapping(music::Note lowerNote, music::Note upperNote) {
+double geneticalgorithm::fitness::rules::huron2001::pitchOverlapping(music::Note lowerNote, music::Note upperNote) {
 	return lowerNote <= upperNote ? 1.0 : 0.0;
 }
 
-double geneticalgorithm::fitness::rules::huron::semblantMotion(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote) {
+double geneticalgorithm::fitness::rules::huron2001::semblantMotion(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote) {
 	return helper::isSimilarMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote) ||
 		helper::isParallelMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote) ? 0.0 : 1.0;
 }
 
-double geneticalgorithm::fitness::rules::huron::parallelMotion(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote) {
+double geneticalgorithm::fitness::rules::huron2001::parallelMotion(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote) {
 	if (helper::isSimilarMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote)) return 0.5;
 	else if (helper::isParallelMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote)) return 0.0;
 	else return 1.0;
 }
 
-double geneticalgorithm::fitness::rules::huron::avoidSemblantApproachBetweenFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote) {
+double geneticalgorithm::fitness::rules::huron2001::avoidSemblantApproachBetweenFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote) {
 	if (helper::isFusedInterval(lowerNote, upperNote)) {
 		return helper::isSimilarMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote) ||
 			helper::isParallelMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote) ? 0.0 : 1.0;
@@ -80,7 +80,7 @@ double geneticalgorithm::fitness::rules::huron::avoidSemblantApproachBetweenFuse
 	return -1.0; //shouldnt calculate
 }
 
-double geneticalgorithm::fitness::rules::huron::exposedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote, music::Key key) {
+double geneticalgorithm::fitness::rules::huron2001::exposedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote, music::Key key) {
 	if (helper::isFusedInterval(lowerNote, upperNote)) {
 		return helper::isStepwiseMotion(pastLowerNote, lowerNote, key) ||
 			helper::isStepwiseMotion(pastUpperNote, upperNote, key) ? 1.0 : 0.0;
@@ -88,11 +88,11 @@ double geneticalgorithm::fitness::rules::huron::exposedIntervals(music::Note pas
 	return -1.0;
 }
 
-double geneticalgorithm::fitness::rules::huron::fusedIntervals(music::Note lowerNote, music::Note upperNote) {
+double geneticalgorithm::fitness::rules::huron2001::fusedIntervals(music::Note lowerNote, music::Note upperNote) {
 	return helper::isFusedInterval(lowerNote, upperNote) ? 0.0 : 1.0;
 }
 
-double geneticalgorithm::fitness::rules::huron::avoidTonalFusion(music::Note lowerNote, music::Note upperNote) {
+double geneticalgorithm::fitness::rules::huron2001::avoidTonalFusion(music::Note lowerNote, music::Note upperNote) {
 	unsigned int midiVal = lowerNote - upperNote;
 	if (midiVal == CHRINT_UNISON) return 0.0;
 	else if (midiVal % 12 == 0) return 0.3; //octave
@@ -100,14 +100,14 @@ double geneticalgorithm::fitness::rules::huron::avoidTonalFusion(music::Note low
 	else return 1.0;
 }
 
-double geneticalgorithm::fitness::rules::huron::obliqueApproachToFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote) {
+double geneticalgorithm::fitness::rules::huron2001::obliqueApproachToFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote) {
 	if (helper::isFusedInterval(lowerNote, upperNote)) {
 		return helper::isObliqueMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote) ? 1.0 : 0.0;
 	}
 	return -1.0;
 }
 
-double geneticalgorithm::fitness::rules::huron::avoidDisjunctApproachToFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote, music::Key key) {
+double geneticalgorithm::fitness::rules::huron2001::avoidDisjunctApproachToFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote, music::Key key) {
 	if (helper::isFusedInterval(lowerNote, upperNote)) {
 		return helper::isObliqueMotion(pastLowerNote, pastUpperNote, lowerNote, upperNote) ||
 			helper::isStepwiseMotion(pastLowerNote, lowerNote, key) ||
@@ -117,13 +117,13 @@ double geneticalgorithm::fitness::rules::huron::avoidDisjunctApproachToFusedInte
 	return -1.0;
 }
 
-double geneticalgorithm::fitness::rules::huron::chordSpacing(std::vector<music::Note> notes) {
+double geneticalgorithm::fitness::rules::huron2001::chordSpacing(std::vector<music::Note> notes) {
 	unsigned int bassMidiVal = notes[0].pitch().midi();
 	unsigned int aboveMidiVal = notes[1].pitch().midi();
 	return bassMidiVal + CHRINT_OCTAVE <= aboveMidiVal ? 1.0 : 0.0;
 }
 
-void geneticalgorithm::fitness::rules::applyHuronsRules(music::Composition composition, FitnessInfo * fitnessInfo) {
+void geneticalgorithm::fitness::rules::applyHurons2001Rules(music::Composition composition, FitnessInfo * fitnessInfo) {
 	//fitness accumulators for each rule
 	double rcFit = 0.0, llFit = 0.0, pcFit = 0.0, poFit = 0.0, smFit = 0.0, pmFit = 0.0,
 		asabfiFit = 0.0, eiFit = 0.0, fiFit = 0.0, atfFit = 0.0, oatfiFit = 0.0, adatfiFit = 0.0, csFit = 0.0;
@@ -153,29 +153,29 @@ void geneticalgorithm::fitness::rules::applyHuronsRules(music::Composition compo
 			didAllMove = didAllMove && hasNoteChanged[partIndex];
 			if (hasNoteChanged[partIndex]) howManyMoved++;
 			if (hasNoteChanged[partIndex]) {
-				rcFit += huron::registralCompass(currentNotes[partIndex]); rcCtr++;
+				rcFit += huron2001::registralCompass(currentNotes[partIndex]); rcCtr++;
 				if (noteIndices[partIndex] > 0) { //previous note exists
-					llFit += huron::leapLengthening(pastNotes[partIndex], currentNotes[partIndex]); llCtr++;
+					llFit += huron2001::leapLengthening(pastNotes[partIndex], currentNotes[partIndex]); llCtr++;
 				}
 			}
 			if (partIndex < hasNoteChanged.size() - 1) {
 				if (hasNoteChanged[partIndex] && hasNoteChanged[partIndex + 1]) { //2 notes moved at same tick
-					pcFit += huron::partCrossing(currentNotes[partIndex], currentNotes[partIndex + 1]); pcCtr++;
-					fiFit += huron::fusedIntervals(currentNotes[partIndex], currentNotes[partIndex + 1]); fiCtr++;
-					atfFit += huron::avoidTonalFusion(currentNotes[partIndex], currentNotes[partIndex + 1]); atfCtr++;
+					pcFit += huron2001::partCrossing(currentNotes[partIndex], currentNotes[partIndex + 1]); pcCtr++;
+					fiFit += huron2001::fusedIntervals(currentNotes[partIndex], currentNotes[partIndex + 1]); fiCtr++;
+					atfFit += huron2001::avoidTonalFusion(currentNotes[partIndex], currentNotes[partIndex + 1]); atfCtr++;
 					if (noteIndices[partIndex] > 0 && noteIndices[partIndex + 1] > 0) { //prev notes exist
-						poFit += huron::pitchOverlapping(pastNotes[partIndex], currentNotes[partIndex + 1]); poCtr++;
-						smFit += huron::semblantMotion(pastNotes[partIndex], pastNotes[partIndex + 1],
+						poFit += huron2001::pitchOverlapping(pastNotes[partIndex], currentNotes[partIndex + 1]); poCtr++;
+						smFit += huron2001::semblantMotion(pastNotes[partIndex], pastNotes[partIndex + 1],
 							currentNotes[partIndex], currentNotes[partIndex + 1]); smCtr++;
-						pmFit += huron::parallelMotion(pastNotes[partIndex], pastNotes[partIndex + 1],
+						pmFit += huron2001::parallelMotion(pastNotes[partIndex], pastNotes[partIndex + 1],
 							currentNotes[partIndex], currentNotes[partIndex + 1]); pmCtr++;
-						asabfiFit += huron::avoidSemblantApproachBetweenFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
+						asabfiFit += huron2001::avoidSemblantApproachBetweenFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
 							currentNotes[partIndex], currentNotes[partIndex + 1]); asabfiCtr++;
-						eiFit += huron::exposedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
+						eiFit += huron2001::exposedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
 							currentNotes[partIndex], currentNotes[partIndex + 1], key); eiCtr++;
-						oatfiFit += huron::obliqueApproachToFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
+						oatfiFit += huron2001::obliqueApproachToFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
 							currentNotes[partIndex], currentNotes[partIndex + 1]); oatfiCtr++;
-						adatfiFit += huron::avoidDisjunctApproachToFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
+						adatfiFit += huron2001::avoidDisjunctApproachToFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
 							currentNotes[partIndex], currentNotes[partIndex + 1], key); adatfiCtr++;
 					}
 				}
@@ -183,7 +183,7 @@ void geneticalgorithm::fitness::rules::applyHuronsRules(music::Composition compo
 		}
 		if (howManyMoved >= 3) { //chord
 			if (didBassMove) { //chordspacing only applies to bass voice
-				csFit += huron::chordSpacing(currentNotes);
+				csFit += huron2001::chordSpacing(currentNotes);
 				csCtr++;
 			}
 
@@ -229,10 +229,96 @@ void geneticalgorithm::fitness::rules::applyHuronsRules(music::Composition compo
 	fitnessInfo->obliqueApproachToFusedIntervalsFitness = oatfiFit / static_cast<double>(oatfiCtr);
 	fitnessInfo->avoidDisjunctApproachToFusedIntervalsFitness = adatfiFit / static_cast<double>(adatfiCtr);
 	fitnessInfo->chordSpacingFitness = csFit / static_cast<double>(csCtr);
-	fitnessInfo->setOverallFitness();
+	fitnessInfo->setHuron2001Fitness();
 }
 
-bool geneticalgorithm::fitness::rules::huron::helper::isFusedInterval(music::Note lower, music::Note upper) {
+void geneticalgorithm::fitness::rules::applyBrownJordana2011Rules(music::Composition composition, FitnessInfo * fitnessInfo) {
+	//fitness accumulators for each rule
+	double llrFit = 0.0, ueiFit = 0.0, s7ldFit = 0.0, ldvFit = 0.0, cFit = 0.0;
+	//number of times each rule is calculated
+	unsigned int llrCtr = 0, ueiCtr = 0, s7ldCtr = 0, ldvCtr = 0, cCtr = 0;
+	std::vector<std::vector<Note>> notes = composition.notes(); //all notes in part
+	std::vector<std::vector<int>> absIntervals(composition.numParts());
+	std::vector<Duration> knownDurations;
+	knownDurations.push_back(notes[0][0].duration());
+	std::vector<unsigned int> noteIndices(composition.numParts(), 0); //indices of each note
+	std::vector<unsigned int> partTickTotals(composition.numParts(), 0); //holds overall ticks of each part
+	std::vector<Note> pastNotes(composition.numParts()); //holds the notes of ticks past
+	std::vector<Note> doublyPastNotes(composition.numParts()); //one step further
+	std::vector<unsigned int> measureTickLengths = composition.measureTickLengths(); //holds tick lengths of each measure (may vary if different time sig)
+	std::vector<bool> syncs(composition.numParts() - 1, false); //mask of what combination of notes have moved together
+	std::vector<bool> hasNoteChanged(composition.numParts(), false); //mask of what notes have moved in a tick
+	unsigned int tick = 0, partTickLength = composition.parts()[0].tickLength(), measureIndex = 0, measureTick = 0; //ticks
+	while (tick < partTickLength) { //iterate through entire part
+		std::vector<Note> currentNotes; //holds notes currently being played
+		for (unsigned int partIndex = 0; partIndex < noteIndices.size(); partIndex++) {
+			currentNotes.push_back(notes[partIndex][noteIndices[partIndex]]); //fill current notes vector
+			if (partIndex < noteIndices.size() - 1) //if note tick totals sync up, they both occured
+				syncs[partIndex] = partTickTotals[partIndex] == partTickTotals[partIndex + 1];
+		}
+		Key key = composition.parts()[0].measures()[measureIndex].key(); //key of current measure
+
+		//CALCULATE UNIVERSALS
+		for (unsigned int partIndex = 0; partIndex < hasNoteChanged.size(); partIndex++) {
+			if (hasNoteChanged[partIndex]) {
+				for (unsigned int i = 0; i < knownDurations.size(); i++) {
+					if (currentNotes[partIndex].duration() != knownDurations[i]) {
+						knownDurations.push_back(currentNotes[partIndex].duration());
+						break;
+					}
+				} //for calculating the number of unique durations
+				if (noteIndices[partIndex] > 0) { //previous note exists
+					//calc intervals
+					absIntervals[partIndex].push_back(music::Note::difference(pastNotes[partIndex], currentNotes[partIndex]));
+				}
+				if (noteIndices[partIndex] > 1) { //previous notes exist
+					double tmp = brownjordana2011::leapResolution(doublyPastNotes[partIndex], pastNotes[partIndex], currentNotes[partIndex]);
+					if (tmp > -0.01) {
+						llrFit += tmp;
+						llrCtr++;
+					}
+				}
+			}
+		}
+
+		//calculate note ticks (new tick totals)
+		std::vector<unsigned int> noteTicks;
+		for (unsigned int partIndex = 0; partIndex < partTickTotals.size(); partIndex++)
+			noteTicks.push_back(notes[partIndex][noteIndices[partIndex]].tickLength() + partTickTotals[partIndex]);
+		//find minimum tick values
+		unsigned int minValue = noteTicks[0], minValIndex = 0;
+		for (unsigned int partIndex = 1; partIndex < noteTicks.size(); partIndex++)
+			if (noteTicks[partIndex] < minValue) { minValue = noteTicks[partIndex]; minValIndex = partIndex; }
+		//note has the lowest tick total = move the index forward
+		for (unsigned int partIndex = 0; partIndex < noteTicks.size(); partIndex++) {
+			if (noteTicks[partIndex] == minValue) {
+				noteIndices[partIndex]++;
+				pastNotes[partIndex] = currentNotes[partIndex];
+				partTickTotals[partIndex] = noteTicks[partIndex];
+				hasNoteChanged[partIndex] = true;
+			}
+			else hasNoteChanged[partIndex] = false;
+		}
+		tick = minValue;
+		//update measure index
+		if (tick / (measureIndex + 1) >= measureTickLengths[measureIndex]) {
+			measureIndex++;
+			//key related fitness tests
+			ueiFit += brownjordana2011::unequalIntervals(key); ueiCtr++;
+			s7ldFit += brownjordana2011::scale7orLessDegrees(key); s7ldCtr++;
+		}
+	}
+	ldvFit += brownjordana2011::limitedDurationValues(knownDurations); ldvCtr++;
+
+	fitnessInfo->largeLeapResolutionFitness = llrFit / static_cast<double>(llrCtr);
+	fitnessInfo->unequalIntevalsFitness += ueiFit / static_cast<double>(ueiCtr);
+	fitnessInfo->scale7orLessDegreesFitness += s7ldFit / static_cast<double>(s7ldCtr);
+	fitnessInfo->limitedDurationValuesFitness += ldvFit / static_cast<double>(ldvCtr);
+	//fitnessInfo->contourFitness += cFit / static_cast<double>(cCtr);
+	fitnessInfo->setBrownJordana2011Fitness();
+}
+
+bool geneticalgorithm::fitness::rules::huron2001::helper::isFusedInterval(music::Note lower, music::Note upper) {
 	switch ((upper - lower) % 12) {
 	case CHRINT_UNISON:
 	case CHRINT_5TH: return true;
@@ -240,27 +326,93 @@ bool geneticalgorithm::fitness::rules::huron::helper::isFusedInterval(music::Not
 	}
 }
 
-bool geneticalgorithm::fitness::rules::huron::helper::isSimilarMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper) {
+bool geneticalgorithm::fitness::rules::huron2001::helper::isSimilarMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper) {
 	return ((pastLower > lower && pastUpper > upper) || (pastLower < lower && pastUpper < upper))
 		&& pastLower - lower != pastUpper - upper; //not parallel
 }
 
-bool geneticalgorithm::fitness::rules::huron::helper::isParallelMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper) {
+bool geneticalgorithm::fitness::rules::huron2001::helper::isParallelMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper) {
 	return ((pastLower > lower && pastUpper > upper) || (pastLower < lower && pastUpper < upper))
 		&& pastLower - lower == pastUpper - upper; //parallel
 }
 
-bool geneticalgorithm::fitness::rules::huron::helper::isStepwiseMotion(music::Note past, music::Note present, music::Key key) {
+bool geneticalgorithm::fitness::rules::huron2001::helper::isStepwiseMotion(music::Note past, music::Note present, music::Key key) {
 	return key.nextPitchInKey(past.pitch()) == present.pitch() || key.prevPitchInKey(past.pitch()) == present.pitch();
 }
 
-bool geneticalgorithm::fitness::rules::huron::helper::isObliqueMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper) {
+bool geneticalgorithm::fitness::rules::huron2001::helper::isObliqueMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper) {
 	return (pastLower - lower == 0 && pastUpper - upper > 0) ||
 		(pastUpper - upper == 0 && pastLower - lower > 0);
 }
 
 void geneticalgorithm::fitness::evaluate(Chromosome * chromosome, Parameters params) {
 	FitnessInfo fitnessInfo;
-	rules::applyHuronsRules(chromosome->composition(), &fitnessInfo);
+	rules::applyHurons2001Rules(chromosome->composition(), &fitnessInfo);
 	chromosome->setFitnessInfo(fitnessInfo);
+}
+
+double geneticalgorithm::fitness::rules::brownjordana2011::leapResolution(music::Note pastNote2, music::Note pastNote1, music::Note currentNote) {
+	bool isLargeLeap;
+	switch (pastNote2 - pastNote1) {
+	case CHRINT_UNISON:
+	case CHRINT_MIN2ND:
+	case CHRINT_MAJ2ND:
+	case CHRINT_MIN3RD:
+	case CHRINT_MAJ3RD:
+	case CHRINT_4TH:
+	case CHRINT_TRITONE:
+	case CHRINT_5TH: isLargeLeap = false;
+	default: isLargeLeap = true;
+	}
+	if (!isLargeLeap) return -1.0;
+
+	bool isSmallInterval;
+	switch (pastNote1 - currentNote) {
+	case CHRINT_UNISON:
+	case CHRINT_MIN2ND:
+	case CHRINT_MAJ2ND:
+	case CHRINT_MIN3RD:
+	case CHRINT_MAJ3RD: isSmallInterval = true;
+	default: isSmallInterval = false;
+	}
+
+	bool isInOppositeDirection = false;
+	if (pastNote2 > pastNote1) //moving down
+		isInOppositeDirection = pastNote1 < currentNote; //current note moving up
+	else //moving up
+		isInOppositeDirection = pastNote1 > currentNote; //current note moving down
+
+	return isSmallInterval && isInOppositeDirection ? 1.0 : 0.0;
+}
+
+double geneticalgorithm::fitness::rules::brownjordana2011::unequalIntervals(music::Key key) {
+	bool equalInts = true;
+	unsigned int prevInterval = 0;
+	for (unsigned int i = 1; i < key.scale().size(); i++) {
+		Pitch p1 = Pitch(key.pitchClass[i - 1], 4);
+		Pitch p2 = key.nextPitchInKey(p1);
+		if (i > 1 && prevInterval != p1 - p2) return 1.0;
+		prevInterval = p1 - p2;
+	}
+	return 0.0;
+}
+
+double geneticalgorithm::fitness::rules::brownjordana2011::scale7orLessDegrees(music::Key key) {
+	return key.scaleSize() >= 7 ? 0.0 : 1.0;
+}
+
+double geneticalgorithm::fitness::rules::brownjordana2011::limitedDurationValues(std::vector<music::Duration> durations) {
+	return durations.size() > 5 ? 0.0 : 1.0;
+}
+
+//TODO
+double geneticalgorithm::fitness::rules::brownjordana2011::contour(std::vector<int> cont) {
+	return 1.0;
+}
+
+double geneticalgorithm::fitness::rules::brownjordana2011::contour(std::vector<std::vector<int>> conts) {
+	double rtn = 0.0;
+	for (std::vector<int> c : conts)
+		rtn += contour(c);
+	return rtn / static_cast<double>(conts.size());
 }
