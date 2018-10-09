@@ -44,6 +44,9 @@ namespace music {
 		void doubleDuration() { d.doubleDuration(); }
 		void halfDuration() { d.halfDuration(); }
 
+		double getMillis(BPM bpm) { return d.getMillis(bpm); }
+		double getSeconds(BPM bpm) { return d.getSeconds(bpm); }
+
 		int difference(Note note) const { return p.difference(note.p); }
 		int difference(Pitch pitch) const { return p.difference(pitch); }
 		static int difference(Note note1, Note note2) { return Pitch::difference(note1.p, note2.p); }
