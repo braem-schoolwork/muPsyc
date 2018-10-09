@@ -44,21 +44,6 @@ namespace geneticalgorithm {
 				Principle of Timbral Differentiation: each part should maintain a unique timbral character (if want high perceptual independence)
 				Source Location Principle (uncodable)
 
-				--------UNIVERSALS (BROWN & JORDANA 2011)-------
-				[1] = all musical utterances; [2] = all musical systems/styles
-				- large intervals followed by small intervals in reverse direction (leap resolution) [2]
-				- repetitive rhythmic patterns [2]
-				- scales have unequal intervals [2]
-				- phrase organization [1]
-				- beginning, middle, end (sometimes no end) structure [2]
-				- 4 fold repetition into phrase structures (4,8,12,16 measures) [2]
-				- small intervals in melodic motion (stepwise) [2]
-				- internal repetition generally with variation [2]
-				- higher = louder, faster = loud (correlated) [1]
-				- predominance of descending contours alone or descending following ascending [2]
-				- scales 7 or less degrees [2]
-				- few duration values in works [2]
-
 				-------EMBELLISHMENT PROVED HYPOTHESES FROM BACH (HURON 2007)------
 				H1. Eembellishment tones will reduce the average melodic interval size within voices.
 				Improves pitch proximity principle and thus enhances stream segregation
