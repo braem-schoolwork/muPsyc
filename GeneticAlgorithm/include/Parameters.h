@@ -14,6 +14,9 @@ namespace geneticalgorithm {
 		unsigned int numMutations;
 		unsigned int numCrossovers;
 
+		double onsetSyncLowerBound;
+		double onsetSyncUpperBound;
+
 		//operator probabilities
 		unsigned int numMutationSubOperators = 9;
 		double op_leap;
