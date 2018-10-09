@@ -89,7 +89,6 @@ namespace geneticalgorithm {
 				double avoidSemblantApproachBetweenFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote);
 				double exposedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote, music::Key key);
 				double parallelFusedIntervals(music::Note lowerNote, music::Note upperNote);
-				double fusedIntervals(music::Note lowerNote, music::Note upperNote);
 				double avoidTonalFusion(music::Note lowerNote, music::Note upperNote);
 				double obliqueApproachToFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote);
 				double avoidDisjunctApproachToFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote, music::Key key);

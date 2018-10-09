@@ -88,7 +88,7 @@ double geneticalgorithm::fitness::rules::huron2001::exposedIntervals(music::Note
 	return -1.0;
 }
 
-double geneticalgorithm::fitness::rules::huron2001::fusedIntervals(music::Note lowerNote, music::Note upperNote) {
+double geneticalgorithm::fitness::rules::huron2001::parallelFusedIntervals(music::Note lowerNote, music::Note upperNote) {
 	return helper::isFusedInterval(lowerNote, upperNote) ? 0.0 : 1.0;
 }
 
@@ -161,7 +161,7 @@ void geneticalgorithm::fitness::rules::applyHurons2001Rules(music::Composition c
 			if (partIndex < hasNoteChanged.size() - 1) {
 				if (hasNoteChanged[partIndex] && hasNoteChanged[partIndex + 1]) { //2 notes moved at same tick
 					pcFit += huron2001::partCrossing(currentNotes[partIndex], currentNotes[partIndex + 1]); pcCtr++;
-					fiFit += huron2001::fusedIntervals(currentNotes[partIndex], currentNotes[partIndex + 1]); fiCtr++;
+					fiFit += huron2001::parallelFusedIntervals(currentNotes[partIndex], currentNotes[partIndex + 1]); fiCtr++;
 					atfFit += huron2001::avoidTonalFusion(currentNotes[partIndex], currentNotes[partIndex + 1]); atfCtr++;
 					if (noteIndices[partIndex] > 0 && noteIndices[partIndex + 1] > 0) { //prev notes exist
 						poFit += huron2001::pitchOverlapping(pastNotes[partIndex], currentNotes[partIndex + 1]); poCtr++;
