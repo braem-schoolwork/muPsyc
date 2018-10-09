@@ -44,6 +44,11 @@ namespace music {
 			setFromMidiVal();
 		}
 
+		int difference(Pitch pitch) const {
+			return static_cast<int>(pitch.m) - static_cast<int>(this->m);
+		}
+		static int difference(Pitch pitch1, Pitch pitch2) { return pitch1.difference(pitch2); }
+
 		bool operator==(const Pitch &other) const;
 		bool operator!=(const Pitch &other) const;
 		bool operator>=(const Pitch &other) const;

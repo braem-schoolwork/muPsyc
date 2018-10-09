@@ -44,6 +44,11 @@ namespace music {
 		void doubleDuration() { d.doubleDuration(); }
 		void halfDuration() { d.halfDuration(); }
 
+		int difference(Note note) const { return p.difference(note.p); }
+		int difference(Pitch pitch) const { return p.difference(pitch); }
+		static int difference(Note note1, Note note2) { return Pitch::difference(note1.p, note2.p); }
+		static int difference(Pitch pitch1, Pitch pitch2) { return Pitch::difference(pitch1, pitch2); }
+
 		bool operator==(const Note &other) const;
 		bool operator!=(const Note &other) const;
 		bool operator>=(const Note &other) const;
