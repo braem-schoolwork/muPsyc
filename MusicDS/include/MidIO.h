@@ -5,5 +5,6 @@
 namespace music {
 	namespace IO {
 		void writeCompositionToMIDI(std::string path, Composition comp);
+		Composition readMIDI(std::string path);
 	}
 }

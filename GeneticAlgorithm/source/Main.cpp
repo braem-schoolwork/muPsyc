@@ -17,6 +17,8 @@ using namespace geneticalgorithm;
 using namespace std;
 
 int main() {
+	IO::readMIDI("test.mid");
+
 	initialization::InitParams initParams;
 	initParams.name = "Random Comp";
 	initParams.partNames = { "Part1", "Part2", "Part3", "Part4" };
