@@ -32,6 +32,8 @@ namespace music {
 		double getMillis(BPM bpm);
 		double getSeconds(BPM bpm);
 
+		static Duration getDurationFromMidiTick(unsigned int tick, unsigned int tpq);
+
 		unsigned int tickLength() const;
 
 		static bool add(Duration first, Duration second, Duration *result);

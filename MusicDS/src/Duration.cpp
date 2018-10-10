@@ -46,6 +46,29 @@ double music::Duration::getSeconds(BPM bpm) {
 	return realDuration() * (1.0 / bpm.delineation()) * (1.0 / bpm.seconds()) * 60.0;
 }
 
+music::Duration music::Duration::getDurationFromMidiTick(unsigned int tick, unsigned int tpq) {
+	if (tpq > tick) { //less than quarter
+		unsigned int mult = tpq / tick; //how many times less
+		unsigned int remainder = tpq % tick, dot = 0, type = 4 * mult;
+		if (remainder > 0) {
+			type *= 2;
+			dot++;
+		}
+		return Duration(type, dot);
+	}
+	else if (tpq < tick) { //more than quarter
+		unsigned int mult = tick / tpq; //how many times more
+		unsigned int remainder = tick % tpq, dot = 0, type = 4 / mult;
+		if (remainder > 0) {
+			dot++;
+		}
+		return Duration(type, dot);
+	}
+	else {
+		return Duration(4, 0);
+	}
+}
+
 unsigned int music::Duration::tickLength() const {
 	int tick = MAX_DURATION / t;
 	for (int i = 0; i < d; i++) //add another note of half duration (defn of dot)
