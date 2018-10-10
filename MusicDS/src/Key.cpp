@@ -4,6 +4,14 @@ std::ostream & music::operator<<(std::ostream & strm, const Key & key) {
 	return strm << key.name();
 }
 
+unsigned int music::Key::findNumAccidentals() {
+	unsigned int ctr = 0;
+	for (unsigned int pc : sc_UP)
+		if (pc != 0 && pc != 2 && pc != 4 && pc != 5 && pc != 7 && pc != 9 && pc != 11)
+			ctr++;
+	return ctr;
+}
+
 unsigned int music::Key::nextPitchClass(unsigned int pc) {
 	unsigned int deg = closestDegree(pc) + 1;
 	if (deg == sc_UP.size()) deg = 0;

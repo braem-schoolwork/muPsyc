@@ -11,6 +11,9 @@ namespace music {
 		std::vector<unsigned int> sc_UP;
 		std::vector<unsigned int> sc_DN;
 		unsigned int n_pcs;
+		unsigned int n_acc;
+		bool b;
+		bool maj;
 
 	public:
 		Key() : n_pcs(0) {}
@@ -18,8 +21,20 @@ namespace music {
 			sc_DN(pitchClasses), n_pcs(pitchClasses.size()) {}
 		Key(std::string name, std::vector<unsigned int> pitchClassesUp, std::vector<unsigned int> pitchClassesDown)
 			: n(name), sc_UP(pitchClassesUp), sc_DN(pitchClassesDown), n_pcs(pitchClassesUp.size()) {}
+
+		Key(std::string name, std::vector<unsigned int> pitchClasses, unsigned int numAccidentals, bool isFlatAccidentals, 
+			bool isMajor) : n(name), sc_UP(pitchClasses), sc_DN(pitchClasses), n_pcs(pitchClasses.size()), n_acc(numAccidentals),
+			b(isFlatAccidentals), maj(isMajor) {}
+		Key(std::string name, std::vector<unsigned int> pitchClassesUp, std::vector<unsigned int> pitchClassesDown,
+			unsigned int numAccidentals, bool isFlatAccidentals, bool isMajor) : n(name), sc_UP(pitchClassesUp), sc_DN(pitchClassesDown),
+			n_pcs(pitchClassesUp.size()), n_acc(numAccidentals), b(isFlatAccidentals), maj(isMajor) {}
 		
 		std::string name() const { return n; }
+		unsigned int numAccidentals() { return n_acc; }
+		bool isUsingFlatAccidentals() { return b; }
+		bool isUsingSharpAccidentals() { return !b; }
+		bool isMajor() { return maj; }
+		bool isMinor() { return !maj; }
 		unsigned int fundamental() const { return sc_UP[0]; }
 		unsigned int iUnison() const { return sc_UP[0]; }
 		unsigned int iOctave() const { return sc_UP[0]; }
@@ -77,6 +92,10 @@ namespace music {
 		std::vector<unsigned int> upwardScale() const { return sc_UP; }
 		std::vector<unsigned int> downwardScale() const { return sc_DN; }
 		unsigned int scaleSize() const { return n_pcs; }
+
+		unsigned int findNumAccidentals();
+		bool findAccidentalType(); //flat or sharp
+		bool findIfMajor();
 
 		unsigned int pitchClass(unsigned int degree) const { return sc_UP[degree]; }
 		unsigned int upwardPitchClass(unsigned int degree) const { return sc_UP[degree]; }
