@@ -338,7 +338,7 @@ double geneticalgorithm::fitness::rules::brownjordana2011::unequalIntervals(musi
 	bool equalInts = true;
 	unsigned int prevInterval = 0;
 	for (unsigned int i = 1; i < key.scale().size(); i++) {
-		Pitch p1 = Pitch(key.pitchClass[i - 1], 4);
+		Pitch p1 = Pitch(key.pitchClass(i - 1), 4);
 		Pitch p2 = key.nextPitchInKey(p1);
 		if (i > 1 && prevInterval != p1 - p2) return 1.0;
 		prevInterval = p1 - p2;
