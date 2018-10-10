@@ -123,210 +123,10 @@ double geneticalgorithm::fitness::rules::huron2001::chordSpacing(std::vector<mus
 	return bassMidiVal + CHRINT_OCTAVE <= aboveMidiVal ? 1.0 : 0.0;
 }
 
-bool geneticalgorithm::fitness::rules::huron2001::onSync(music::BPM bpm, music::Note note1, music::Note note2) {
+bool geneticalgorithm::fitness::rules::huron2001::helper::onSync(music::BPM bpm, music::Note note1, music::Note note2) {
 	double millis1 = note1.getMillis(bpm);
 	double millis2 = note2.getMillis(bpm);
 	return abs(millis1 - millis2) < 100;
-}
-
-void geneticalgorithm::fitness::rules::applyHurons2001Rules(music::Composition composition, FitnessInfo * fitnessInfo, Parameters params) {
-	//fitness accumulators for each rule
-	double rcFit = 0.0, llFit = 0.0, pcFit = 0.0, poFit = 0.0, smFit = 0.0, pmFit = 0.0,
-		asabfiFit = 0.0, eiFit = 0.0, fiFit = 0.0, atfFit = 0.0, oatfiFit = 0.0, adatfiFit = 0.0, csFit = 0.0,
-		onsetSync = 0.0;
-	//number of times each rule is calculated
-	unsigned int rcCtr = 0, llCtr = 0, pcCtr = 0, poCtr = 0, smCtr = 0, pmCtr = 0,
-		asabfiCtr = 0, eiCtr = 0, fiCtr = 0, atfCtr = 0, oatfiCtr = 0, adatfiCtr = 0, csCtr = 0, onsetSyncCtr = 0;
-	std::vector<std::vector<Note>> notes = composition.notes(); //all notes in part
-	std::vector<unsigned int> noteIndices(composition.numParts(), 0); //indices of each note
-	std::vector<unsigned int> partTickTotals(composition.numParts(), 0); //holds overall ticks of each part
-	std::vector<Note> pastNotes(composition.numParts()); //holds the notes of ticks past
-	std::vector<unsigned int> measureTickLengths = composition.measureTickLengths(); //holds tick lengths of each measure (may vary if different time sig)
-	std::vector<bool> syncs(composition.numParts() - 1, false); //mask of what combination of notes have moved together
-	std::vector<bool> hasNoteChanged(composition.numParts(), false); //mask of what notes have moved in a tick
-	unsigned int tick = 0, partTickLength = composition.parts()[0].tickLength(), measureIndex = 0, measureTick = 0; //ticks
-	Key key = composition.parts()[0].measures()[measureIndex].key(); //key of current measure
-	while (tick < partTickLength) { //iterate through entire part
-		std::vector<Note> currentNotes; //holds notes currently being played
-		for (unsigned int partIndex = 0; partIndex < noteIndices.size(); partIndex++) {
-			currentNotes.push_back(notes[partIndex][noteIndices[partIndex]]); //fill current notes vector
-			if (partIndex < noteIndices.size() - 1) //if note tick totals sync up, they both occured
-				syncs[partIndex] = partTickTotals[partIndex] == partTickTotals[partIndex + 1];
-		}
-
-		//CALCULATE HURONS RULES
-		bool didAllMove = true, didBassMove = hasNoteChanged[0]; unsigned int howManyMoved = 0;
-		for (unsigned int partIndex = 0; partIndex < hasNoteChanged.size(); partIndex++) {
-			didAllMove = didAllMove && hasNoteChanged[partIndex];
-			if (hasNoteChanged[partIndex]) howManyMoved++;
-			if (hasNoteChanged[partIndex]) {
-				rcFit += huron2001::registralCompass(currentNotes[partIndex]); rcCtr++;
-				if (noteIndices[partIndex] > 0) { //previous note exists
-					llFit += huron2001::leapLengthening(pastNotes[partIndex], currentNotes[partIndex]); llCtr++;
-				}
-			}
-			if (partIndex < hasNoteChanged.size() - 1) {
-				if (hasNoteChanged[partIndex] && hasNoteChanged[partIndex + 1]) { //2 notes moved at same tick
-					pcFit += huron2001::partCrossing(currentNotes[partIndex], currentNotes[partIndex + 1]); pcCtr++;
-					fiFit += huron2001::parallelFusedIntervals(currentNotes[partIndex], currentNotes[partIndex + 1]); fiCtr++;
-					atfFit += huron2001::avoidTonalFusion(currentNotes[partIndex], currentNotes[partIndex + 1]); atfCtr++;
-					if (noteIndices[partIndex] > 0 && noteIndices[partIndex + 1] > 0) { //prev notes exist
-						poFit += huron2001::pitchOverlapping(pastNotes[partIndex], currentNotes[partIndex + 1]); poCtr++;
-						smFit += huron2001::semblantMotion(pastNotes[partIndex], pastNotes[partIndex + 1],
-							currentNotes[partIndex], currentNotes[partIndex + 1]); smCtr++;
-						pmFit += huron2001::parallelMotion(pastNotes[partIndex], pastNotes[partIndex + 1],
-							currentNotes[partIndex], currentNotes[partIndex + 1]); pmCtr++;
-						asabfiFit += huron2001::avoidSemblantApproachBetweenFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
-							currentNotes[partIndex], currentNotes[partIndex + 1]); asabfiCtr++;
-						eiFit += huron2001::exposedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
-							currentNotes[partIndex], currentNotes[partIndex + 1], key); eiCtr++;
-						oatfiFit += huron2001::obliqueApproachToFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
-							currentNotes[partIndex], currentNotes[partIndex + 1]); oatfiCtr++;
-						adatfiFit += huron2001::avoidDisjunctApproachToFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
-							currentNotes[partIndex], currentNotes[partIndex + 1], key); adatfiCtr++;
-					}
-				}
-			}
-		}
-		if (howManyMoved >= 3) { //chord
-			if (didBassMove) { //chordspacing only applies to bass voice
-				csFit += huron2001::chordSpacing(currentNotes);
-				csCtr++;
-			}
-
-		}
-		onsetSync = static_cast<double>(howManyMoved) / static_cast<double>(currentNotes.size()); onsetSyncCtr++;
-
-		//calculate note ticks (new tick totals)
-		std::vector<unsigned int> noteTicks;
-		for (unsigned int partIndex = 0; partIndex < partTickTotals.size(); partIndex++)
-			noteTicks.push_back(notes[partIndex][noteIndices[partIndex]].tickLength() + partTickTotals[partIndex]);
-		//find minimum tick values
-		unsigned int minValue = noteTicks[0], minValIndex = 0;
-		for (unsigned int partIndex = 1; partIndex < noteTicks.size(); partIndex++)
-			if (noteTicks[partIndex] < minValue) { minValue = noteTicks[partIndex]; minValIndex = partIndex; }
-		//note has the lowest tick total = move the index forward
-		for (unsigned int partIndex = 0; partIndex < noteTicks.size(); partIndex++) {
-			if (noteTicks[partIndex] == minValue) {
-				noteIndices[partIndex]++;
-				pastNotes[partIndex] = currentNotes[partIndex];
-				partTickTotals[partIndex] = noteTicks[partIndex];
-				hasNoteChanged[partIndex] = true;
-			}
-			else hasNoteChanged[partIndex] = false;
-		}
-		tick = minValue;
-		//update measure index
-		if (tick / (measureIndex + 1) >= measureTickLengths[measureIndex]) {
-			measureIndex++;
-			key = composition.parts()[0].measures()[measureIndex].key();
-		}
-	}
-	onsetSync /= static_cast<double>(onsetSyncCtr);
-
-	fitnessInfo->registralCompassFitness = rcFit / static_cast<double>(rcCtr);
-	fitnessInfo->leapLengtheningFitness = llFit / static_cast<double>(llCtr);
-	fitnessInfo->partCrossingFitness = pcFit / static_cast<double>(pcCtr);
-	fitnessInfo->pitchOverlappingFitness = poFit / static_cast<double>(poCtr);
-	fitnessInfo->semblantMotionFitness = smFit / static_cast<double>(smCtr);
-	fitnessInfo->parallelMotionFitness = pmFit / static_cast<double>(pmCtr);
-	fitnessInfo->avoidSemblantApproachBetweenFusedIntervalsFitness = asabfiFit / static_cast<double>(asabfiCtr);
-	fitnessInfo->exposedIntervalsFitness = eiFit / static_cast<double>(eiCtr);
-	fitnessInfo->parallelFusedIntervalsFitness = fiFit / static_cast<double>(fiCtr);
-	fitnessInfo->avoidTonalFusionFitness = atfFit / static_cast<double>(atfCtr);
-	fitnessInfo->obliqueApproachToFusedIntervalsFitness = oatfiFit / static_cast<double>(oatfiCtr);
-	fitnessInfo->avoidDisjunctApproachToFusedIntervalsFitness = adatfiFit / static_cast<double>(adatfiCtr);
-	fitnessInfo->chordSpacingFitness = csFit / static_cast<double>(csCtr);
-	fitnessInfo->onsetSynchronizationFitness = onsetSync >= params.onsetSyncLowerBound && onsetSync <= params.onsetSyncUpperBound ? 1.0 : 0.0;
-	fitnessInfo->setHuron2001Fitness();
-}
-
-void geneticalgorithm::fitness::rules::applyBrownJordana2011Rules(music::Composition composition, FitnessInfo * fitnessInfo, Parameters params) {
-	//fitness accumulators for each rule
-	double llrFit = 0.0, ueiFit = 0.0, s7ldFit = 0.0, ldvFit = 0.0, cFit = 0.0;
-	//number of times each rule is calculated
-	unsigned int llrCtr = 0, ueiCtr = 0, s7ldCtr = 0, ldvCtr = 0, cCtr = 0;
-	std::vector<std::vector<Note>> notes = composition.notes(); //all notes in part
-	std::vector<std::vector<int>> absIntervals(composition.numParts());
-	std::vector<Duration> knownDurations;
-	knownDurations.push_back(notes[0][0].duration());
-	std::vector<unsigned int> noteIndices(composition.numParts(), 0); //indices of each note
-	std::vector<unsigned int> partTickTotals(composition.numParts(), 0); //holds overall ticks of each part
-	std::vector<Note> pastNotes(composition.numParts()); //holds the notes of ticks past
-	std::vector<Note> doublyPastNotes(composition.numParts()); //one step further
-	std::vector<unsigned int> measureTickLengths = composition.measureTickLengths(); //holds tick lengths of each measure (may vary if different time sig)
-	std::vector<bool> syncs(composition.numParts() - 1, false); //mask of what combination of notes have moved together
-	std::vector<bool> hasNoteChanged(composition.numParts(), false); //mask of what notes have moved in a tick
-	unsigned int tick = 0, partTickLength = composition.parts()[0].tickLength(), measureIndex = 0, measureTick = 0; //ticks
-	Key key = composition.parts()[0].measures()[measureIndex].key(); //key of current measure
-	while (tick < partTickLength) { //iterate through entire part
-		std::vector<Note> currentNotes; //holds notes currently being played
-		for (unsigned int partIndex = 0; partIndex < noteIndices.size(); partIndex++) {
-			currentNotes.push_back(notes[partIndex][noteIndices[partIndex]]); //fill current notes vector
-			if (partIndex < noteIndices.size() - 1) //if note tick totals sync up, they both occured
-				syncs[partIndex] = partTickTotals[partIndex] == partTickTotals[partIndex + 1];
-		}
-
-		//CALCULATE UNIVERSALS
-		for (unsigned int partIndex = 0; partIndex < hasNoteChanged.size(); partIndex++) {
-			if (hasNoteChanged[partIndex]) {
-				for (unsigned int i = 0; i < knownDurations.size(); i++) {
-					if (currentNotes[partIndex].duration() != knownDurations[i]) {
-						knownDurations.push_back(currentNotes[partIndex].duration());
-						break;
-					}
-				} //for calculating the number of unique durations
-				if (noteIndices[partIndex] > 0) { //previous note exists
-					//calc intervals
-					absIntervals[partIndex].push_back(music::Note::difference(pastNotes[partIndex], currentNotes[partIndex]));
-				}
-				if (noteIndices[partIndex] > 1) { //previous notes exist
-					double tmp = brownjordana2011::leapResolution(doublyPastNotes[partIndex], pastNotes[partIndex], currentNotes[partIndex]);
-					if (tmp > -0.01) {
-						llrFit += tmp;
-						llrCtr++;
-					}
-				}
-			}
-		}
-
-		//calculate note ticks (new tick totals)
-		std::vector<unsigned int> noteTicks;
-		for (unsigned int partIndex = 0; partIndex < partTickTotals.size(); partIndex++)
-			noteTicks.push_back(notes[partIndex][noteIndices[partIndex]].tickLength() + partTickTotals[partIndex]);
-		//find minimum tick values
-		unsigned int minValue = noteTicks[0], minValIndex = 0;
-		for (unsigned int partIndex = 1; partIndex < noteTicks.size(); partIndex++)
-			if (noteTicks[partIndex] < minValue) { minValue = noteTicks[partIndex]; minValIndex = partIndex; }
-		//note has the lowest tick total = move the index forward
-		for (unsigned int partIndex = 0; partIndex < noteTicks.size(); partIndex++) {
-			if (noteTicks[partIndex] == minValue) {
-				noteIndices[partIndex]++;
-				doublyPastNotes[partIndex] = pastNotes[partIndex];
-				pastNotes[partIndex] = currentNotes[partIndex];
-				partTickTotals[partIndex] = noteTicks[partIndex];
-				hasNoteChanged[partIndex] = true;
-			}
-			else hasNoteChanged[partIndex] = false;
-		}
-		tick = minValue;
-		//update measure index
-		if (tick / (measureIndex + 1) >= measureTickLengths[measureIndex]) {
-			measureIndex++;
-			//key related fitness tests
-			ueiFit += brownjordana2011::unequalIntervals(key); ueiCtr++;
-			s7ldFit += brownjordana2011::scale7orLessDegrees(key); s7ldCtr++;
-			key = composition.parts()[0].measures()[measureIndex].key(); //new key
-		}
-	}
-	ldvFit += brownjordana2011::limitedDurationValues(knownDurations); ldvCtr++;
-
-	fitnessInfo->largeLeapResolutionFitness = llrFit / static_cast<double>(llrCtr);
-	fitnessInfo->unequalIntevalsFitness += ueiFit / static_cast<double>(ueiCtr);
-	fitnessInfo->scale7orLessDegreesFitness += s7ldFit / static_cast<double>(s7ldCtr);
-	fitnessInfo->limitedDurationValuesFitness += ldvFit / static_cast<double>(ldvCtr);
-	//fitnessInfo->contourFitness += cFit / static_cast<double>(cCtr);
-	fitnessInfo->setBrownJordana2011Fitness();
 }
 
 void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composition, FitnessInfo * fitnessInfo, Parameters params) {
@@ -345,20 +145,15 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 	std::vector<unsigned int> noteIndices(composition.numParts(), 0); //indices of each note
 	std::vector<unsigned int> partTickTotals(composition.numParts(), 0); //holds overall ticks of each part
 	std::vector<Note> pastNotes(composition.numParts()); //holds the notes of ticks past
-	std::vector<Note> doublyPastNotes(composition.numParts()); //one step further
+	std::vector<std::vector<Note>> allPastNotes;
 	std::vector<unsigned int> measureTickLengths = composition.measureTickLengths(); //holds tick lengths of each measure (may vary if different time sig)
-	std::vector<bool> syncs(composition.numParts() - 1, false); //mask of what combination of notes have moved together
 	std::vector<bool> hasNoteChanged(composition.numParts(), false); //mask of what notes have moved in a tick
 	unsigned int tick = 0, partTickLength = composition.parts()[0].tickLength(), measureIndex = 0, measureTick = 0; //ticks
 	Key key = composition.parts()[0].measures()[measureIndex].key(); //key of current measure
 	while (tick < partTickLength) { //iterate through entire part
 		std::vector<Note> currentNotes; //holds notes currently being played
-		for (unsigned int partIndex = 0; partIndex < noteIndices.size(); partIndex++) {
+		for (unsigned int partIndex = 0; partIndex < noteIndices.size(); partIndex++)
 			currentNotes.push_back(notes[partIndex][noteIndices[partIndex]]); //fill current notes vector
-			if (partIndex < noteIndices.size() - 1) //if note tick totals sync up, they both occured
-				syncs[partIndex] = partTickTotals[partIndex] == partTickTotals[partIndex + 1];
-
-		}
 
 		//CALCULATE HURONS RULES
 		bool didAllMove = true, didBassMove = hasNoteChanged[0]; unsigned int howManyMoved = 0;
@@ -378,7 +173,8 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 					absIntervals[partIndex].push_back(music::Note::difference(pastNotes[partIndex], currentNotes[partIndex]));
 				}
 				if (noteIndices[partIndex] > 1) { //previous notes exist (2)
-					double tmp = brownjordana2011::leapResolution(doublyPastNotes[partIndex], pastNotes[partIndex], currentNotes[partIndex]);
+					double tmp = brownjordana2011::leapResolution(allPastNotes[allPastNotes.size() - 1][partIndex], 
+						pastNotes[partIndex], currentNotes[partIndex]);
 					if (tmp > -0.01) {
 						llrFit += tmp;
 						llrCtr++;
@@ -429,7 +225,7 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 		for (unsigned int partIndex = 0; partIndex < noteTicks.size(); partIndex++) {
 			if (noteTicks[partIndex] == minValue) {
 				noteIndices[partIndex]++;
-				doublyPastNotes[partIndex] = pastNotes[partIndex];
+				allPastNotes.push_back(pastNotes);
 				pastNotes[partIndex] = currentNotes[partIndex];
 				partTickTotals[partIndex] = noteTicks[partIndex];
 				hasNoteChanged[partIndex] = true;

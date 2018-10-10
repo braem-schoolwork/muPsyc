@@ -63,6 +63,7 @@ namespace geneticalgorithm {
 					bool isParallelMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper);
 					bool isStepwiseMotion(music::Note past, music::Note present, music::Key key);
 					bool isObliqueMotion(music::Note pastLower, music::Note pastUpper, music::Note lower, music::Note upper);
+					bool onSync(music::BPM bpm, music::Note note1, music::Note note2);
 				}
 				double registralCompass(music::Note note);
 				double leapLengthening(music::Note note1, music::Note note2);
@@ -84,8 +85,8 @@ namespace geneticalgorithm {
 				double commonTone(std::vector<music::Note> prevChord, std::vector<music::Note> nextChord);
 				double conjunctMovement(std::vector<music::Note> prevChord, std::vector<music::Note> nextChord);
 
-				//auxiliary principles
-				bool onSync(music::BPM bpm, music::Note note1, music::Note note2);
+				//auxiliary rules
+				double asynchronousPreparationOfTonalFusion();
 			}
 
 			/*
@@ -114,9 +115,6 @@ namespace geneticalgorithm {
 				double contour(std::vector<int> cont);
 				double contour(std::vector<std::vector<int>> conts);
 			}
-
-			void applyHurons2001Rules(music::Composition composition, FitnessInfo *fitnessInfo, Parameters params);
-			void applyBrownJordana2011Rules(music::Composition composition, FitnessInfo *fitnessInfo, Parameters params);
 
 			void applyAllRules(music::Composition composition, FitnessInfo *fitnessInfo, Parameters params);
 		}
