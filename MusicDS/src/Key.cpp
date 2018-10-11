@@ -12,6 +12,42 @@ unsigned int music::Key::findNumAccidentals() {
 	return ctr;
 }
 
+bool music::Key::findAccidentalType() {
+	if (maj) {
+		switch (sc_UP[0]) {
+		case 2:	case 4:	case 7:	case 9:	case 11: case 6: return 0;
+		case 1:	case 3:	case 5:	case 8:	case 10: return 1;
+		default: return 0;
+		}
+	}
+	else {
+		switch (sc_UP[0]) {
+		case 4: case 11: case 6: case 1: case 8: case 3: return 0;
+		case 10: case 5: case 0: case 7: case 2: return 1;
+		default: return 0;
+		}
+	}
+}
+
+bool music::Key::findIfMajor() {
+	unsigned int fundapc = sc_UP[0];
+	unsigned int numAccs = findNumAccidentals();
+	switch (sc_UP[0]) {
+	case 7: if (numAccs == 1) return 1; else if (numAccs == 2) return 0;
+	case 2: if (numAccs == 2) return 1; else if (numAccs == 1) return 0;
+	case 9: if (numAccs == 3) return 1; 
+	case 4: if (numAccs == 4) return 1; else if (numAccs == 1) return 0;
+	case 11: if (numAccs == 5) return 1; else if (numAccs == 2) return 0;
+	case 6: if (numAccs == 6) return 1; else if (numAccs == 3) return 0;
+	case 1: if (numAccs == 5) return 1; else if (numAccs == 4) return 0;
+	case 8: if (numAccs == 4) return 1; else if (numAccs == 5) return 0;
+	case 3: if (numAccs == 3) return 1; else if (numAccs == 6) return 0;
+	case 10: if (numAccs == 2) return 1; else if (numAccs == 5) return 0;
+	case 5: if (numAccs == 1) return 1; else if (numAccs == 4) return 0;
+	default: return 0;
+	}
+}
+
 unsigned int music::Key::nextPitchClass(unsigned int pc) {
 	unsigned int deg = closestDegree(pc) + 1;
 	if (deg == sc_UP.size()) deg = 0;
