@@ -17,7 +17,16 @@ void music::IO::writeCompositionToMIDI(std::string path, Composition comp) {
 	midifile.addTrackName(track, actiontick, comp.name());
 	midifile.addTempo(track, actiontick, static_cast<double>(comp.bpm().seconds()));
 	midifile.addTimeSignature(track, actiontick, timeSignature.number(), timeSignature.delineation());
-	//midifile.addMetaEvent(track, actiontick, 59, "");
+
+	Key key = comp.parts()[0].measures()[0].key();
+	std::string keyMetaEventStr = "";
+	if (key.findAccidentalType())
+		keyMetaEventStr += "-";
+	else keyMetaEventStr += " ";
+	keyMetaEventStr += "" + key.findNumAccidentals();
+	if (key.isMinor()) keyMetaEventStr += "1";
+	else keyMetaEventStr += "0";
+	midifile.addMetaEvent(track, actiontick, 0x59, keyMetaEventStr);
 
 	std::vector<std::string> trackNames;
 	for (Part part : comp.parts())
@@ -72,6 +81,7 @@ music::Composition music::IO::readMIDI(std::string path) {
 		}
 		if (midiEvent.isKeySignature()) {
 			unsigned int a = midiEvent[1];
+			bool isMinor = midiEvent[4];
 		}
 		if (midiEvent.isTimeSignature()) {
 			timeSig = TimeSignature(midiEvent[2], midiEvent[3]);
