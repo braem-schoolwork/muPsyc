@@ -9,43 +9,50 @@ unsigned int music::Key::findNumAccidentals() {
 	for (unsigned int pc : sc_UP)
 		if (pc != 0 && pc != 2 && pc != 4 && pc != 5 && pc != 7 && pc != 9 && pc != 11)
 			ctr++;
+	this->n_acc = ctr;
 	return ctr;
 }
 
 bool music::Key::findAccidentalType() {
+	bool type;
 	if (maj) {
 		switch (sc_UP[0]) {
-		case 2:	case 4:	case 7:	case 9:	case 11: case 6: return 0;
-		case 1:	case 3:	case 5:	case 8:	case 10: return 1;
+		case 2:	case 4:	case 7:	case 9:	case 11: case 6: type = 0;
+		case 1:	case 3:	case 5:	case 8:	case 10: type = 1;
 		default: return 0;
 		}
 	}
 	else {
 		switch (sc_UP[0]) {
-		case 4: case 11: case 6: case 1: case 8: case 3: return 0;
-		case 10: case 5: case 0: case 7: case 2: return 1;
+		case 4: case 11: case 6: case 1: case 8: case 3: type = 0;
+		case 10: case 5: case 0: case 7: case 2: type = 1;
 		default: return 0;
 		}
 	}
+	this->b = type;
+	return type;
 }
 
 bool music::Key::findIfMajor() {
 	unsigned int fundapc = sc_UP[0];
 	unsigned int numAccs = findNumAccidentals();
+	bool ifMaj;
 	switch (sc_UP[0]) {
-	case 7: if (numAccs == 1) return 1; else if (numAccs == 2) return 0;
-	case 2: if (numAccs == 2) return 1; else if (numAccs == 1) return 0;
-	case 9: if (numAccs == 3) return 1; 
-	case 4: if (numAccs == 4) return 1; else if (numAccs == 1) return 0;
-	case 11: if (numAccs == 5) return 1; else if (numAccs == 2) return 0;
-	case 6: if (numAccs == 6) return 1; else if (numAccs == 3) return 0;
-	case 1: if (numAccs == 5) return 1; else if (numAccs == 4) return 0;
-	case 8: if (numAccs == 4) return 1; else if (numAccs == 5) return 0;
-	case 3: if (numAccs == 3) return 1; else if (numAccs == 6) return 0;
-	case 10: if (numAccs == 2) return 1; else if (numAccs == 5) return 0;
-	case 5: if (numAccs == 1) return 1; else if (numAccs == 4) return 0;
+	case 7: if (numAccs == 1) ifMaj = 1; else if (numAccs == 2) ifMaj = 0;
+	case 2: if (numAccs == 2) ifMaj = 1; else if (numAccs == 1) ifMaj = 0;
+	case 9: if (numAccs == 3) ifMaj = 1;
+	case 4: if (numAccs == 4) ifMaj = 1; else if (numAccs == 1) ifMaj = 0;
+	case 11: if (numAccs == 5) ifMaj = 1; else if (numAccs == 2) ifMaj = 0;
+	case 6: if (numAccs == 6) ifMaj = 1; else if (numAccs == 3) ifMaj = 0;
+	case 1: if (numAccs == 5) ifMaj = 1; else if (numAccs == 4) ifMaj = 0;
+	case 8: if (numAccs == 4) ifMaj = 1; else if (numAccs == 5) ifMaj = 0;
+	case 3: if (numAccs == 3) ifMaj = 1; else if (numAccs == 6) ifMaj = 0;
+	case 10: if (numAccs == 2) ifMaj = 1; else if (numAccs == 5) ifMaj = 0;
+	case 5: if (numAccs == 1) ifMaj = 1; else if (numAccs == 4) ifMaj = 0;
 	default: return 0;
 	}
+	this->maj = ifMaj;
+	return ifMaj;
 }
 
 unsigned int music::Key::nextPitchClass(unsigned int pc) {
