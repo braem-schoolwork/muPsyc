@@ -17,14 +17,14 @@ using namespace geneticalgorithm;
 using namespace std;
 
 int main() {
-	IO::readMIDI("test.mid");
+	//IO::readMIDI("chp.mid");
 
 	initialization::InitParams initParams;
 	initParams.name = "Random Comp";
 	initParams.partNames = { "Part1", "Part2", "Part3", "Part4" };
 	char instr[4] = { ACOUSTICGRANDPIANO, ACOUSTICGRANDPIANO, ACOUSTICGRANDPIANO, ACOUSTICGRANDPIANO };
 	initParams.instruments = instr;
-	initParams.key = CMAJKEY;
+	initParams.key = GMAJKEY;
 	initParams.timeSig = TimeSignature(4, 4);
 	initParams.bpm = BPM(60, 4);
 	initParams.numParts = 4;
@@ -35,7 +35,7 @@ int main() {
 	Parameters params;
 	params.initParams = initParams;
 	params.populationSize = 60;
-	params.numGenerations = 100;
+	params.numGenerations = 2;
 
 	params.numElites = 10;
 	params.numMutations = 25;
@@ -59,6 +59,8 @@ int main() {
 	RunInfo runInfo = runGA(params);
 
 	IO::writeCompositionToMIDI("test.mid", runInfo.best.composition());
+
+	Composition comp = IO::readMIDI("test.mid");
 
 	return 0;
 }
