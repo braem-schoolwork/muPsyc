@@ -235,11 +235,12 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 		tick = minValue;
 		//update measure index
 		if (tick / (measureIndex + 1) >= measureTickLengths[measureIndex]) {
-			measureIndex++;
 			//key related fitness tests
 			ueiFit += brownjordana2011::unequalIntervals(key); ueiCtr++;
 			s7ldFit += brownjordana2011::scale7orLessDegrees(key); s7ldCtr++;
-			key = composition.parts()[0].measures()[measureIndex].key(); //new key
+			measureIndex++;
+			if(measureIndex < composition.numMeasures())
+				key = composition.parts()[0].measures()[measureIndex].key(); //new key
 		}
 	}
 	onsetSync /= static_cast<double>(onsetSyncCtr);
