@@ -21,6 +21,8 @@ namespace music {
 			: ts(timeSig), s(Key("C Major", std::vector<unsigned int> { 0, 2, 4, 5, 7, 9, 11 })), n(notes) {}
 		Measure(Key scale, std::vector<Note> notes)
 			: ts(TimeSignature(4, 4)), s(scale), n(notes) {}
+		Measure(TimeSignature timeSig, Key scale) : ts(timeSig), s(scale) {}
+		Measure(Key scale, TimeSignature timeSig) : ts(timeSig), s(scale) {}
 		Measure(TimeSignature timeSig, Key scale, std::vector<Note> notes)
 			: ts(timeSig), s(scale), n(notes) {}
 
