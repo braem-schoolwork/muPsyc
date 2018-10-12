@@ -55,6 +55,71 @@ bool music::Key::findIfMajor() {
 	return ifMaj;
 }
 
+bool music::Key::findAndSetScale() {
+	std::vector<unsigned int> newScale = findScale(this->n_acc, b, maj);
+	if (newScale.size() == 0) return false;
+	this->sc_UP = newScale;
+	this->sc_DN = newScale;
+	return true;
+}
+
+std::vector<unsigned int> music::Key::findScale() {
+	return findScale(this->n_acc, b, maj);
+}
+
+std::vector<unsigned int> music::Key::findScale(unsigned int numAccidentals, bool isFlat, bool isMajor) {
+	std::vector<unsigned int> scale;
+	switch (numAccidentals) {
+	case 0: 
+		scale = isMajor ? std::vector<unsigned int>{0,2,4,5,7,9,11} : std::vector<unsigned int>{9,11,0,2,4,5,7}; break;
+	case 1:
+		if (isFlat)
+			scale = isMajor ? std::vector<unsigned int>{5,7,9,10,0,2,4} : std::vector<unsigned int>{2,4,5,7,9,10,0};
+		else
+			scale = isMajor ? std::vector<unsigned int>{7,9,11,0,2,4,6} : std::vector<unsigned int>{4,6,7,9,11,0,2};
+		break;
+	case 2:
+		if (isFlat)
+			scale = isMajor ? std::vector<unsigned int>{10,0,2,3,5,7,9} : std::vector<unsigned int>{7,9,10,0,2,3,5};
+		else
+			scale = isMajor ? std::vector<unsigned int>{2,4,6,7,9,11,1} : std::vector<unsigned int>{11,1,2,4,6,7,9};
+		break;
+	case 3:
+		if (isFlat)
+			scale = isMajor ? std::vector<unsigned int>{3,5,7,8,10,0,2} : std::vector<unsigned int>{0,2,3,5,7,8,10};
+		else
+			scale = isMajor ? std::vector<unsigned int>{9,11,1,2,4,6,8} : std::vector<unsigned int>{6,8,9,11,1,2,4};
+		break;
+	case 4:
+		if (isFlat)
+			scale = isMajor ? std::vector<unsigned int>{8,10,0,1,3,5,7} : std::vector<unsigned int>{5,7,8,10,0,1,3};
+		else
+			scale = isMajor ? std::vector<unsigned int>{4,6,8,9,11,1,3} : std::vector<unsigned int>{1,3,4,6,8,9,11};
+		break;
+	case 5:
+		if (isFlat)
+			scale = isMajor ? std::vector<unsigned int>{1,3,5,6,8,10,0} : std::vector<unsigned int>{10,0,1,3,5,6,8};
+		else
+			scale = isMajor ? std::vector<unsigned int>{11,1,3,4,6,8,10} : std::vector<unsigned int>{8,10,11,1,3,4,6};
+		break;
+	case 6:
+		scale = isMajor ? std::vector<unsigned int>{6,8,10,11,1,3,5} : std::vector<unsigned int>{3,5,6,8,10,11,1};
+		break;
+	}
+	return scale;
+}
+
+void music::Key::setAccidentalsFromMidi(unsigned int midiNumAcc) {
+	if (midiNumAcc <= 12) {
+		this->n_acc = midiNumAcc;
+		this->b = false;
+	}
+	else {
+		this->n_acc = 256 - midiNumAcc;
+		this->b = true;
+	}
+}
+
 unsigned int music::Key::nextPitchClass(unsigned int pc) {
 	unsigned int deg = closestDegree(pc) + 1;
 	if (deg == sc_UP.size()) deg = 0;

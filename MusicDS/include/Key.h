@@ -96,6 +96,14 @@ namespace music {
 		unsigned int findNumAccidentals();
 		bool findAccidentalType(); //flat or sharp
 		bool findIfMajor();
+		bool findAndSetScale();
+		std::vector<unsigned int> findScale();
+		static std::vector<unsigned int> findScale(unsigned int numAccidentals, bool isFlat, bool isMajor);
+		void setNumAccidentals(unsigned int numAcc) { this->n_acc = numAcc; }
+		void setAccidentalType(bool type) { this->b = type; }
+		void setIfMajor(bool maj) { this->maj = maj; }
+		void setIfMinor(bool min) { this->maj = !min; }
+		void setAccidentalsFromMidi(unsigned int midiNumAcc);
 
 		unsigned int pitchClass(unsigned int degree) const { return sc_UP[degree]; }
 		unsigned int upwardPitchClass(unsigned int degree) const { return sc_UP[degree]; }
