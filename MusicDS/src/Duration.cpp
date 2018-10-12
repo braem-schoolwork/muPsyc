@@ -46,6 +46,7 @@ double music::Duration::getSeconds(BPM bpm) {
 	return realDuration() * (1.0 / bpm.delineation()) * (1.0 / bpm.seconds()) * 60.0;
 }
 
+//NOTE: does not work for doubly dotted notes
 music::Duration music::Duration::getDurationFromMidiTick(unsigned int tick, unsigned int tpq) {
 	if (tpq > tick) { //less than quarter
 		unsigned int mult = tpq / tick; //how many times less
@@ -60,6 +61,10 @@ music::Duration music::Duration::getDurationFromMidiTick(unsigned int tick, unsi
 		unsigned int mult = tick / tpq; //how many times more
 		unsigned int remainder = tick % tpq, dot = 0, type = 4 / mult;
 		if (remainder > 0) {
+			dot++;
+		}
+		if (mult != 1 && mult & 2 != 0) {
+			type *= 2;
 			dot++;
 		}
 		return Duration(type, dot);
