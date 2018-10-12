@@ -19,14 +19,12 @@ void music::IO::writeCompositionToMIDI(std::string path, Composition comp) {
 	midifile.addTimeSignature(track, actiontick, timeSignature.number(), timeSignature.delineation());
 
 	Key key = comp.parts()[0].measures()[0].key();
-	std::string keyMetaEventStr = "";
-	if (key.findAccidentalType())
-		keyMetaEventStr += "-";
-	else keyMetaEventStr += " ";
-	keyMetaEventStr += "" + key.findNumAccidentals();
-	if (key.isMinor()) keyMetaEventStr += "1";
-	else keyMetaEventStr += "0";
-	midifile.addMetaEvent(track, actiontick, 0x59, keyMetaEventStr);
+	std::vector<unsigned char> metadata;
+	unsigned char numAcc = key.findNumAccidentals();
+	if (key.findAccidentalType() && numAcc != 0) metadata.push_back((256 - numAcc));
+	else metadata.push_back((numAcc));
+	metadata.push_back(static_cast<unsigned char>(key.isMinor()));
+	midifile.addMetaEvent(track, actiontick, 0x59, metadata);
 
 	std::vector<std::string> trackNames;
 	for (Part part : comp.parts())
@@ -67,6 +65,7 @@ music::Composition music::IO::readMIDI(std::string path) {
 	Composition comp;
 	Key key;
 	TimeSignature timeSig;
+	BPM bpm;
 	
 	for (unsigned int eventIndex = 0; eventIndex < midifile[0].getSize(); eventIndex++) {
 		const smf::MidiEvent midiEvent = midifile[0][eventIndex];
@@ -77,28 +76,37 @@ music::Composition music::IO::readMIDI(std::string path) {
 			comp.setName(compName);
 		}
 		if (midiEvent.isTempo()) {
-			unsigned int a = midiEvent[1];
+			bpm.setSeconds(static_cast<unsigned int>(midiEvent.getTempoBPM()));
+			comp.setBPM(bpm);
 		}
 		if (midiEvent.isKeySignature()) {
 			unsigned int a = midiEvent[1];
+			key.setAccidentalsFromMidi(midiEvent[3]);
 			bool isMinor = midiEvent[4];
+			key.setIfMinor(isMinor);
+			key.findAndSetScale();
 		}
 		if (midiEvent.isTimeSignature()) {
 			timeSig = TimeSignature(midiEvent[2], midiEvent[3]);
 		}
 	}
 
+	std::vector<Part> parts;
 	for (unsigned int trackIndex = 1; trackIndex < numTracks; trackIndex++) {
 		unsigned int numEvents = midifile.getEventCount(trackIndex);
 		Part part;
 		std::vector<Measure> measures;
-		Measure currentMeasure;
+		Measure currentMeasure = Measure(timeSig, key);
 		unsigned int noteCtr = 1;
 		unsigned int measureTick = 0;
 		for (unsigned int eventIndex = 0; eventIndex < numEvents; eventIndex++) {
 			const smf::MidiEvent midiEvent = midifile[trackIndex][eventIndex];
-			bool isKeySig = midiEvent.isKeySignature();
-			bool isTimeSig = midiEvent.isTimeSignature();
+			if (midiEvent.isKeySignature()) {
+				unsigned int w = 0;
+			}
+			else if (midiEvent.isTimeSignature()) {
+				unsigned int w = 0;
+			}
 			if (midiEvent.isNoteOff()) {
 				Pitch pitch = Pitch(midiEvent[1]);
 				unsigned char velocity = midiEvent[2];
@@ -109,9 +117,14 @@ music::Composition music::IO::readMIDI(std::string path) {
 				noteCtr++;
 				measureTick += duration.tickLength();
 				if (measureTick >= currentMeasure.tickLength()) {
+					measureTick = 0;
 					measures.push_back(currentMeasure);
-					currentMeasure = Measure();
+					currentMeasure = Measure(timeSig, key);
 				}
+			}
+			if (midiEvent.isEndOfTrack()) {
+				if(currentMeasure.numNotes() > 0)
+					measures.push_back(currentMeasure);
 			}
 			if (midiEvent.isPatchChange()) {
 				part.setInstrument(midiEvent[1]);
@@ -122,8 +135,10 @@ music::Composition music::IO::readMIDI(std::string path) {
 					partName += midiEvent[i];
 				part.setName(partName);
 			}
-		}
+		} //end event loop
+		part.setMeasures(measures);
+		parts.push_back(part);
 	}
-	std::vector<Part> parts(numTracks - 1);
-	return Composition();
+	comp.setParts(parts);
+	return comp;
 }
