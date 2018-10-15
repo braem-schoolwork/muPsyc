@@ -182,6 +182,7 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 				}
 			}
 			if (partIndex < hasNoteChanged.size() - 1) {
+				double tmp;
 				if (hasNoteChanged[partIndex] && hasNoteChanged[partIndex + 1]) { //2 notes moved at same tick
 					pcFit += huron2001::partCrossing(currentNotes[partIndex], currentNotes[partIndex + 1]); pcCtr++;
 					fiFit += huron2001::parallelFusedIntervals(currentNotes[partIndex], currentNotes[partIndex + 1]); fiCtr++;
@@ -192,14 +193,18 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 							currentNotes[partIndex], currentNotes[partIndex + 1]); smCtr++;
 						pmFit += huron2001::parallelMotion(pastNotes[partIndex], pastNotes[partIndex + 1],
 							currentNotes[partIndex], currentNotes[partIndex + 1]); pmCtr++;
-						asabfiFit += huron2001::avoidSemblantApproachBetweenFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
-							currentNotes[partIndex], currentNotes[partIndex + 1]); asabfiCtr++;
-						eiFit += huron2001::exposedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
-							currentNotes[partIndex], currentNotes[partIndex + 1], key); eiCtr++;
-						oatfiFit += huron2001::obliqueApproachToFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
-							currentNotes[partIndex], currentNotes[partIndex + 1]); oatfiCtr++;
-						adatfiFit += huron2001::avoidDisjunctApproachToFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
-							currentNotes[partIndex], currentNotes[partIndex + 1], key); adatfiCtr++;
+						tmp = huron2001::avoidSemblantApproachBetweenFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
+							currentNotes[partIndex], currentNotes[partIndex + 1]);
+						if (tmp >= 0.0) { asabfiFit += tmp; asabfiCtr++; }
+						tmp = huron2001::exposedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
+							currentNotes[partIndex], currentNotes[partIndex + 1], key);
+						if (tmp >= 0.0) { eiFit += tmp; eiCtr++; }
+						tmp = huron2001::obliqueApproachToFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
+							currentNotes[partIndex], currentNotes[partIndex + 1]);
+						if (tmp >= 0.0) { oatfiFit += tmp; oatfiCtr++; }
+						tmp = huron2001::avoidDisjunctApproachToFusedIntervals(pastNotes[partIndex], pastNotes[partIndex + 1],
+							currentNotes[partIndex], currentNotes[partIndex + 1], key);
+						if (tmp >= 0.0) { adatfiFit += tmp; adatfiCtr++; }
 					}
 				}
 			}
@@ -261,9 +266,9 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 	fitnessInfo->chordSpacingFitness = csFit / static_cast<double>(csCtr);
 	fitnessInfo->onsetSynchronizationFitness = onsetSync >= params.onsetSyncLowerBound && onsetSync <= params.onsetSyncUpperBound ? 1.0 : 0.0;
 	fitnessInfo->largeLeapResolutionFitness = llrFit / static_cast<double>(llrCtr);
-	fitnessInfo->unequalIntevalsFitness += ueiFit / static_cast<double>(ueiCtr);
-	fitnessInfo->scale7orLessDegreesFitness += s7ldFit / static_cast<double>(s7ldCtr);
-	fitnessInfo->limitedDurationValuesFitness += ldvFit / static_cast<double>(ldvCtr);
+	fitnessInfo->unequalIntevalsFitness = ueiFit / static_cast<double>(ueiCtr);
+	fitnessInfo->scale7orLessDegreesFitness = s7ldFit / static_cast<double>(s7ldCtr);
+	fitnessInfo->limitedDurationValuesFitness = ldvFit / static_cast<double>(ldvCtr);
 	//fitnessInfo->contourFitness += cFit / static_cast<double>(cCtr);
 	fitnessInfo->setOverallFitness();
 }
@@ -348,7 +353,7 @@ double geneticalgorithm::fitness::rules::brownjordana2011::unequalIntervals(musi
 }
 
 double geneticalgorithm::fitness::rules::brownjordana2011::scale7orLessDegrees(music::Key key) {
-	return key.scaleSize() >= 7 ? 0.0 : 1.0;
+	return key.scaleSize() > 7 ? 0.0 : 1.0;
 }
 
 double geneticalgorithm::fitness::rules::brownjordana2011::limitedDurationValues(std::vector<music::Duration> durations) {
