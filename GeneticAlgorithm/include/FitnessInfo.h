@@ -52,6 +52,13 @@ namespace geneticalgorithm {
 					avoidDisjunctApproachToFusedIntervalsFitness + chordSpacingFitness + onsetSynchronizationFitness + largeLeapResolutionFitness +
 					unequalIntevalsFitness + scale7orLessDegreesFitness + limitedDurationValuesFitness)
 					/ static_cast<double>(numHuron2001FitnessRules + numBrownJordana2011FitnessRules);
+				huron2001Fitness = (registralCompassFitness + leapLengtheningFitness + partCrossingFitness +
+					pitchOverlappingFitness + semblantMotionFitness + parallelMotionFitness + avoidSemblantApproachBetweenFusedIntervalsFitness +
+					exposedIntervalsFitness + parallelFusedIntervalsFitness + avoidTonalFusionFitness + obliqueApproachToFusedIntervalsFitness +
+					avoidDisjunctApproachToFusedIntervalsFitness + chordSpacingFitness + onsetSynchronizationFitness)
+					/ static_cast<double>(numHuron2001FitnessRules);
+				brownJordana2011Fitness = (largeLeapResolutionFitness + unequalIntevalsFitness + scale7orLessDegreesFitness +
+					limitedDurationValuesFitness) / static_cast<double>(numBrownJordana2011FitnessRules);
 			}
 
 			FitnessInfo() {}
