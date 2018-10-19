@@ -22,6 +22,7 @@ namespace geneticalgorithm {
 		double op_randomTranspose;
 		double op_split;
 		double op_merge;
+		double op_repeat;
 
 		//old operator probabilities
 		unsigned int old_numMutationSubOperators = 9;
