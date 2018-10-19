@@ -18,18 +18,24 @@ namespace geneticalgorithm {
 		double onsetSyncUpperBound;
 
 		//operator probabilities
-		unsigned int numMutationSubOperators = 9;
-		double op_leap;
-		double op_lowerNeighbor;
-		double op_upperNeighbor;
-		double op_arpeggiate;
+		unsigned int numMutationSubOperators = 3;
+		double op_randomTranspose;
 		double op_split;
-		double op_anticipation;
-		double op_delay;
 		double op_merge;
-		double op_removeNote;
-		double op_passingTone;
-		double op_forceStepwise;
+
+		//old operator probabilities
+		unsigned int old_numMutationSubOperators = 9;
+		double op_old_leap;
+		double op_old_lowerNeighbor;
+		double op_old_upperNeighbor;
+		double op_old_arpeggiate;
+		double op_old_split;
+		double op_old_anticipation;
+		double op_old_delay;
+		double op_old_merge;
+		double op_old_removeNote;
+		double op_old_passingTone;
+		double op_old_forceStepwise;
 
 		bool setOperatorCounts(double percentElites, double percentMutations, double percentCrossovers) {
 			double sum = percentElites + percentMutations + percentCrossovers;

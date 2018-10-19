@@ -44,17 +44,17 @@ int main() {
 	params.onsetSyncLowerBound = 0.3;
 	params.onsetSyncUpperBound = 0.6;
 	
-	params.op_leap = 0.125;
-	params.op_upperNeighbor = 0.0625;
-	params.op_lowerNeighbor = 0.0625;
-	params.op_arpeggiate = 0.125;
-	params.op_split = 0.125;
-	params.op_anticipation = 0.0;
-	params.op_delay = 0.0;
-	params.op_merge = 0.125;
-	params.op_removeNote = 0.125;
-	params.op_passingTone = 0.125;
-	params.op_forceStepwise = 0.125;
+	params.op_old_leap = 0.125;
+	params.op_old_upperNeighbor = 0.0625;
+	params.op_old_lowerNeighbor = 0.0625;
+	params.op_old_arpeggiate = 0.125;
+	params.op_old_split = 0.125;
+	params.op_old_anticipation = 0.0;
+	params.op_old_delay = 0.0;
+	params.op_old_merge = 0.125;
+	params.op_old_removeNote = 0.125;
+	params.op_old_passingTone = 0.125;
+	params.op_old_forceStepwise = 0.125;
 
 	RunInfo runInfo = runGA(params);
 
