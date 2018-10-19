@@ -19,7 +19,7 @@ namespace geneticalgorithm {
 						unsigned int *partIndex, unsigned int *measureIndex, unsigned int *noteIndex1, unsigned int *noteIndex2);
 					void getRandomNoteCoupleIndices(Chromosome chromosome,
 						unsigned int *partIndex, unsigned int *measureIndex, unsigned int *noteIndex1, unsigned int *noteIndex2);
-					void transposeRandomNote(Chromosome *chromosome, unsigned int degree);
+					void transposeRandomNote(Chromosome *chromosome, int degree);
 				}
 				namespace old {
 					//single note mutations. f:N->N
@@ -54,9 +54,11 @@ namespace geneticalgorithm {
 				Chromosome randomTranspose(Chromosome chromosome);
 				Chromosome split(Chromosome chromosome);
 				Chromosome merge(Chromosome chromosome);
-				unsigned int soi_randomTranspose = 0;
-				unsigned int soi_split = 1;
-				unsigned int soi_merge = 2;
+				Chromosome repeat(Chromosome chromosome);
+				unsigned const int soi_randomTranspose = 0;
+				unsigned const int soi_split = 1;
+				unsigned const int soi_merge = 2;
+				unsigned const int soi_repeat = 3;
 			}
 			Chromosome mutate(Chromosome chromosome, std::vector<double> operatorProbabilities);
 			std::vector<Chromosome> mutateElites(std::vector<Chromosome> elites, Parameters params);

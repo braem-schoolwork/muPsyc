@@ -250,12 +250,15 @@ void geneticalgorithm::operators::mutation::sub::helper::getRandomNoteCoupleIndi
 		if (notes[i - 1].duration() == notes[i].duration())
 			possibleIndices.push_back(i - 1);
 	}
-	std::uniform_int_distribution<int> noteDist(0, possibleIndices.size());
-	*noteIndex1 = possibleIndices[noteDist(mt)];
+	if (possibleIndices.size() == 0) {
+		*noteIndex1 = -1; *noteIndex2 = -1; return;
+	}
+	std::uniform_int_distribution<int> noteIndexDist(0, possibleIndices.size() - 1);
+	*noteIndex1 = possibleIndices[noteIndexDist(mt)];
 	*noteIndex2 = *noteIndex1 + 1;
 }
 
-void geneticalgorithm::operators::mutation::sub::helper::transposeRandomNote(Chromosome * chromosome, unsigned int degree) {
+void geneticalgorithm::operators::mutation::sub::helper::transposeRandomNote(Chromosome * chromosome, int degree) {
 	unsigned int partIndex, measureIndex, noteIndex; Composition comp = chromosome->composition();
 	getRandomNoteIndex(*chromosome, &partIndex, &measureIndex, &noteIndex);
 	Note selectedNote = comp.parts()[partIndex].measures()[measureIndex].notes()[noteIndex];
@@ -268,9 +271,10 @@ void geneticalgorithm::operators::mutation::sub::helper::transposeRandomNote(Chr
 Chromosome geneticalgorithm::operators::mutation::mutate(Chromosome chromosome, std::vector<double> operatorProbabilities) {
 	unsigned int operatorIndex = algorithm::roulleteSelect(operatorProbabilities);
 	switch (operatorIndex) {
-	case 0: return sub::randomTranspose(chromosome);
-	case 1: return sub::split(chromosome);
-	case 2: return sub::merge(chromosome);
+	case sub::soi_randomTranspose: return sub::randomTranspose(chromosome);
+	case sub::soi_split: return sub::split(chromosome);
+	case sub::soi_merge: return sub::merge(chromosome);
+	case sub::soi_repeat: return sub::repeat(chromosome);
 	default: throw std::invalid_argument("Operator Index Out of Range");
 	}
 }
@@ -278,7 +282,7 @@ Chromosome geneticalgorithm::operators::mutation::mutate(Chromosome chromosome, 
 std::vector<Chromosome> geneticalgorithm::operators::mutation::mutateElites(std::vector<Chromosome> elites, Parameters params) {
 	std::vector<Chromosome> mutations;
 	std::uniform_int_distribution<int> eliteDist(0, elites.size() - 1);
-	std::vector<double> operatorProbs = { params.op_randomTranspose, params.op_split, params.op_merge };
+	std::vector<double> operatorProbs = { params.op_randomTranspose, params.op_split, params.op_merge, params.op_repeat };
 	for (int i = 0; i < params.numMutations; i++)
 		mutations.push_back(
 			mutate(elites[eliteDist(mt)], operatorProbs )
@@ -311,8 +315,10 @@ Chromosome geneticalgorithm::operators::mutation::sub::split(Chromosome chromoso
 Chromosome geneticalgorithm::operators::mutation::sub::merge(Chromosome chromosome) {
 	unsigned int partIndex, measureIndex, noteIndex1, noteIndex2; Composition comp = chromosome.composition();
 	helper::getRandomNoteCoupleIndices(chromosome, &partIndex, &measureIndex, &noteIndex1, &noteIndex2);
-	Note selectedNote1 = comp.parts()[partIndex].measures()[measureIndex].notes()[noteIndex1];
-	Note selectedNote2 = comp.parts()[partIndex].measures()[measureIndex].notes()[noteIndex2];
+	Measure m1 = comp.parts()[partIndex].measures()[measureIndex], m2 = comp.parts()[partIndex].measures()[measureIndex];
+	if (noteIndex1 >= m1.numNotes() || noteIndex2 >= m2.numNotes()) return Chromosome(comp);
+	Note selectedNote1 = m1.notes()[noteIndex1];
+	Note selectedNote2 = m2.notes()[noteIndex2];
 	Key key = comp.parts()[partIndex].measures()[measureIndex].key();
 	Pitch newPitch; Duration newDuration;
 	key.meanPitch(selectedNote1.pitch(), selectedNote2.pitch(), &newPitch);
@@ -322,4 +328,8 @@ Chromosome geneticalgorithm::operators::mutation::sub::merge(Chromosome chromoso
 		comp.removeNoteAt(partIndex, measureIndex, noteIndex2);
 	}
 	return Chromosome(comp);
+}
+
+Chromosome geneticalgorithm::operators::mutation::sub::repeat(Chromosome chromosome) {
+	return Chromosome(chromosome);
 }
