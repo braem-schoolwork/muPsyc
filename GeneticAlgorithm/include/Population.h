@@ -36,6 +36,19 @@ namespace geneticalgorithm {
 		}
 		void clearChromosomes() { c.clear(); }
 
+		unsigned int getBestFitIndex() {
+			double highestFitness = 0.0; unsigned int highestFitIndex = -1;
+			for (unsigned int i = 0; i < c.size(); i++)
+				if (c[i].fitness() > highestFitness) {
+					highestFitIndex = i;
+					highestFitness = c[i].fitness();
+				}
+			return highestFitIndex;
+		}
+		Chromosome getBestFit() {
+			return c[getBestFitIndex()];
+		}
+
 		Chromosome& operator[](unsigned int i) { return c[i]; }
 		const Chromosome& operator[](unsigned int i)const { return c[i]; }
 	};
