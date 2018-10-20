@@ -4,6 +4,12 @@
 std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::selectElites(Population population, Parameters params) {
 	std::vector<Chromosome> elites;
 	for (unsigned int i = 0; i < params.numElites; i++) {
+		if (i == 0) {
+			unsigned int bestFitIndex = population.getBestFitIndex();
+			elites.push_back(population.chromosomes()[bestFitIndex]);
+			population.removeChromosomeAt(bestFitIndex);
+			continue;
+		}
 		std::vector<double> probs;
 		for (Chromosome chr : population.chromosomes())
 			probs.push_back(chr.fitness());
