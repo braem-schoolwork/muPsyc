@@ -149,8 +149,9 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 	std::vector<unsigned int> measureTickLengths = composition.measureTickLengths(); //holds tick lengths of each measure (may vary if different time sig)
 	std::vector<bool> hasNoteChanged(composition.numParts(), false); //mask of what notes have moved in a tick
 	unsigned int tick = 0, partTickLength = composition.parts()[0].tickLength(), measureIndex = 0, measureTick = 0; //ticks
+	bool isInInstrumentRegister = true;
 	Key key = composition.parts()[0].measures()[measureIndex].key(); //key of current measure
-	while (tick < partTickLength) { //iterate through entire part
+	while (tick < partTickLength && isInInstrumentRegister) { //iterate through entire part
 		std::vector<Note> currentNotes; //holds notes currently being played
 		for (unsigned int partIndex = 0; partIndex < noteIndices.size(); partIndex++)
 			currentNotes.push_back(notes[partIndex][noteIndices[partIndex]]); //fill current notes vector
@@ -161,6 +162,8 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 			didAllMove = didAllMove && hasNoteChanged[partIndex];
 			if (hasNoteChanged[partIndex]) howManyMoved++;
 			if (hasNoteChanged[partIndex]) {
+				isInInstrumentRegister = isInInstrumentRegister && 
+					!other::outOfInstrumentRegister(currentNotes[partIndex], composition.parts()[partIndex].instrument());
 				for (unsigned int i = 0; i < knownDurations.size(); i++) {
 					if (currentNotes[partIndex].duration() != knownDurations[i]) {
 						knownDurations.push_back(currentNotes[partIndex].duration());
@@ -248,6 +251,11 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 				key = composition.parts()[0].measures()[measureIndex].key(); //new key
 		}
 	}
+	if (!isInInstrumentRegister) {
+		fitnessInfo->fitness = 0.01;
+		return;
+	}
+
 	onsetSync /= static_cast<double>(onsetSyncCtr);
 	ldvFit += brownjordana2011::limitedDurationValues(knownDurations); ldvCtr++;
 
@@ -370,4 +378,11 @@ double geneticalgorithm::fitness::rules::brownjordana2011::contour(std::vector<s
 	for (std::vector<int> c : conts)
 		rtn += contour(c);
 	return rtn / static_cast<double>(conts.size());
+}
+
+bool geneticalgorithm::fitness::rules::other::outOfInstrumentRegister(music::Note note, char instrument) {
+	Pitch lowerBound, upperBound;
+	music::getInstrumentBounds(instrument, &lowerBound, &upperBound);
+	if (note > upperBound || note < lowerBound) return true;
+	return false;
 }

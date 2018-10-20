@@ -116,6 +116,10 @@ namespace geneticalgorithm {
 				double contour(std::vector<std::vector<int>> conts);
 			}
 
+			namespace other {
+				bool outOfInstrumentRegister(music::Note note, char instrument);
+			}
+
 			void applyAllRules(music::Composition composition, FitnessInfo *fitnessInfo, Parameters params);
 		}
 		void evaluate(Chromosome *chromosome, Parameters params);
