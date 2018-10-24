@@ -25,7 +25,7 @@ namespace geneticalgorithm {
 
 			double onsetSynchronizationFitness;
 
-			unsigned int numBrownJordana2011FitnessRules = 4;
+			unsigned int numBrownJordana2011FitnessRules = 5;
 			double largeLeapResolutionFitness;
 			double unequalIntevalsFitness;
 			double scale7orLessDegreesFitness;
@@ -42,7 +42,7 @@ namespace geneticalgorithm {
 			}
 			void setBrownJordana2011Fitness() {
 				brownJordana2011Fitness = (largeLeapResolutionFitness + unequalIntevalsFitness + scale7orLessDegreesFitness +
-					limitedDurationValuesFitness) / static_cast<double>(numBrownJordana2011FitnessRules);
+					limitedDurationValuesFitness + contourFitness) / static_cast<double>(numBrownJordana2011FitnessRules);
 				fitness = brownJordana2011Fitness;
 			}
 			void setOverallFitness() {
@@ -50,7 +50,7 @@ namespace geneticalgorithm {
 					pitchOverlappingFitness + semblantMotionFitness + parallelMotionFitness + avoidSemblantApproachBetweenFusedIntervalsFitness +
 					exposedIntervalsFitness + parallelFusedIntervalsFitness + avoidTonalFusionFitness + obliqueApproachToFusedIntervalsFitness +
 					avoidDisjunctApproachToFusedIntervalsFitness + chordSpacingFitness + onsetSynchronizationFitness + largeLeapResolutionFitness +
-					unequalIntevalsFitness + scale7orLessDegreesFitness + limitedDurationValuesFitness)
+					unequalIntevalsFitness + scale7orLessDegreesFitness + limitedDurationValuesFitness + contourFitness)
 					/ static_cast<double>(numHuron2001FitnessRules + numBrownJordana2011FitnessRules);
 				huron2001Fitness = (registralCompassFitness + leapLengtheningFitness + partCrossingFitness +
 					pitchOverlappingFitness + semblantMotionFitness + parallelMotionFitness + avoidSemblantApproachBetweenFusedIntervalsFitness +
@@ -58,7 +58,7 @@ namespace geneticalgorithm {
 					avoidDisjunctApproachToFusedIntervalsFitness + chordSpacingFitness + onsetSynchronizationFitness)
 					/ static_cast<double>(numHuron2001FitnessRules);
 				brownJordana2011Fitness = (largeLeapResolutionFitness + unequalIntevalsFitness + scale7orLessDegreesFitness +
-					limitedDurationValuesFitness) / static_cast<double>(numBrownJordana2011FitnessRules);
+					limitedDurationValuesFitness + contourFitness) / static_cast<double>(numBrownJordana2011FitnessRules);
 			}
 
 			FitnessInfo() {}

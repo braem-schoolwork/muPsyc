@@ -258,6 +258,8 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 
 	onsetSync /= static_cast<double>(onsetSyncCtr);
 	ldvFit += brownjordana2011::limitedDurationValues(knownDurations); ldvCtr++;
+	//analyze contour of top-most part
+	fitnessInfo->contourFitness = brownjordana2011::contour(absIntervals[absIntervals.size() - 1]);
 
 	fitnessInfo->registralCompassFitness = rcFit / static_cast<double>(rcCtr);
 	fitnessInfo->leapLengtheningFitness = llFit / static_cast<double>(llCtr);
@@ -368,9 +370,29 @@ double geneticalgorithm::fitness::rules::brownjordana2011::limitedDurationValues
 	return durations.size() > 5 ? 0.0 : 1.0;
 }
 
-//TODO
 double geneticalgorithm::fitness::rules::brownjordana2011::contour(std::vector<int> cont) {
-	return 1.0;
+	double fit = 0.0; int ctr = 0;
+	bool wasPrevAscending = false;
+	int prevContourType; //-1 for descending, 0 for same note, 1 for ascending
+	for (unsigned int i = 0; i < cont.size(); i++) {
+		int contourType;
+		if (cont[i] > 0) { //ascending
+			wasPrevAscending = true; contourType = 1;
+			if (wasPrevAscending) {
+				fit -= 1.0; ctr--;
+			}
+		}
+		else if (cont[i] < 0) { //descending
+			fit += 1.0; ctr++; //always good
+			wasPrevAscending = false; contourType = -1;
+		}
+		else { //no movement
+			contourType = 0;
+		}
+		prevContourType = contourType;
+	}
+	if (ctr < 0 || fit < 0.0 + std::numeric_limits<double>::epsilon()) return 0.0;
+	return fit / static_cast<double>(ctr);
 }
 
 double geneticalgorithm::fitness::rules::brownjordana2011::contour(std::vector<std::vector<int>> conts) {
