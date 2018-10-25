@@ -129,6 +129,100 @@ bool geneticalgorithm::fitness::rules::huron2001::helper::onSync(music::BPM bpm,
 	return abs(millis1 - millis2) < 100;
 }
 
+double geneticalgorithm::fitness::rules::brownjordana2011::leapResolution(music::Note pastNote2, music::Note pastNote1, music::Note currentNote) {
+	bool isLargeLeap;
+	switch (pastNote2 - pastNote1) {
+	case CHRINT_UNISON:
+	case CHRINT_MIN2ND:
+	case CHRINT_MAJ2ND:
+	case CHRINT_MIN3RD:
+	case CHRINT_MAJ3RD:
+	case CHRINT_4TH:
+	case CHRINT_TRITONE:
+	case CHRINT_5TH: isLargeLeap = false;
+	default: isLargeLeap = true;
+	}
+	if (!isLargeLeap) return -1.0;
+
+	bool isSmallInterval;
+	switch (pastNote1 - currentNote) {
+	case CHRINT_UNISON:
+	case CHRINT_MIN2ND:
+	case CHRINT_MAJ2ND:
+	case CHRINT_MIN3RD:
+	case CHRINT_MAJ3RD: isSmallInterval = true;
+	default: isSmallInterval = false;
+	}
+
+	bool isInOppositeDirection = false;
+	if (pastNote2 > pastNote1) //moving down
+		isInOppositeDirection = pastNote1 < currentNote; //current note moving up
+	else //moving up
+		isInOppositeDirection = pastNote1 > currentNote; //current note moving down
+
+	return isSmallInterval && isInOppositeDirection ? 1.0 : 0.0;
+}
+
+double geneticalgorithm::fitness::rules::brownjordana2011::unequalIntervals(music::Key key) {
+	bool equalInts = true;
+	unsigned int prevInterval = 0;
+	for (unsigned int i = 1; i < key.scale().size(); i++) {
+		Pitch p1 = Pitch(key.pitchClass(i - 1), 4);
+		Pitch p2 = key.nextPitchInKey(p1);
+		if (i > 1 && prevInterval != p1 - p2) return 1.0;
+		prevInterval = p1 - p2;
+	}
+	return 0.0;
+}
+
+double geneticalgorithm::fitness::rules::brownjordana2011::scale7orLessDegrees(music::Key key) {
+	return key.scaleSize() > 7 ? 0.0 : 1.0;
+}
+
+double geneticalgorithm::fitness::rules::brownjordana2011::limitedDurationValues(std::vector<music::Duration> durations) {
+	return durations.size() > 5 ? 0.0 : 1.0;
+}
+
+double geneticalgorithm::fitness::rules::brownjordana2011::contour(std::vector<int> cont) {
+	double fit = 0.0; int ctr = 0;
+	bool wasPrevAscending = false;
+	int prevContourType; //-1 for descending, 0 for same note, 1 for ascending
+	for (unsigned int i = 0; i < cont.size(); i++) {
+		int contourType;
+		if (cont[i] > 0) { //ascending
+			wasPrevAscending = true; contourType = 1;
+			if (wasPrevAscending) {
+				fit -= 1.0; ctr--;
+			}
+		}
+		else if (cont[i] < 0) { //descending
+			fit += 1.0; ctr++; //always good
+			wasPrevAscending = false; contourType = -1;
+		}
+		else { //no movement
+			contourType = 0;
+		}
+		prevContourType = contourType;
+	}
+	if (ctr < 0 || fit < 0.0 + std::numeric_limits<double>::epsilon()) return 0.0;
+	return fit / static_cast<double>(ctr);
+}
+
+double geneticalgorithm::fitness::rules::brownjordana2011::contour(std::vector<std::vector<int>> conts) {
+	double rtn = 0.0;
+	for (std::vector<int> c : conts)
+		rtn += contour(c);
+	return rtn / static_cast<double>(conts.size());
+}
+
+bool geneticalgorithm::fitness::rules::other::outOfInstrumentRegister(music::Note note, char instrument) {
+	Pitch lowerBound, upperBound;
+	music::getInstrumentBounds(instrument, &lowerBound, &upperBound);
+	if (note > upperBound || note < lowerBound) return true;
+	return false;
+}
+
+
 void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composition, FitnessInfo * fitnessInfo, Parameters params) {
 	//fitness accumulators for each rule
 	double rcFit = 0.0, llFit = 0.0, pcFit = 0.0, poFit = 0.0, smFit = 0.0, pmFit = 0.0,
@@ -314,97 +408,4 @@ void geneticalgorithm::fitness::evaluate(Chromosome * chromosome, Parameters par
 	FitnessInfo fitnessInfo;
 	rules::applyAllRules(chromosome->composition(), &fitnessInfo, params);
 	chromosome->setFitnessInfo(fitnessInfo);
-}
-
-double geneticalgorithm::fitness::rules::brownjordana2011::leapResolution(music::Note pastNote2, music::Note pastNote1, music::Note currentNote) {
-	bool isLargeLeap;
-	switch (pastNote2 - pastNote1) {
-	case CHRINT_UNISON:
-	case CHRINT_MIN2ND:
-	case CHRINT_MAJ2ND:
-	case CHRINT_MIN3RD:
-	case CHRINT_MAJ3RD:
-	case CHRINT_4TH:
-	case CHRINT_TRITONE:
-	case CHRINT_5TH: isLargeLeap = false;
-	default: isLargeLeap = true;
-	}
-	if (!isLargeLeap) return -1.0;
-
-	bool isSmallInterval;
-	switch (pastNote1 - currentNote) {
-	case CHRINT_UNISON:
-	case CHRINT_MIN2ND:
-	case CHRINT_MAJ2ND:
-	case CHRINT_MIN3RD:
-	case CHRINT_MAJ3RD: isSmallInterval = true;
-	default: isSmallInterval = false;
-	}
-
-	bool isInOppositeDirection = false;
-	if (pastNote2 > pastNote1) //moving down
-		isInOppositeDirection = pastNote1 < currentNote; //current note moving up
-	else //moving up
-		isInOppositeDirection = pastNote1 > currentNote; //current note moving down
-
-	return isSmallInterval && isInOppositeDirection ? 1.0 : 0.0;
-}
-
-double geneticalgorithm::fitness::rules::brownjordana2011::unequalIntervals(music::Key key) {
-	bool equalInts = true;
-	unsigned int prevInterval = 0;
-	for (unsigned int i = 1; i < key.scale().size(); i++) {
-		Pitch p1 = Pitch(key.pitchClass(i - 1), 4);
-		Pitch p2 = key.nextPitchInKey(p1);
-		if (i > 1 && prevInterval != p1 - p2) return 1.0;
-		prevInterval = p1 - p2;
-	}
-	return 0.0;
-}
-
-double geneticalgorithm::fitness::rules::brownjordana2011::scale7orLessDegrees(music::Key key) {
-	return key.scaleSize() > 7 ? 0.0 : 1.0;
-}
-
-double geneticalgorithm::fitness::rules::brownjordana2011::limitedDurationValues(std::vector<music::Duration> durations) {
-	return durations.size() > 5 ? 0.0 : 1.0;
-}
-
-double geneticalgorithm::fitness::rules::brownjordana2011::contour(std::vector<int> cont) {
-	double fit = 0.0; int ctr = 0;
-	bool wasPrevAscending = false;
-	int prevContourType; //-1 for descending, 0 for same note, 1 for ascending
-	for (unsigned int i = 0; i < cont.size(); i++) {
-		int contourType;
-		if (cont[i] > 0) { //ascending
-			wasPrevAscending = true; contourType = 1;
-			if (wasPrevAscending) {
-				fit -= 1.0; ctr--;
-			}
-		}
-		else if (cont[i] < 0) { //descending
-			fit += 1.0; ctr++; //always good
-			wasPrevAscending = false; contourType = -1;
-		}
-		else { //no movement
-			contourType = 0;
-		}
-		prevContourType = contourType;
-	}
-	if (ctr < 0 || fit < 0.0 + std::numeric_limits<double>::epsilon()) return 0.0;
-	return fit / static_cast<double>(ctr);
-}
-
-double geneticalgorithm::fitness::rules::brownjordana2011::contour(std::vector<std::vector<int>> conts) {
-	double rtn = 0.0;
-	for (std::vector<int> c : conts)
-		rtn += contour(c);
-	return rtn / static_cast<double>(conts.size());
-}
-
-bool geneticalgorithm::fitness::rules::other::outOfInstrumentRegister(music::Note note, char instrument) {
-	Pitch lowerBound, upperBound;
-	music::getInstrumentBounds(instrument, &lowerBound, &upperBound);
-	if (note > upperBound || note < lowerBound) return true;
-	return false;
 }
