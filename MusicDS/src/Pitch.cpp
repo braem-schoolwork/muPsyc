@@ -5,18 +5,18 @@
 std::ostream & music::operator<<(std::ostream & strm, const Pitch& p) {
 	const char* output = "?";
 	switch (p.pitchClass()) {
-	case C: output = "C"; break;
-	case Cs: output = "Cs"; break;
-	case D: output = "D"; break;
-	case Ds: output = "Ds"; break;
-	case E: output = "E"; break;
-	case F: output = "F"; break;
-	case Fs: output = "Fs"; break;
-	case G: output = "G"; break;
-	case Gs: output = "Gs"; break;
-	case A: output = "A"; break;
-	case As: output = "As"; break;
-	case B: output = "B"; break;
+	case 0: output = "C"; break;
+	case 1: output = "Cs"; break;
+	case 2: output = "D"; break;
+	case 3: output = "Ds"; break;
+	case 4: output = "E"; break;
+	case 5: output = "F"; break;
+	case 6: output = "Fs"; break;
+	case 7: output = "G"; break;
+	case 8: output = "Gs"; break;
+	case 9: output = "A"; break;
+	case 10: output = "As"; break;
+	case 11: output = "B"; break;
 	}
 	return strm << output << p.octave();
 }
