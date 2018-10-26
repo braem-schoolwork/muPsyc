@@ -8,6 +8,7 @@
 #include "RunInfo.h"
 #include "Parameters.h"
 #include "GeneticAlgorithm.h"
+#include "OptimizationType.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -40,6 +41,8 @@ int main() {
 	params.numElites = 10;
 	params.numMutations = 25;
 	params.numCrossovers = 25;
+
+	params.optType = OptimizationType(SINGLE_THREADED);
 
 	params.onsetSyncLowerBound = 0.3;
 	params.onsetSyncUpperBound = 0.6;

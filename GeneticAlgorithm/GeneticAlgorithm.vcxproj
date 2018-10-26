@@ -196,6 +196,7 @@
     <ClInclude Include="include\InitParams.h" />
     <ClInclude Include="include\Mutation.h" />
     <ClInclude Include="include\Operators.h" />
+    <ClInclude Include="include\OptimizationType.h" />
     <ClInclude Include="include\Parameters.h" />
     <ClInclude Include="include\Population.h" />
     <ClInclude Include="include\RouletteSelection.h" />

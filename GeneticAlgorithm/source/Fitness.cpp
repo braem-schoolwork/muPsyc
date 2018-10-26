@@ -3,7 +3,6 @@
 
 using namespace music;
 
-
 double geneticalgorithm::fitness::rules::huron2001::registralCompass(music::Note note) {
 	return note <= G5 && note >= F2 ? 1.0 : 0.0;
 }
@@ -404,8 +403,29 @@ bool geneticalgorithm::fitness::rules::huron2001::helper::isObliqueMotion(music:
 		(pastUpper - upper == 0 && pastLower - lower > 0);
 }
 
+__global__
 void geneticalgorithm::fitness::evaluate(Chromosome * chromosome, Parameters params) {
 	FitnessInfo fitnessInfo;
 	rules::applyAllRules(chromosome->composition(), &fitnessInfo, params);
 	chromosome->setFitnessInfo(fitnessInfo);
+}
+
+void geneticalgorithm::fitness::evaluateAll(Population *population, Parameters params) {
+	std::vector<double> fitnesses(population->size());
+
+	switch (params.optType) {
+	case SINGLE_THREADED: {
+		for (unsigned int i = 0; i < population->size(); i++) {
+			Chromosome chr = population->at(i);
+			evaluate(&chr, params);
+			population->at(i) = chr;
+		}
+	} break;
+	case OPENMP: {
+
+	} break;
+	case CUDA: {
+
+	} break;
+	}
 }

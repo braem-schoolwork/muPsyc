@@ -3,6 +3,10 @@
 #include "FitnessInfo.h"
 #include "Parameters.h"
 #include "Chromosome.h"
+#include "Population.h"
+//cuda stuffs
+#include "cuda_runtime.h"
+#include "device_launch_parameters.h"
 
 namespace geneticalgorithm {
 	namespace fitness {
@@ -123,5 +127,6 @@ namespace geneticalgorithm {
 			void applyAllRules(music::Composition composition, FitnessInfo *fitnessInfo, Parameters params);
 		}
 		void evaluate(Chromosome *chromosome, Parameters params);
+		void evaluateAll(Population *population, Parameters params);
 	}
 }

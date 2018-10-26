@@ -60,6 +60,9 @@
     <ClInclude Include="include\Selection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\OptimizationType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\CompositionGenerator.cpp">
