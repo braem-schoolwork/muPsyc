@@ -403,7 +403,6 @@ bool geneticalgorithm::fitness::rules::huron2001::helper::isObliqueMotion(music:
 		(pastUpper - upper == 0 && pastLower - lower > 0);
 }
 
-__global__
 void geneticalgorithm::fitness::evaluate(Chromosome * chromosome, Parameters params) {
 	FitnessInfo fitnessInfo;
 	rules::applyAllRules(chromosome->composition(), &fitnessInfo, params);
