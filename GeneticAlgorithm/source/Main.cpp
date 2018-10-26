@@ -35,14 +35,14 @@ int main() {
 
 	Parameters params;
 	params.initParams = initParams;
-	params.populationSize = 60;
+	params.populationSize = 100;
 	params.numGenerations = 50;
 
-	params.numElites = 10;
-	params.numMutations = 25;
-	params.numCrossovers = 25;
+	params.numElites = 20;
+	params.numMutations = 40;
+	params.numCrossovers = 40;
 
-	params.optType = OptimizationType(SINGLE_THREADED);
+	params.optType = OptimizationType(PARALLEL_GPU);
 
 	params.onsetSyncLowerBound = 0.3;
 	params.onsetSyncUpperBound = 0.6;

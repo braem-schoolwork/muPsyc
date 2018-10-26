@@ -1,4 +1,4 @@
 #pragma once
 namespace geneticalgorithm {
-	enum OptimizationType { SINGLE_THREADED, OPENMP, CUDA };
+	enum OptimizationType { SINGLE_THREADED, PARALLEL_CPU, PARALLEL_GPU };
 }
