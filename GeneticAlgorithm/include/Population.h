@@ -49,6 +49,8 @@ namespace geneticalgorithm {
 			return c[getBestFitIndex()];
 		}
 
+		Chromosome& at(unsigned int i) { return c[i]; }
+		const Chromosome& at(unsigned int i)const { return c[i]; }
 		Chromosome& operator[](unsigned int i) { return c[i]; }
 		const Chromosome& operator[](unsigned int i)const { return c[i]; }
 	};
