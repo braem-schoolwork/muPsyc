@@ -63,6 +63,9 @@
     <ClInclude Include="include\OptimizationType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\FitnessCUDA.cuh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\CompositionGenerator.cpp">
@@ -92,5 +95,10 @@
     <ClCompile Include="source\Selection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="source\FitnessCUDA.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>
