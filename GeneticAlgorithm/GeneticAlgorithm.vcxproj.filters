@@ -63,7 +63,7 @@
     <ClInclude Include="include\OptimizationType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\FitnessCUDA.cuh">
+    <ClInclude Include="include\FitnessCUDA.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

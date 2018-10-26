@@ -1,5 +1,7 @@
 #include "MusicDS.h"
 #include "Fitness.h"
+#include "FitnessCUDA.h"
+#include <omp.h>
 
 using namespace music;
 
@@ -420,11 +422,16 @@ void geneticalgorithm::fitness::evaluateAll(Population *population, Parameters p
 			population->at(i) = chr;
 		}
 	} break;
-	case OPENMP: {
-
+	case PARALLEL_CPU: {
+	#pragma omp parallel for
+		for (int i = 0; i < population->size(); i++) {
+			Chromosome chr = population->at(i);
+			evaluate(&chr, params);
+			population->at(i) = chr;
+		}
 	} break;
-	case CUDA: {
-
+	case PARALLEL_GPU: {
+		evaluateWithCUDA(population, params);
 	} break;
-	}
+	} //end switch
 }
