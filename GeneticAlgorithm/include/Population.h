@@ -49,6 +49,9 @@ namespace geneticalgorithm {
 			return c[getBestFitIndex()];
 		}
 
+		std::vector<Chromosome>::iterator begin() { return c.begin(); }
+		std::vector<Chromosome>::iterator end() { return c.end(); }
+
 		Chromosome& at(unsigned int i) { return c[i]; }
 		const Chromosome& at(unsigned int i)const { return c[i]; }
 		Chromosome& operator[](unsigned int i) { return c[i]; }
