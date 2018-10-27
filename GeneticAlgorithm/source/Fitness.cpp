@@ -405,10 +405,16 @@ bool geneticalgorithm::fitness::rules::huron2001::helper::isObliqueMotion(music:
 		(pastUpper - upper == 0 && pastLower - lower > 0);
 }
 
-void geneticalgorithm::fitness::evaluate(Chromosome * chromosome, Parameters params) {
+void geneticalgorithm::fitness::evaluate(Chromosome & chromosome, Parameters params) {
 	FitnessInfo fitnessInfo;
-	rules::applyAllRules(chromosome->composition(), &fitnessInfo, params);
-	chromosome->setFitnessInfo(fitnessInfo);
+	rules::applyAllRules(chromosome.composition(), &fitnessInfo, params);
+	chromosome.setFitnessInfo(fitnessInfo);
+}
+
+geneticalgorithm::fitness::FitnessInfo geneticalgorithm::fitness::evaluateCUDA(Chromosome chromosome, Parameters params) {
+	FitnessInfo fitnessInfo;
+	rules::applyAllRules(chromosome.composition(), &fitnessInfo, params);
+	return fitnessInfo;
 }
 
 void geneticalgorithm::fitness::evaluateAll(Population *population, Parameters params) {
@@ -417,21 +423,17 @@ void geneticalgorithm::fitness::evaluateAll(Population *population, Parameters p
 	switch (params.optType) {
 	case SINGLE_THREADED: {
 		for (unsigned int i = 0; i < population->size(); i++) {
-			Chromosome chr = population->at(i);
-			evaluate(&chr, params);
-			population->at(i) = chr;
+			evaluate(population->at(i), params);
 		}
 	} break;
 	case PARALLEL_CPU: {
 	#pragma omp parallel for
 		for (int i = 0; i < population->size(); i++) {
-			Chromosome chr = population->at(i);
-			evaluate(&chr, params);
-			population->at(i) = chr;
+			evaluate(population->at(i), params);
 		}
 	} break;
 	case PARALLEL_GPU: {
-		evaluateWithCUDA(population, params);
+		evaluateWithCUDA(population[0], params);
 	} break;
 	} //end switch
 }
