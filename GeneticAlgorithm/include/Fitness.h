@@ -124,7 +124,6 @@ namespace geneticalgorithm {
 			void applyAllRules(music::Composition composition, FitnessInfo *fitnessInfo, Parameters params);
 		}
 		void evaluate(Chromosome &chromosome, Parameters params);
-		FitnessInfo evaluateCUDA(Chromosome chromosome, Parameters params);
 		void evaluateAll(Population *population, Parameters params);
 	}
 }

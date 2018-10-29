@@ -1,6 +1,5 @@
 #include "MusicDS.h"
 #include "Fitness.h"
-#include "FitnessCUDA.h"
 #include <omp.h>
 
 using namespace music;
@@ -411,12 +410,6 @@ void geneticalgorithm::fitness::evaluate(Chromosome & chromosome, Parameters par
 	chromosome.setFitnessInfo(fitnessInfo);
 }
 
-geneticalgorithm::fitness::FitnessInfo geneticalgorithm::fitness::evaluateCUDA(Chromosome chromosome, Parameters params) {
-	FitnessInfo fitnessInfo;
-	rules::applyAllRules(chromosome.composition(), &fitnessInfo, params);
-	return fitnessInfo;
-}
-
 void geneticalgorithm::fitness::evaluateAll(Population *population, Parameters params) {
 	std::vector<double> fitnesses(population->size());
 
@@ -431,9 +424,6 @@ void geneticalgorithm::fitness::evaluateAll(Population *population, Parameters p
 		for (int i = 0; i < population->size(); i++) {
 			evaluate(population->at(i), params);
 		}
-	} break;
-	case PARALLEL_GPU: {
-		evaluateWithCUDA(population[0], params);
 	} break;
 	} //end switch
 }
