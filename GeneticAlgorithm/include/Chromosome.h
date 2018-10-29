@@ -19,5 +19,12 @@ namespace geneticalgorithm {
 		void setComposition(music::Composition composition) { c = composition; }
 		void setFitnessInfo(fitness::FitnessInfo fitnessInfo) { f = fitnessInfo; }
 		void setFitness(double fitness) { f.fitness = fitness; }
+
+		bool operator==(const Chromosome &other) const;
+		bool operator!=(const Chromosome &other) const;
+		bool operator>=(const Chromosome &other) const;
+		bool operator>(const Chromosome &other) const;
+		bool operator<=(const Chromosome &other) const;
+		bool operator<(const Chromosome &other) const;
 	};
 }
