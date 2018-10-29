@@ -20,11 +20,39 @@ namespace geneticalgorithm {
 		void setFitnessInfo(fitness::FitnessInfo fitnessInfo) { f = fitnessInfo; }
 		void setFitness(double fitness) { f.fitness = fitness; }
 
-		bool operator==(const Chromosome &other) const;
-		bool operator!=(const Chromosome &other) const;
-		bool operator>=(const Chromosome &other) const;
-		bool operator>(const Chromosome &other) const;
-		bool operator<=(const Chromosome &other) const;
-		bool operator<(const Chromosome &other) const;
+		bool operator==(const Chromosome & other) const {
+			double thisFit = this->fitness(), otherFit = other.fitness(), double epsilon = std::numeric_limits<double>().epsilon());
+			if (thisFit <= otherFit + epsilon && thisFit >= otherFit - epsilon) return true;
+			else return false;
+		}
+
+		bool operator!=(const Chromosome & other) const {
+			return !(*this == other);
+		}
+
+		bool operator>=(const Chromosome & other) const {
+			if (*this == other) return true;
+			else if (this->fitness() > other.fitness()) return true;
+			else return false;
+		}
+
+		bool operator>(const Chromosome & other) const {
+			if (*this == other) return false;
+			else if (this->fitness() > other.fitness()) return true;
+			else return false;
+		}
+
+		bool operator<=(const Chromosome & other) const {
+			if (*this == other) return true;
+			else if (this->fitness() < other.fitness()) return true;
+			else return false;
+		}
+
+		bool operator<(const Chromosome & other) const {
+			if (*this == other) return false;
+			else if (this->fitness() > other.fitness()) return true;
+			else return false;
+		}
+
 	};
 }
