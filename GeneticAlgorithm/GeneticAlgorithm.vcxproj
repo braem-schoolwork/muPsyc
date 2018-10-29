@@ -223,6 +223,7 @@
     <ClInclude Include="include\RouletteSelection.h" />
     <ClInclude Include="include\RunInfo.h" />
     <ClInclude Include="include\Selection.h" />
+    <ClInclude Include="include\SelectionType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\Chromosome.cpp" />

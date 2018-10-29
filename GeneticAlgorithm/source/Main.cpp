@@ -9,6 +9,7 @@
 #include "Parameters.h"
 #include "GeneticAlgorithm.h"
 #include "OptimizationType.h"
+#include "SelectionType.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -42,7 +43,8 @@ int main() {
 	params.numMutations = 40;
 	params.numCrossovers = 40;
 
-	params.optType = OptimizationType(PARALLEL_CPU);
+	params.optType = fitness::FitnessOptimizationType(fitness::PARALLEL_CPU);
+	params.selType = operators::selection::SelectionType(operators::selection::SURVIVAL_OF_THE_FITTEST);
 
 	params.onsetSyncLowerBound = 0.3;
 	params.onsetSyncUpperBound = 0.6;

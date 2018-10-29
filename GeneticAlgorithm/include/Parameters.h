@@ -1,6 +1,7 @@
 #pragma once
 #include "InitParams.h"
 #include "OptimizationType.h"
+#include "SelectionType.h"
 #include <algorithm>
 
 namespace geneticalgorithm {
@@ -15,7 +16,8 @@ namespace geneticalgorithm {
 		unsigned int numMutations;
 		unsigned int numCrossovers;
 
-		OptimizationType optType;
+		fitness::FitnessOptimizationType optType;
+		operators::selection::SelectionType selType;
 
 		double onsetSyncLowerBound;
 		double onsetSyncUpperBound;

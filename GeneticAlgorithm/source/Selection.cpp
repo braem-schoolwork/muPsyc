@@ -2,6 +2,17 @@
 #include "RouletteSelection.h"
 
 std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::selectElites(Population population, Parameters params) {
+	switch (params.selType) {
+	case ROULETTE_WHEEL: {
+		return helper::rouletteSelection(population, params);
+	} break;
+	case SURVIVAL_OF_THE_FITTEST: {
+
+	} break;
+	}
+}
+
+std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::helper::rouletteSelection(Population population, Parameters params) {
 	std::vector<Chromosome> elites;
 	for (unsigned int i = 0; i < params.numElites; i++) {
 		if (i == 0) {
