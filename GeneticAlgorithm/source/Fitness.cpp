@@ -1,5 +1,6 @@
 #include "MusicDS.h"
 #include "Fitness.h"
+#include <atomic>
 #include <omp.h>
 
 using namespace music;
@@ -413,9 +414,12 @@ void geneticalgorithm::fitness::evaluate(Chromosome & chromosome, Parameters par
 void geneticalgorithm::fitness::evaluateAll(Population *population, Parameters params) {
 	std::vector<double> fitnesses(population->size());
 
+	std::atomic<double> popFit(0.0);
 	bool isParallel = params.fitnessOptType == PARALLEL_CPU; 
 	#pragma omp parallel for if (isParallel)
 	for (int i = 0; i < population->size(); i++) {
 		evaluate(population->at(i), params);
+		popFit = popFit + population->at(i).fitness();
 	}
+	population->setFitness(static_cast<double>(popFit));
 }
