@@ -1,7 +1,6 @@
 #include "Mutation.h"
 #include "MusicDS.h"
 #include "Chromosome.h"
-#include "RouletteSelection.h"
 #include <random>
 #include <omp.h>
 
@@ -269,7 +268,13 @@ void geneticalgorithm::operators::mutation::sub::helper::transposeRandomNote(Chr
 }
 
 Chromosome geneticalgorithm::operators::mutation::mutate(Chromosome chromosome, std::vector<double> operatorProbabilities) {
-	unsigned int operatorIndex = algorithm::roulleteSelect(operatorProbabilities);
+	unsigned int operatorIndex = -1;
+	std::uniform_real_distribution<double> selDist(0, 1);
+	double randomNum = selDist(mt);
+	double lastProb = 0.0;
+	for (unsigned int i = 0; i < operatorProbabilities.size(); i++)
+		if (randomNum <= operatorProbabilities[i] + lastProb) { operatorIndex = i; break; }
+		else lastProb += operatorProbabilities[i];
 	switch (operatorIndex) {
 	case sub::soi_randomTranspose: return sub::randomTranspose(chromosome);
 	case sub::soi_split: return sub::split(chromosome);
