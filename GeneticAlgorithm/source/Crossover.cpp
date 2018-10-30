@@ -21,6 +21,8 @@ std::vector<Chromosome> geneticalgorithm::operators::crossover::crossElites(std:
 	std::vector<Chromosome> crossovers(params.numCrossovers);
 	std::uniform_int_distribution<unsigned int> eliteDist(0, elites.size() - 1);
 	std::uniform_int_distribution<unsigned int> eliteDist2(0, elites.size() - 2);
+	bool isParallel = params.crossOptType == PARALLEL_CPU;
+	#pragma omp parallel for if (isParallel)
 	for (int i = 0; i < params.numCrossovers; i++) {
 		unsigned int parent1Index = eliteDist(mt);
 		unsigned int parent2Index = eliteDist2(mt);
