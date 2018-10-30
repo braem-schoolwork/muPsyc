@@ -226,7 +226,6 @@
     <ClInclude Include="include\SelectionType.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\Chromosome.cpp" />
     <ClCompile Include="source\CompositionGenerator.cpp" />
     <ClCompile Include="source\Crossover.cpp" />
     <ClCompile Include="source\Device.cpp" />

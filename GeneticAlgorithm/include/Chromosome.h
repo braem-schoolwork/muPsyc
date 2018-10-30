@@ -21,7 +21,7 @@ namespace geneticalgorithm {
 		void setFitness(double fitness) { f.fitness = fitness; }
 
 		bool operator==(const Chromosome & other) const {
-			double thisFit = this->fitness(), otherFit = other.fitness(), double epsilon = std::numeric_limits<double>().epsilon());
+			double thisFit = this->fitness(), otherFit = other.fitness(), epsilon = std::numeric_limits<double>().epsilon();
 			if (thisFit <= otherFit + epsilon && thisFit >= otherFit - epsilon) return true;
 			else return false;
 		}
