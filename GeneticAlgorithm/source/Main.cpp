@@ -44,7 +44,7 @@ int main() {
 	params.numCrossovers = 40;
 
 	params.optType = fitness::FitnessOptimizationType(fitness::PARALLEL_CPU);
-	params.selType = operators::selection::SelectionType(operators::selection::SURVIVAL_OF_THE_FITTEST);
+	params.selType = operators::selection::SelectionType(operators::selection::ROULETTE_WHEEL);
 
 	params.onsetSyncLowerBound = 0.3;
 	params.onsetSyncUpperBound = 0.6;
