@@ -17,6 +17,7 @@ namespace geneticalgorithm {
 		unsigned int numCrossovers;
 
 		fitness::FitnessOptimizationType optType;
+		operators::mutation::MutationOptimizationType mutType;
 		operators::selection::SelectionType selType;
 
 		double onsetSyncLowerBound;
