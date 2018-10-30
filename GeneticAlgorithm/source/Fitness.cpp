@@ -419,7 +419,10 @@ void geneticalgorithm::fitness::evaluateAll(Population *population, Parameters p
 	#pragma omp parallel for if (isParallel)
 	for (int i = 0; i < population->size(); i++) {
 		evaluate(population->at(i), params);
-		popFit = popFit + population->at(i).fitness();
+		//atomic += on double
+		double tmp = popFit.load();
+		while (!popFit.compare_exchange_weak(tmp, tmp + population->at(i).fitness()));
 	}
+
 	population->setFitness(static_cast<double>(popFit));
 }
