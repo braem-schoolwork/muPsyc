@@ -1,5 +1,6 @@
 #include "Selection.h"
 #include <random>
+#include <limits>
 
 std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::selectElites(Population population, Parameters params) {
 	switch (params.selType) {
@@ -24,21 +25,17 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 			continue;
 		}
 		
-		unsigned int eliteIndex = -1; //index of selected elite
+		unsigned int eliteIndex = std::numeric_limits<unsigned int>().infinity(); //index of selected elite
 
 		double avgPopFit = population.avgFitness();
-		std::vector<double> cumulativeProbs(population.size());
-		double lastVal = 0.0;
-		for (unsigned int j = 0; j < cumulativeProbs.size(); j++) {
-			double selProb = population[j].fitness();
-			lastVal += selProb / avgPopFit;
-			cumulativeProbs[j] = lastVal;
-		}
-
 		double randomNum = selDist(mt); //random number between 0 and 1
-		for (unsigned int i = 0; i < cumulativeProbs.size(); i++)
-			if (randomNum <= cumulativeProbs[i]) { eliteIndex = i; break; }
-		//unsigned int eliteIndex = algorithm::roulleteSelect(probs);
+		double lastVal = 0.0;
+		for (unsigned int j = 0; j < population.size(); j++) {
+			double selProb = (population[j].fitness() / avgPopFit) / static_cast<double>(population.size());
+			if (randomNum <= selProb + lastVal) { eliteIndex = j; break; }
+			else lastVal += selProb;
+		}
+		eliteIndex = eliteIndex == std::numeric_limits<unsigned int>().infinity() ? eliteIndex = population.size() - 1 : eliteIndex;
 
 		elites[i] = population[eliteIndex]; //new elite
 
@@ -49,3 +46,4 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 
 	return elites;
 }
+
