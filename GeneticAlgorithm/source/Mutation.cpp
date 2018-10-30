@@ -280,13 +280,11 @@ Chromosome geneticalgorithm::operators::mutation::mutate(Chromosome chromosome, 
 }
 
 std::vector<Chromosome> geneticalgorithm::operators::mutation::mutateElites(std::vector<Chromosome> elites, Parameters params) {
-	std::vector<Chromosome> mutations;
+	std::vector<Chromosome> mutations(params.numMutations);
 	std::uniform_int_distribution<int> eliteDist(0, elites.size() - 1);
 	std::vector<double> operatorProbs = { params.op_randomTranspose, params.op_split, params.op_merge, params.op_repeat };
 	for (int i = 0; i < params.numMutations; i++)
-		mutations.push_back(
-			mutate(elites[eliteDist(mt)], operatorProbs )
-		);
+		mutations[i] = elites[eliteDist(mt)], operatorProbs;
 	return mutations;
 }
 
