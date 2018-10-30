@@ -2,6 +2,7 @@
 #include "Crossover.h"
 #include "Device.h"
 #include <random>
+#include <omp.h>
 
 using namespace geneticalgorithm;
 using namespace music;

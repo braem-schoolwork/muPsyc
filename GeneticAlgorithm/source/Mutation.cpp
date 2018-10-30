@@ -3,7 +3,7 @@
 #include "Chromosome.h"
 #include "RouletteSelection.h"
 #include <random>
-#include <stdexcept>
+#include <omp.h>
 
 using namespace geneticalgorithm;
 using namespace music;
