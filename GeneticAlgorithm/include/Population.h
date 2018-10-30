@@ -1,6 +1,7 @@
 #pragma once
-#include <vector>
 #include "Chromosome.h"
+#include <vector>
+#include <algorithm>
 
 namespace geneticalgorithm {
 	class Population {
@@ -49,6 +50,8 @@ namespace geneticalgorithm {
 		Chromosome getBestFit() {
 			return c[getBestFitIndex()];
 		}
+
+		void sort() { std::sort(c.begin(), c.end()); }
 
 		std::vector<Chromosome>::iterator begin() { return c.begin(); }
 		std::vector<Chromosome>::iterator end() { return c.end(); }
