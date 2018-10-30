@@ -1,14 +1,12 @@
 #include "Selection.h"
-#include "RouletteSelection.h"
 #include <random>
 
 std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::selectElites(Population population, Parameters params) {
 	switch (params.selType) {
 	case ROULETTE_WHEEL:
-	case FITNESS_PROPORTIONATE:
-		return rouletteSelection(population, params); break;
-	case RANK:  break;
-	case TOURNAMENT: break;
+	case FITNESS_PROPORTIONATE:	return rouletteSelection(population, params);	break;
+	case RANK:					return rankSelection(population, params);		break;
+	case TOURNAMENT:			return tournamentSelection(population, params); break;
 	}
 }
 
@@ -39,7 +37,7 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 
 		double randomNum = selDist(mt); //random number between 0 and 1
 		for (unsigned int i = 0; i < cumulativeProbs.size(); i++)
-			if (randomNum <= cumulativeProbs[i]) eliteIndex = i;
+			if (randomNum <= cumulativeProbs[i]) { eliteIndex = i; break; }
 		//unsigned int eliteIndex = algorithm::roulleteSelect(probs);
 
 		elites[i] = population[eliteIndex]; //new elite
