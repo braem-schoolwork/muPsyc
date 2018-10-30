@@ -8,7 +8,7 @@ namespace geneticalgorithm {
 		namespace selection {
 			std::vector<Chromosome> selectElites(Population population, Parameters params);
 			std::vector<Chromosome> rouletteSelection(Population population, Parameters params);
-			std::vector<Chromosome> rankSelection(Population population, Parameters params);
+			std::vector<Chromosome> rankSelection(Population population, Parameters params, bool isLinear);
 			std::vector<Chromosome> tournamentSelection(Population population, Parameters params);
 		}
 	}

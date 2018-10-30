@@ -1,4 +1,5 @@
 #include "Selection.h"
+#include <cmath>
 #include <random>
 #include <limits>
 
@@ -6,7 +7,7 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 	switch (params.selType) {
 	case ROULETTE_WHEEL:
 	case FITNESS_PROPORTIONATE:	return rouletteSelection(population, params);	break;
-	case RANK:					return rankSelection(population, params);		break;
+	case RANK:					return rankSelection(population, params, true);	break;
 	case TOURNAMENT:			return tournamentSelection(population, params); break;
 	}
 }
@@ -47,7 +48,7 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 	return elites;
 }
 
-std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::rankSelection(Population population, Parameters params) {
+std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::rankSelection(Population population, Parameters params, bool isLinear) {
 	std::vector<Chromosome> elites(params.numElites);
 	std::random_device rd;
 	std::mt19937 mt(rd());
@@ -72,7 +73,8 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 		double avgPopFit = population.avgFitness();
 		double randomNum = selDist(mt); //random number between 0 and 1
 		for (unsigned int j = 0; j < population.size(); j++) {
-			double individualSelectionProb = xcoeff * j + ycoeff;
+			double individualSelectionProb = isLinear ? xcoeff * j + ycoeff :
+				xcoeff * exp((ycoeff * j) + ratio);
 			if (randomNum <= individualSelectionProb) { eliteIndex = j; break; }
 		}
 
