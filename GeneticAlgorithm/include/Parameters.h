@@ -21,6 +21,7 @@ namespace geneticalgorithm {
 		operators::mutation::MutationOptimizationType mutOptType;
 		operators::crossover::CrossoverOptimizationType crossOptType;
 		operators::selection::SelectionType selType;
+		unsigned int tournamentSize;
 
 		double onsetSyncLowerBound;
 		double onsetSyncUpperBound;

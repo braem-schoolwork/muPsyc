@@ -48,6 +48,7 @@ int main() {
 	params.mutOptType = operators::mutation::MutationOptimizationType(operators::mutation::PARALLEL_CPU);
 	params.crossOptType = operators::crossover::CrossoverOptimizationType(operators::crossover::PARALLEL_CPU);
 	params.selType = operators::selection::SelectionType(operators::selection::RANK_NEGATIVE_EXPONENTIAL);
+	params.tournamentSize = 10;
 
 	params.onsetSyncLowerBound = 0.3;
 	params.onsetSyncUpperBound = 0.6;
