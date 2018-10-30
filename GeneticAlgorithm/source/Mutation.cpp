@@ -283,6 +283,8 @@ std::vector<Chromosome> geneticalgorithm::operators::mutation::mutateElites(std:
 	std::vector<Chromosome> mutations(params.numMutations);
 	std::uniform_int_distribution<int> eliteDist(0, elites.size() - 1);
 	std::vector<double> operatorProbs = { params.op_randomTranspose, params.op_split, params.op_merge, params.op_repeat };
+	bool isParallel = params.mutOptType == PARALLEL_CPU;
+	#pragma omp parallel for if (isParallel)
 	for (int i = 0; i < params.numMutations; i++)
 		mutations[i] = elites[eliteDist(mt)], operatorProbs;
 	return mutations;
