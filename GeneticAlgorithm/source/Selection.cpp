@@ -52,6 +52,7 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 
 std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::rankSelection(Population population, Parameters params, bool isLinear) {
 	std::vector<Chromosome> elites(params.numElites);
+	bool isParallel = params.selOptType == PARALLEL_CPU;
 	std::random_device rd;
 	std::mt19937 mt(rd());
 	std::uniform_real_distribution<double> selDist(0, 1);
@@ -63,7 +64,8 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 	for (unsigned int i = 0; i < params.numElites; i++) {
 		unsigned int eliteIndex = std::numeric_limits<unsigned int>().infinity(); //index of selected elite
 
-		population.sort();
+		if(isParallel) population.sortParallel();
+		else population.sort();
 
 		double ratio = 2.0, xcoeff, ycoeff;
 		double popSize = static_cast<double>(population.size());
@@ -91,5 +93,38 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 
 std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::tournamentSelection(Population population, Parameters params, bool isDeterministic) {
 	std::vector<Chromosome> elites(params.numElites);
+	bool isParallel = params.selOptType == PARALLEL_CPU;
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_real_distribution<double> selDist(0, 1);
+	for (unsigned int i = 0; i < params.numElites; i++) {
+		unsigned int eliteIndex = std::numeric_limits<unsigned int>().infinity(); //index of selected elite
+
+		population.shuffle(mt); //preserve randomness
+
+		//population size changes, so must be at this scope
+		std::uniform_int_distribution<unsigned int> indexDist(0, population.size() - params.tournamentSize - 1);
+		unsigned int tmpIndex = indexDist(mt); //random index
+		if(isParallel)	population.sortParallel(tmpIndex, tmpIndex + params.tournamentSize); //sort this tournament
+		else			population.sort(tmpIndex, tmpIndex + params.tournamentSize);
+		if (isDeterministic) 
+			eliteIndex = tmpIndex; //always pick best individual of tournament
+		else {
+			unsigned int ctr = 0;
+			unsigned int endIndex = tmpIndex + params.tournamentSize;
+			double randomNum = selDist(mt);
+			while (tmpIndex <= endIndex) {
+				double selProb = params.tournamentProb * pow(1.0 - params.tournamentProb, ctr);
+				if (randomNum <= selProb) { eliteIndex = tmpIndex; break; }
+				tmpIndex++; ctr++;
+			}
+		}
+
+		elites[i] = population[eliteIndex]; //new elite
+
+		//to not get same one twice, remove this elite from the population
+		population.setFitness(population.fitness() - population[eliteIndex].fitness());
+		population.removeChromosomeAt(eliteIndex);
+	}
 	return elites;
 }
