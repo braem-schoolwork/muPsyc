@@ -15,6 +15,7 @@ namespace geneticalgorithm {
 		double fitness() const { return f; }
 		std::vector<Chromosome> chromosomes() const { return c; }
 		unsigned int size() const { return c.size(); }
+		double avgFitness() const { return f / static_cast<double>(c.size()); }
 
 		void setFitness(double fitness) { f = fitness; }
 		void addToFitness(double fitness) { f += fitness; }
