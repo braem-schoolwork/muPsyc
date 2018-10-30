@@ -4,6 +4,9 @@ namespace geneticalgorithm {
 		enum FitnessOptimizationType { SINGLE_THREADED, PARALLEL_CPU };
 	}
 	namespace operators {
+		namespace selection {
+			enum SelectionOptimizationType { SINGLE_THREADED, PARALLEL_CPU };
+		}
 		namespace mutation {
 			enum MutationOptimizationType { SINGLE_THREADED, PARALLEL_CPU };
 		}

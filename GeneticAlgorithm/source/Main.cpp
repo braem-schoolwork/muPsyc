@@ -44,6 +44,7 @@ int main() {
 	params.numCrossovers = 40;
 
 	params.fitnessOptType = fitness::FitnessOptimizationType(fitness::PARALLEL_CPU);
+	params.selOptType = operators::selection::SelectionOptimizationType(operators::selection::PARALLEL_CPU);
 	params.mutOptType = operators::mutation::MutationOptimizationType(operators::mutation::PARALLEL_CPU);
 	params.crossOptType = operators::crossover::CrossoverOptimizationType(operators::crossover::PARALLEL_CPU);
 	params.selType = operators::selection::SelectionType(operators::selection::ROULETTE_WHEEL);
