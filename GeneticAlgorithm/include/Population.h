@@ -2,6 +2,8 @@
 #include "Chromosome.h"
 #include <vector>
 #include <algorithm>
+#include <random>
+#include <execution>
 
 namespace geneticalgorithm {
 	class Population {
@@ -52,8 +54,10 @@ namespace geneticalgorithm {
 		}
 
 		void sort() { std::sort(c.begin(), c.end()); }
+		void sortParallel() { std::sort(std::execution::par, c.begin(), c.end()); }
 		void sort(unsigned int start, unsigned int end) { std::sort(c.begin() + start, c.begin() + end); }
-		void shuffle() { std::random_shuffle(c.begin(), c.end()); }
+		void sortParallel(unsigned int start, unsigned int end) { std::sort(std::execution::par, c.begin() + start, c.begin() + end); }
+		void shuffle(std::mt19937 mt) { std::shuffle(c.begin(), c.end(), mt); }
 
 		std::vector<Chromosome>::iterator begin() { return c.begin(); }
 		std::vector<Chromosome>::iterator end() { return c.end(); }
