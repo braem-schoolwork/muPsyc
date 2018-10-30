@@ -49,6 +49,7 @@ int main() {
 	params.crossOptType = operators::crossover::CrossoverOptimizationType(operators::crossover::PARALLEL_CPU);
 	params.selType = operators::selection::SelectionType(operators::selection::RANK_NEGATIVE_EXPONENTIAL);
 	params.tournamentSize = 10;
+	params.tournamentProb = 0.8;
 
 	params.onsetSyncLowerBound = 0.3;
 	params.onsetSyncUpperBound = 0.6;
