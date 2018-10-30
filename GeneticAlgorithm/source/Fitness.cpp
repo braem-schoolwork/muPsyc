@@ -413,7 +413,7 @@ void geneticalgorithm::fitness::evaluate(Chromosome & chromosome, Parameters par
 void geneticalgorithm::fitness::evaluateAll(Population *population, Parameters params) {
 	std::vector<double> fitnesses(population->size());
 
-	bool isParallel = params.optType == PARALLEL_CPU; 
+	bool isParallel = params.fitnessOptType == PARALLEL_CPU; 
 	#pragma omp parallel for if (isParallel)
 	for (int i = 0; i < population->size(); i++) {
 		evaluate(population->at(i), params);
