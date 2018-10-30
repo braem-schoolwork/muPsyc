@@ -52,6 +52,7 @@ namespace geneticalgorithm {
 		}
 
 		void sort() { std::sort(c.begin(), c.end()); }
+		void sort(unsigned int start, unsigned int end) { std::sort(c.begin() + start, c.begin() + end); }
 		void shuffle() { std::random_shuffle(c.begin(), c.end()); }
 
 		std::vector<Chromosome>::iterator begin() { return c.begin(); }
