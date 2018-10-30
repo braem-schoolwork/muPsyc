@@ -47,7 +47,7 @@ int main() {
 	params.selOptType = operators::selection::SelectionOptimizationType(operators::selection::PARALLEL_CPU);
 	params.mutOptType = operators::mutation::MutationOptimizationType(operators::mutation::PARALLEL_CPU);
 	params.crossOptType = operators::crossover::CrossoverOptimizationType(operators::crossover::PARALLEL_CPU);
-	params.selType = operators::selection::SelectionType(operators::selection::ROULETTE_WHEEL);
+	params.selType = operators::selection::SelectionType(operators::selection::RANK_NEGATIVE_EXPONENTIAL);
 
 	params.onsetSyncLowerBound = 0.3;
 	params.onsetSyncUpperBound = 0.6;

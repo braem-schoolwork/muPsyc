@@ -6,9 +6,10 @@
 std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::selectElites(Population population, Parameters params) {
 	switch (params.selType) {
 	case ROULETTE_WHEEL:
-	case FITNESS_PROPORTIONATE:	return rouletteSelection(population, params);	break;
-	case RANK:					return rankSelection(population, params, true);	break;
-	case TOURNAMENT:			return tournamentSelection(population, params); break;
+	case FITNESS_PROPORTIONATE:		return rouletteSelection(population, params);	break;
+	case RANK_LINEAR:				return rankSelection(population, params, true);	break;
+	case RANK_NEGATIVE_EXPONENTIAL:	return rankSelection(population, params, false);break;
+	case TOURNAMENT:				return tournamentSelection(population, params); break;
 	}
 }
 
