@@ -7,5 +7,8 @@ namespace geneticalgorithm {
 		namespace mutation {
 			enum MutationOptimizationType { SINGLE_THREADED, PARALLEL_CPU };
 		}
+		namespace crossover {
+			enum CrossoverOptimizationType { SINGLE_THREADED, PARALLEL_CPU };
+		}
 	}
 }

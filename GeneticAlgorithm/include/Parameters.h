@@ -18,6 +18,7 @@ namespace geneticalgorithm {
 
 		fitness::FitnessOptimizationType fitnessOptType;
 		operators::mutation::MutationOptimizationType mutOptType;
+		operators::crossover::CrossoverOptimizationType crossOptType;
 		operators::selection::SelectionType selType;
 
 		double onsetSyncLowerBound;
