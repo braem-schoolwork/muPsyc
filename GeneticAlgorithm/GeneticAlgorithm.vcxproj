@@ -216,7 +216,6 @@
     <ClInclude Include="include\OptimizationType.h" />
     <ClInclude Include="include\Parameters.h" />
     <ClInclude Include="include\Population.h" />
-    <ClInclude Include="include\RouletteSelection.h" />
     <ClInclude Include="include\RunInfo.h" />
     <ClInclude Include="include\Selection.h" />
     <ClInclude Include="include\SelectionType.h" />
@@ -229,7 +228,6 @@
     <ClCompile Include="source\GeneticAlgorithm.cpp" />
     <ClCompile Include="source\Main.cpp" />
     <ClCompile Include="source\Mutation.cpp" />
-    <ClCompile Include="source\RouletteSelection.cpp" />
     <ClCompile Include="source\Selection.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

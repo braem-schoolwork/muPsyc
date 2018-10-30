@@ -51,9 +51,6 @@
     <ClInclude Include="include\Population.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\RouletteSelection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\RunInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -87,9 +84,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\Mutation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\RouletteSelection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\Selection.cpp">
