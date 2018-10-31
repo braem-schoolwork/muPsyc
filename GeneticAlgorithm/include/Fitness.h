@@ -127,8 +127,8 @@ namespace geneticalgorithm {
 		namespace scaling {
 			void applyScaling(Population *population, Parameters params);
 			namespace methods {
-				void applyLinear(double &fitness);
-				void applySigmaTruncation(double &fitness, double sd);
+				void applyLinear(double &fitness, double avgFitness);
+				void applySigmaTruncation(double &fitness, double avgFitness, double sd);
 				void applyPowerLaw(double &fitness, int power);
 			}
 		}

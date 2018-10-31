@@ -430,17 +430,17 @@ void geneticalgorithm::fitness::evaluateAll(Population *population, Parameters p
 	scaling::applyScaling(population, params);
 }
 
-void geneticalgorithm::fitness::scaling::methods::applyLinear(double &fitness) {
+void geneticalgorithm::fitness::scaling::methods::applyLinear(double &fitness, double avgFitness) {
 	double constant = 2.0, fMax = 1.0;
-	double xcoeff = fitness * ((constant - 1.0) / (fMax - fitness));
-	double ycoeff = fitness * (1.0 - xcoeff);
+	double xcoeff = avgFitness * ((constant - 1.0) / (fMax - avgFitness));
+	double ycoeff = avgFitness * (1.0 - xcoeff);
 	fitness = (xcoeff * fitness) + ycoeff;
 	if (fitness <= 0.0 + std::numeric_limits<double>().epsilon()) fitness = 0.0; //can get negative
 }
 
-void geneticalgorithm::fitness::scaling::methods::applySigmaTruncation(double & fitness, double stdDev) {
+void geneticalgorithm::fitness::scaling::methods::applySigmaTruncation(double & fitness, double avgFitness, double stdDev) {
 	double constant = 2.0;
-	fitness = fitness - (fitness - (constant * stdDev));
+	fitness = fitness - (avgFitness - (constant * stdDev));
 }
 
 void geneticalgorithm::fitness::scaling::methods::applyPowerLaw(double & fitness, int power) {
@@ -456,7 +456,7 @@ void geneticalgorithm::fitness::scaling::applyScaling(Population *population, Pa
 		std::atomic<double> sdCtr(0.0);
 		#pragma omp parallel for if (isParallel)
 		for (int i = 0; i < population->size(); i++) {
-			double thisSdCtr = pow(population[i].fitness() - mean, 2);
+			double thisSdCtr = pow(population->at(i).fitness() - mean, 2);
 			double tmp = sdCtr.load();
 			while (!sdCtr.compare_exchange_weak(tmp, tmp + thisSdCtr));
 		}
@@ -467,8 +467,10 @@ void geneticalgorithm::fitness::scaling::applyScaling(Population *population, Pa
 	for (int i = 0; i < population->size(); i++) {
 		FitnessInfo fitnessInfo = population->at(i).fitnessInfo();
 		switch (params.fitnessScalingType) {
-		case LINEAR: methods::applyLinear(fitnessInfo.fitness); break;
-		case SIGMA_TRUNCATION: methods::applySigmaTruncation(fitnessInfo.fitness, population->standardDeviation()); break;
+		case LINEAR: methods::applyLinear(fitnessInfo.fitness, population->avgFitness()); break;
+		case SIGMA_TRUNCATION: 
+			methods::applySigmaTruncation(fitnessInfo.fitness, population->avgFitness(), population->standardDeviation());
+			break;
 		case POWER_LAW: methods::applyPowerLaw(fitnessInfo.fitness, params.powerLawScalingPower); break;
 		}
 		population->at(i).setFitnessInfo(fitnessInfo);
