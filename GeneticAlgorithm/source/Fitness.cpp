@@ -463,16 +463,24 @@ void geneticalgorithm::fitness::scaling::applyScaling(Population *population, Pa
 		population->setStandardDeviation(sqrt(static_cast<double>(sdCtr) / static_cast<double>(population->size())));
 	}
 
+	std::atomic<double> popFit(0.0);
 	#pragma omp parallel for if (isParallel)
 	for (int i = 0; i < population->size(); i++) {
 		FitnessInfo fitnessInfo = population->at(i).fitnessInfo();
 		switch (params.fitnessScalingType) {
-		case LINEAR: methods::applyLinear(fitnessInfo.fitness, population->avgFitness()); break;
+		case LINEAR: 
+			methods::applyLinear(fitnessInfo.fitness, population->avgFitness());
+			break;
 		case SIGMA_TRUNCATION: 
 			methods::applySigmaTruncation(fitnessInfo.fitness, population->avgFitness(), population->standardDeviation());
 			break;
-		case POWER_LAW: methods::applyPowerLaw(fitnessInfo.fitness, params.powerLawScalingPower); break;
+		case POWER_LAW: 
+			methods::applyPowerLaw(fitnessInfo.fitness, params.powerLawScalingPower); 
+			break;
 		}
 		population->at(i).setFitnessInfo(fitnessInfo);
+		double tmp = popFit.load();
+		while (!popFit.compare_exchange_weak(tmp, tmp + fitnessInfo.fitness));
 	}
+	population->setFitness(static_cast<double>(popFit));
 }
