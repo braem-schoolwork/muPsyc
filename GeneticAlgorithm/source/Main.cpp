@@ -44,17 +44,17 @@ int main() {
 	params.numMutations = 40;
 	params.numCrossovers = 40;
 
-	params.elitismCount = 5;
+	params.elitismCount = 2;
 
 	params.fitnessOptType = fitness::FitnessOptimizationType(fitness::PARALLEL_CPU);
 	params.selOptType = operators::selection::SelectionOptimizationType(operators::selection::PARALLEL_CPU);
 	params.mutOptType = operators::mutation::MutationOptimizationType(operators::mutation::PARALLEL_CPU);
 	params.crossOptType = operators::crossover::CrossoverOptimizationType(operators::crossover::PARALLEL_CPU);
-	params.selType = operators::selection::SelectionType(operators::selection::RANK_NEGATIVE_EXPONENTIAL);
+	params.selType = operators::selection::SelectionType(operators::selection::TOURNAMENT_DETERMINISTIC);
 	params.tournamentSize = 10;
 	params.tournamentProb = 0.8;
 
-	params.fitnessScalingType = fitness::FitnessScalingType(fitness::NONE);
+	params.fitnessScalingType = fitness::FitnessScalingType(fitness::POWER_LAW);
 	params.powerLawScalingPower = 2;
 
 	params.onsetSyncLowerBound = 0.3;
