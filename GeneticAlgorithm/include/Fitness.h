@@ -123,6 +123,16 @@ namespace geneticalgorithm {
 
 			void applyAllRules(music::Composition composition, FitnessInfo *fitnessInfo, Parameters params);
 		}
+
+		namespace scaling {
+			void applyScaling(Population *population, Parameters params);
+			namespace methods {
+				void applyLinear(double &fitness);
+				void applySigmaTruncation(double &fitness, double sd);
+				void applyPowerLaw(double &fitness, int power);
+			}
+		}
+
 		void evaluate(Chromosome &chromosome, Parameters params);
 		void evaluateAll(Population *population, Parameters params);
 	}

@@ -1,5 +1,7 @@
 #include "MusicDS.h"
 #include "Fitness.h"
+#include "FitnessScalingType.h"
+#include <cmath>
 #include <atomic>
 #include <omp.h>
 
@@ -423,6 +425,51 @@ void geneticalgorithm::fitness::evaluateAll(Population *population, Parameters p
 		double tmp = popFit.load();
 		while (!popFit.compare_exchange_weak(tmp, tmp + population->at(i).fitness()));
 	}
-
 	population->setFitness(static_cast<double>(popFit));
+
+	scaling::applyScaling(population, params);
+}
+
+void geneticalgorithm::fitness::scaling::methods::applyLinear(double &fitness) {
+	double constant = 2.0, fMax = 1.0;
+	double xcoeff = fitness * ((constant - 1.0) / (fMax - fitness));
+	double ycoeff = fitness * (1.0 - xcoeff);
+	fitness = (xcoeff * fitness) + ycoeff;
+	if (fitness <= 0.0 + std::numeric_limits<double>().epsilon()) fitness = 0.0; //can get negative
+}
+
+void geneticalgorithm::fitness::scaling::methods::applySigmaTruncation(double & fitness, double stdDev) {
+	double constant = 2.0;
+	fitness = fitness - (fitness - (constant * stdDev));
+}
+
+void geneticalgorithm::fitness::scaling::methods::applyPowerLaw(double & fitness, int power) {
+	fitness = pow(fitness, power);
+}
+
+void geneticalgorithm::fitness::scaling::applyScaling(Population *population, Parameters params) {
+	bool isParallel = params.fitnessOptType == PARALLEL_CPU;
+	if (params.fitnessScalingType == SIGMA_TRUNCATION) { //need to calculate stdev
+		const double mean = population->avgFitness();
+		std::atomic<double> sdCtr(0.0);
+		#pragma omp parallel for if (isParallel)
+		for (int i = 0; i < population->size(); i++) {
+			double thisSdCtr = pow(population[i].fitness() - mean, 2);
+			double tmp = sdCtr.load();
+			while (!sdCtr.compare_exchange_weak(tmp, tmp + thisSdCtr));
+		}
+		population->setStandardDeviation(sqrt(static_cast<double>(sdCtr) / static_cast<double>(population->size())));
+	}
+
+	#pragma omp parallel for if (isParallel)
+	for (int i = 0; i < population->size(); i++) {
+		FitnessInfo fitnessInfo = population->at(i).fitnessInfo();
+		switch (params.fitnessScalingType) {
+		case NONE: break;
+		case LINEAR: methods::applyLinear(fitnessInfo.fitness); break;
+		case SIGMA_TRUNCATION: methods::applySigmaTruncation(fitnessInfo.fitness, population->standardDeviation()); break;
+		case POWER_LAW: methods::applyPowerLaw(fitnessInfo.fitness, params.powerLawScalingPower); break;
+		}
+		population->at(i).setFitnessInfo(fitnessInfo);
+	}
 }
