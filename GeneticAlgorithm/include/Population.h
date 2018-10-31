@@ -10,6 +10,7 @@ namespace geneticalgorithm {
 	private:
 		std::vector<Chromosome> c;
 		double f;
+		double sd;
 
 	public:
 		Population() {}
@@ -19,10 +20,12 @@ namespace geneticalgorithm {
 		std::vector<Chromosome> chromosomes() const { return c; }
 		unsigned int size() const { return c.size(); }
 		double avgFitness() const { return f / static_cast<double>(c.size()); }
+		double standardDeviation() const { return sd; }
 
 		void setFitness(double fitness) { f = fitness; }
 		void addToFitness(double fitness) { f += fitness; }
 		void setChromosomes(std::vector<Chromosome> chromosomes) { c = chromosomes; }
+		void setStandardDeviation(double sd) { this->sd = sd; }
 
 		bool replaceChromosomeAt(unsigned int index, Chromosome chromosome) {
 			if (index >= size()) return false;
