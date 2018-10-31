@@ -448,6 +448,8 @@ void geneticalgorithm::fitness::scaling::methods::applyPowerLaw(double & fitness
 }
 
 void geneticalgorithm::fitness::scaling::applyScaling(Population *population, Parameters params) {
+	if (params.fitnessScalingType == NONE) return;
+
 	bool isParallel = params.fitnessOptType == PARALLEL_CPU;
 	if (params.fitnessScalingType == SIGMA_TRUNCATION) { //need to calculate stdev
 		const double mean = population->avgFitness();
@@ -465,7 +467,6 @@ void geneticalgorithm::fitness::scaling::applyScaling(Population *population, Pa
 	for (int i = 0; i < population->size(); i++) {
 		FitnessInfo fitnessInfo = population->at(i).fitnessInfo();
 		switch (params.fitnessScalingType) {
-		case NONE: break;
 		case LINEAR: methods::applyLinear(fitnessInfo.fitness); break;
 		case SIGMA_TRUNCATION: methods::applySigmaTruncation(fitnessInfo.fitness, population->standardDeviation()); break;
 		case POWER_LAW: methods::applyPowerLaw(fitnessInfo.fitness, params.powerLawScalingPower); break;
