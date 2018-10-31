@@ -44,6 +44,8 @@ int main() {
 	params.numMutations = 40;
 	params.numCrossovers = 40;
 
+	params.elitismCount = 5;
+
 	params.fitnessOptType = fitness::FitnessOptimizationType(fitness::PARALLEL_CPU);
 	params.selOptType = operators::selection::SelectionOptimizationType(operators::selection::PARALLEL_CPU);
 	params.mutOptType = operators::mutation::MutationOptimizationType(operators::mutation::PARALLEL_CPU);

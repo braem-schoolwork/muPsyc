@@ -17,6 +17,8 @@ namespace geneticalgorithm {
 		unsigned int numMutations;
 		unsigned int numCrossovers;
 
+		unsigned int elitismCount;
+
 		fitness::FitnessOptimizationType fitnessOptType;
 		operators::selection::SelectionOptimizationType selOptType;
 		operators::mutation::MutationOptimizationType mutOptType;
@@ -54,14 +56,18 @@ namespace geneticalgorithm {
 
 		bool setOperatorCounts(double percentElites, double percentMutations, double percentCrossovers) {
 			double sum = percentElites + percentMutations + percentCrossovers;
-			if (sum > 1.0 + std::numeric_limits<double>::epsilon() ||
-				sum < 1.0 - std::numeric_limits<double>::epsilon()) {
+			if (sum > 1.0 + std::numeric_limits<double>::epsilon()*3 ||
+				sum < 1.0 - std::numeric_limits<double>::epsilon()*3) {
 				return false;
 			}
 			numElites = std::round((percentElites / 100.0) * (double)populationSize);
 			numMutations = std::round((percentMutations / 100.0) * (double)populationSize);
 			numCrossovers = std::round((percentCrossovers / 100.0) * (double)populationSize);
 			return true;
+		}
+
+		void setElitismCount(double elitismPercent) {
+			elitismCount = std::round((elitismPercent / 100.0) * (double)numElites);
 		}
 	};
 }
