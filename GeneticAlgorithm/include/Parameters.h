@@ -26,6 +26,7 @@ namespace geneticalgorithm {
 		double tournamentProb;
 
 		fitness::FitnessScalingType fitnessScalingType;
+		int powerLawScalingPower;
 
 		double onsetSyncLowerBound;
 		double onsetSyncUpperBound;

@@ -53,6 +53,7 @@ int main() {
 	params.tournamentProb = 0.8;
 
 	params.fitnessScalingType = fitness::FitnessScalingType(fitness::NONE);
+	params.powerLawScalingPower = 2;
 
 	params.onsetSyncLowerBound = 0.3;
 	params.onsetSyncUpperBound = 0.6;
