@@ -20,7 +20,7 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 	std::mt19937 mt(rd());
 	std::uniform_real_distribution<double> selDist(0, 1);
 	for (unsigned int i = 0; i < params.numElites; i++) {
-		if (i == 0) { //select best first
+		if (i < params.elitismCount) { //elitism: keep the very best
 			unsigned int bestFitIndex = population.getBestFitIndex();
 			elites[i] = population[bestFitIndex];
 			population.setFitness(population.fitness() - population[bestFitIndex].fitness());
@@ -62,6 +62,14 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 	//b = [a(1-Nc)] / [c-1]
 	//c ~ 2 typically
 	for (unsigned int i = 0; i < params.numElites; i++) {
+		if (i < params.elitismCount) { //elitism: keep the very best
+			unsigned int bestFitIndex = population.getBestFitIndex();
+			elites[i] = population[bestFitIndex];
+			population.setFitness(population.fitness() - population[bestFitIndex].fitness());
+			population.removeChromosomeAt(bestFitIndex);
+			continue;
+		}
+
 		unsigned int eliteIndex = std::numeric_limits<unsigned int>().infinity(); //index of selected elite
 
 		if(isParallel) population.sortParallel();
@@ -98,6 +106,14 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 	std::mt19937 mt(rd());
 	std::uniform_real_distribution<double> selDist(0, 1);
 	for (unsigned int i = 0; i < params.numElites; i++) {
+		if (i < params.elitismCount) { //elitism: keep the very best
+			unsigned int bestFitIndex = population.getBestFitIndex();
+			elites[i] = population[bestFitIndex];
+			population.setFitness(population.fitness() - population[bestFitIndex].fitness());
+			population.removeChromosomeAt(bestFitIndex);
+			continue;
+		}
+
 		unsigned int eliteIndex = std::numeric_limits<unsigned int>().infinity(); //index of selected elite
 
 		population.shuffle(mt); //preserve randomness
