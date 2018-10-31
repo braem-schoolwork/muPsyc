@@ -2,6 +2,7 @@
 #include "InitParams.h"
 #include "OptimizationType.h"
 #include "SelectionType.h"
+#include "FitnessScalingType.h"
 #include <algorithm>
 
 namespace geneticalgorithm {
@@ -23,6 +24,8 @@ namespace geneticalgorithm {
 		operators::selection::SelectionType selType;
 		unsigned int tournamentSize;
 		double tournamentProb;
+
+		fitness::FitnessScalingType fitnessScalingType;
 
 		double onsetSyncLowerBound;
 		double onsetSyncUpperBound;

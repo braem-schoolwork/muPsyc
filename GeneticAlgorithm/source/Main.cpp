@@ -10,6 +10,7 @@
 #include "GeneticAlgorithm.h"
 #include "OptimizationType.h"
 #include "SelectionType.h"
+#include "FitnessScalingType.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -50,6 +51,8 @@ int main() {
 	params.selType = operators::selection::SelectionType(operators::selection::RANK_NEGATIVE_EXPONENTIAL);
 	params.tournamentSize = 10;
 	params.tournamentProb = 0.8;
+
+	params.fitnessScalingType = fitness::FitnessScalingType(fitness::NONE);
 
 	params.onsetSyncLowerBound = 0.3;
 	params.onsetSyncUpperBound = 0.6;

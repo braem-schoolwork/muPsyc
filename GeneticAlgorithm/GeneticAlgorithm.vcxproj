@@ -213,6 +213,7 @@
     <ClInclude Include="include\Device.h" />
     <ClInclude Include="include\Fitness.h" />
     <ClInclude Include="include\FitnessInfo.h" />
+    <ClInclude Include="include\FitnessScalingType.h" />
     <ClInclude Include="include\GeneticAlgorithm.h" />
     <ClInclude Include="include\InitParams.h" />
     <ClInclude Include="include\Mutation.h" />
