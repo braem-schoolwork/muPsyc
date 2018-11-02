@@ -59,7 +59,7 @@ int main() {
 
 	params.onsetSyncLowerBound = 0.3;
 	params.onsetSyncUpperBound = 0.6;
-	
+
 	params.op_randomTranspose = 0.4;
 	params.op_split = 0.25;
 	params.op_merge = 0.25;
@@ -96,7 +96,7 @@ int main() {
 		//make midi directory
 		dirname = midiDirectory + "run" + to_string(runIndex + 1) + "/";
 		makeDirname = "\"mkdir \"" + dirname + "\"\"";
-		system(makeDirname.c_str()); 
+		system(makeDirname.c_str());
 
 		//write MIDI files of run
 		//mididirectory/run#/#fitness.mid

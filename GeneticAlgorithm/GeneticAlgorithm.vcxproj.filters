@@ -83,9 +83,6 @@
     <ClCompile Include="source\GeneticAlgorithm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\Mutation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
