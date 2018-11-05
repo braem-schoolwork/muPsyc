@@ -12,61 +12,7 @@ using namespace std;
 
 int main() {
 	/*PARAMTER SETUP*/
-	initialization::InitParams iParams;
-	iParams.name = "Random Comp";
-	iParams.partNames = { "Part1", "Part2", "Part3", "Part4" };
-	char instr[4] = { ACOUSTICGRANDPIANO, ACOUSTICGRANDPIANO, ACOUSTICGRANDPIANO, ACOUSTICGRANDPIANO };
-	iParams.instruments = instr;
-	iParams.key = CMAJKEY;
-	iParams.timeSig = TimeSignature(4, 4);
-	iParams.bpm = BPM(60, 4);
-	iParams.numParts = 4;
-	iParams.numMeasures = 4;
-	iParams.lowerBounds = { C2, C3, G3, C4 };
-	iParams.upperBounds = { C4, G4, C5, D5 };
-
-	Parameters algoParams;
-	algoParams.initParams = iParams;
-	algoParams.populationSize = 100;
-	algoParams.numGenerations = 10;
-
-	algoParams.numElites = 20;
-	algoParams.numMutations = 40;
-	algoParams.numCrossovers = 40;
-
-	algoParams.elitismCount = 2;
-
-	algoParams.fitnessOptType = fitness::FitnessOptimizationType(fitness::PARALLEL_CPU);
-	algoParams.selOptType = operators::selection::SelectionOptimizationType(operators::selection::PARALLEL_CPU);
-	algoParams.mutOptType = operators::mutation::MutationOptimizationType(operators::mutation::PARALLEL_CPU);
-	algoParams.crossOptType = operators::crossover::CrossoverOptimizationType(operators::crossover::PARALLEL_CPU);
-	algoParams.selType = operators::selection::SelectionType(operators::selection::TOURNAMENT_DETERMINISTIC);
-	algoParams.tournamentSize = 10;
-	algoParams.tournamentProb = 0.8;
-
-	algoParams.fitnessScalingType = fitness::FitnessScalingType(fitness::POWER_LAW);
-	algoParams.powerLawScalingPower = 2;
-
-	algoParams.onsetSyncLowerBound = 0.3;
-	algoParams.onsetSyncUpperBound = 0.6;
-
-	algoParams.op_randomTranspose = 0.4;
-	algoParams.op_split = 0.25;
-	algoParams.op_merge = 0.25;
-	algoParams.op_repeat = 0.1;
-
-	algoParams.op_old_leap = 0.125;
-	algoParams.op_old_upperNeighbor = 0.0625;
-	algoParams.op_old_lowerNeighbor = 0.0625;
-	algoParams.op_old_arpeggiate = 0.125;
-	algoParams.op_old_split = 0.125;
-	algoParams.op_old_anticipation = 0.0;
-	algoParams.op_old_delay = 0.0;
-	algoParams.op_old_merge = 0.125;
-	algoParams.op_old_removeNote = 0.125;
-	algoParams.op_old_passingTone = 0.125;
-	algoParams.op_old_forceStepwise = 0.125;
-	AlgorithmParameters = algoParams; //set global
+	
 	/*END PARAMETER SETUP*/
 
 	/*RUN ALGORITHM & GET DATA*/
