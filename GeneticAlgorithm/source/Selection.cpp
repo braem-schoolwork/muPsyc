@@ -16,8 +16,6 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 
 std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::rouletteSelection(Population population, Parameters params) {
 	std::vector<Chromosome> elites(params.numElites);
-	std::random_device rd;
-	std::mt19937 mt(rd());
 	std::uniform_real_distribution<double> selDist(0, 1);
 	for (unsigned int i = 0; i < params.numElites; i++) {
 		if (i < params.elitismCount) { //elitism: keep the very best
@@ -53,8 +51,6 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::rankSelection(Population population, Parameters params, bool isLinear) {
 	std::vector<Chromosome> elites(params.numElites);
 	bool isParallel = params.selOptType == PARALLEL_CPU;
-	std::random_device rd;
-	std::mt19937 mt(rd());
 	std::uniform_real_distribution<double> selDist(0, 1);
 	//p_i = ai + b (a<0) linear
 	//p_i = ae^(bi + c) negative exponential
@@ -102,8 +98,6 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::tournamentSelection(Population population, Parameters params, bool isDeterministic) {
 	std::vector<Chromosome> elites(params.numElites);
 	bool isParallel = params.selOptType == PARALLEL_CPU;
-	std::random_device rd;
-	std::mt19937 mt(rd());
 	std::uniform_real_distribution<double> selDist(0, 1);
 	for (unsigned int i = 0; i < params.numElites; i++) {
 		if (i < params.elitismCount) { //elitism: keep the very best

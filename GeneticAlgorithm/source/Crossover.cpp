@@ -1,6 +1,5 @@
 #include "MusicDS.h"
 #include "Crossover.h"
-#include "Device.h"
 #include <random>
 #include <omp.h>
 

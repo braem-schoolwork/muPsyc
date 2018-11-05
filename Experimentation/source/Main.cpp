@@ -1,16 +1,4 @@
-#include "MusicDS.h"
-#include "Chromosome.h"
-#include "Mutation.h"
-#include "InitParams.h"
-#include "CompositionGenerator.h"
-#include "FitnessInfo.h"
-#include "Fitness.h"
-#include "RunInfo.h"
-#include "Parameters.h"
-#include "GeneticAlgorithm.h"
-#include "OptimizationType.h"
-#include "SelectionType.h"
-#include "FitnessScalingType.h"
+#include "MusicGA.h"
 #include <iostream>
 #include <vector>
 #include <string>

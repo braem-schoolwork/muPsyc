@@ -210,12 +210,13 @@
     <ClInclude Include="include\Chromosome.h" />
     <ClInclude Include="include\CompositionGenerator.h" />
     <ClInclude Include="include\Crossover.h" />
-    <ClInclude Include="include\Device.h" />
+    <ClInclude Include="include\Globals.h" />
     <ClInclude Include="include\Fitness.h" />
     <ClInclude Include="include\FitnessInfo.h" />
     <ClInclude Include="include\FitnessScalingType.h" />
     <ClInclude Include="include\GeneticAlgorithm.h" />
     <ClInclude Include="include\InitParams.h" />
+    <ClInclude Include="include\MusicGA.h" />
     <ClInclude Include="include\Mutation.h" />
     <ClInclude Include="include\Operators.h" />
     <ClInclude Include="include\OptimizationType.h" />
@@ -228,7 +229,7 @@
   <ItemGroup>
     <ClCompile Include="source\CompositionGenerator.cpp" />
     <ClCompile Include="source\Crossover.cpp" />
-    <ClCompile Include="source\Device.cpp" />
+    <ClCompile Include="source\Globals.cpp" />
     <ClCompile Include="source\Fitness.cpp" />
     <ClCompile Include="source\GeneticAlgorithm.cpp" />
     <ClCompile Include="source\Mutation.cpp" />

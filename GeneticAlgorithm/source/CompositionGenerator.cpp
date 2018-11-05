@@ -30,7 +30,7 @@ music::Composition geneticalgorithm::initialization::generateComposition(InitPar
 geneticalgorithm::Population geneticalgorithm::initialization::generatePopulation(Parameters params) {
 	std::vector<Chromosome> chromosomes(params.populationSize);
 	#pragma omp parallel for
-	for (unsigned int i = 0; i < params.populationSize; i++)
+	for (int i = 0; i < params.populationSize; i++)
 		chromosomes[i] = Chromosome(generateComposition(params.initParams));
 	return Population(chromosomes);
 }
