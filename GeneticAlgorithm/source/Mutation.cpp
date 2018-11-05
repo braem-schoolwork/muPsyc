@@ -252,7 +252,7 @@ void geneticalgorithm::operators::mutation::sub::helper::getRandomNoteCoupleIndi
 	if (possibleIndices.size() == 0) {
 		*noteIndex1 = -1; *noteIndex2 = -1; return;
 	}
-	std::uniform_int_distribution<int> noteIndexDist(0, possibleIndices.size() - 1);
+	std::uniform_int_distribution<unsigned int> noteIndexDist(0, static_cast<unsigned int>(possibleIndices.size() - 1));
 	*noteIndex1 = possibleIndices[noteIndexDist(mt)];
 	*noteIndex2 = *noteIndex1 + 1;
 }
@@ -286,11 +286,12 @@ Chromosome geneticalgorithm::operators::mutation::mutate(Chromosome chromosome, 
 
 std::vector<Chromosome> geneticalgorithm::operators::mutation::mutateElites(std::vector<Chromosome> elites) {
 	std::vector<Chromosome> mutations(AlgorithmParameters.numMutations);
-	std::uniform_int_distribution<int> eliteDist(0, elites.size() - 1);
+	std::uniform_int_distribution<unsigned int> eliteDist(0, static_cast<unsigned int>(elites.size() - 1));
 	std::vector<double> operatorProbs = { AlgorithmParameters.op_randomTranspose, AlgorithmParameters.op_split, AlgorithmParameters.op_merge, AlgorithmParameters.op_repeat };
 	bool isParallel = AlgorithmParameters.mutOptType == PARALLEL_CPU;
+	int numMut = static_cast<int>(AlgorithmParameters.numMutations); //omp cant use unsigned int
 	#pragma omp parallel for if (isParallel)
-	for (int i = 0; i < AlgorithmParameters.numMutations; i++)
+	for (int i = 0; i < numMut; i++)
 		mutations[i] = elites[eliteDist(mt)], operatorProbs;
 	return mutations;
 }

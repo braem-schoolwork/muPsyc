@@ -417,9 +417,10 @@ void geneticalgorithm::fitness::evaluateAll(Population *population) {
 	std::vector<double> fitnesses(population->size());
 
 	std::atomic<double> popFit(0.0);
-	bool isParallel = AlgorithmParameters.fitnessOptType == PARALLEL_CPU; 
+	bool isParallel = AlgorithmParameters.fitnessOptType == PARALLEL_CPU;
+	int popSize = static_cast<int>(AlgorithmParameters.populationSize); //omp cant use unsigned int
 	#pragma omp parallel for if (isParallel)
-	for (int i = 0; i < population->size(); i++) {
+	for (int i = 0; i < popSize; i++) {
 		evaluate(population->at(i));
 		//atomic += on double
 		double tmp = popFit.load();
@@ -450,12 +451,13 @@ void geneticalgorithm::fitness::scaling::methods::applyPowerLaw(double & fitness
 void geneticalgorithm::fitness::scaling::applyScaling(Population *population) {
 	if (AlgorithmParameters.fitnessScalingType == NONE) return;
 
+	int popSize = static_cast<int>(AlgorithmParameters.populationSize); //omp cant use unsigned int
 	bool isParallel = AlgorithmParameters.fitnessOptType == PARALLEL_CPU;
 	if (AlgorithmParameters.fitnessScalingType == SIGMA_TRUNCATION) { //need to calculate stdev
 		const double mean = population->avgFitness();
 		std::atomic<double> sdCtr(0.0);
 		#pragma omp parallel for if (isParallel)
-		for (int i = 0; i < population->size(); i++) {
+		for (int i = 0; i < popSize; i++) {
 			double thisSdCtr = pow(population->at(i).fitness() - mean, 2);
 			double tmp = sdCtr.load();
 			while (!sdCtr.compare_exchange_weak(tmp, tmp + thisSdCtr));
@@ -465,7 +467,7 @@ void geneticalgorithm::fitness::scaling::applyScaling(Population *population) {
 
 	std::atomic<double> popFit(0.0);
 	#pragma omp parallel for if (isParallel)
-	for (int i = 0; i < population->size(); i++) {
+	for (int i = 0; i < popSize; i++) {
 		FitnessInfo fitnessInfo = population->at(i).fitnessInfo();
 		switch (AlgorithmParameters.fitnessScalingType) {
 		case LINEAR: 

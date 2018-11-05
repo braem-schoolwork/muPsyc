@@ -11,6 +11,7 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 	case RANK_NEGATIVE_EXPONENTIAL:	return rankSelection(population, false);		break;
 	case TOURNAMENT_DETERMINISTIC:	return tournamentSelection(population, true);	break;
 	case TOURNAMENT:				return tournamentSelection(population, false);	break;
+	default: return tournamentSelection(population, true);	break;
 	}
 }
 

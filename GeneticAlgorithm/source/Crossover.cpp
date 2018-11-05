@@ -19,11 +19,12 @@ Chromosome geneticalgorithm::operators::crossover::cross(Chromosome parent1, Chr
 
 std::vector<Chromosome> geneticalgorithm::operators::crossover::crossElites(std::vector<Chromosome> elites) {
 	std::vector<Chromosome> crossovers(AlgorithmParameters.numCrossovers);
-	std::uniform_int_distribution<unsigned int> eliteDist(0, elites.size() - 1);
-	std::uniform_int_distribution<unsigned int> eliteDist2(0, elites.size() - 2);
+	std::uniform_int_distribution<unsigned int> eliteDist(0, static_cast<unsigned int>(elites.size() - 1));
+	std::uniform_int_distribution<unsigned int> eliteDist2(0, static_cast<unsigned int>(elites.size() - 2));
 	bool isParallel = AlgorithmParameters.crossOptType == PARALLEL_CPU;
+	int numCross = static_cast<int>(AlgorithmParameters.numCrossovers); //omp cant use unsigned int
 	#pragma omp parallel for if (isParallel)
-	for (int i = 0; i < AlgorithmParameters.numCrossovers; i++) {
+	for (int i = 0; i < numCross; i++) {
 		unsigned int parent1Index = eliteDist(mt);
 		unsigned int parent2Index = eliteDist2(mt);
 		if (parent2Index >= parent1Index) parent2Index++;

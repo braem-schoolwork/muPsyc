@@ -56,18 +56,22 @@ namespace geneticalgorithm {
 
 		bool setOperatorCounts(double percentElites, double percentMutations, double percentCrossovers) {
 			double sum = percentElites + percentMutations + percentCrossovers;
-			if (sum > 1.0 + std::numeric_limits<double>::epsilon()*3 ||
-				sum < 1.0 - std::numeric_limits<double>::epsilon()*3) {
+			if (sum > 1.0 + std::numeric_limits<double>::epsilon() * 3.0 ||
+				sum < 1.0 - std::numeric_limits<double>::epsilon() * 3.0) {
 				return false;
 			}
-			numElites = std::round((percentElites / 100.0) * (double)populationSize);
-			numMutations = std::round((percentMutations / 100.0) * (double)populationSize);
-			numCrossovers = std::round((percentCrossovers / 100.0) * (double)populationSize);
+			numElites = static_cast<unsigned int>
+				(std::round((percentElites / 100.0) * static_cast<double>(populationSize)) + std::numeric_limits<double>().epsilon() * 4.0);
+			numMutations = static_cast<unsigned int>
+				(std::round((percentMutations / 100.0) * static_cast<double>(populationSize)) + std::numeric_limits<double>().epsilon() * 4.0);
+			numCrossovers = static_cast<unsigned int>
+				(std::round((percentCrossovers / 100.0) * static_cast<double>(populationSize)) + std::numeric_limits<double>().epsilon() * 4.0);
 			return true;
 		}
 
 		void setElitismCount(double elitismPercent) {
-			elitismCount = std::round((elitismPercent / 100.0) * (double)numElites);
+			elitismCount = static_cast<unsigned int>
+				(std::round((elitismPercent / 100.0) * static_cast<double>(numElites)) + std::numeric_limits<double>().epsilon() * 4.0);
 		}
 		
 		Parameters() {}
