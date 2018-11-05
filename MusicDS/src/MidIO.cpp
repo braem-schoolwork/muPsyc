@@ -40,7 +40,9 @@ void music::IO::writeCompositionToMIDI(std::string path, Composition comp) {
 			for (Note &note : measure.notes()) {
 				midifile.addNoteOn(track, actiontick, channel, note.pitch().midi(), note.velocity());
 				double note_duration = note.duration().realDuration();
-				actiontick += comp.bpm().seconds() * note_duration * comp.bpm().delineation(); //put note duration in terms of quarters
+				//put note duration in terms of quarters
+				actiontick += static_cast<int>
+					(static_cast<double>(comp.bpm().seconds()) * note_duration * static_cast<double>(comp.bpm().delineation())); 
 				midifile.addNoteOff(track, actiontick, channel, note.pitch().midi(), note.velocity());
 			}
 		}
@@ -67,11 +69,11 @@ music::Composition music::IO::readMIDI(std::string path) {
 	TimeSignature timeSig;
 	BPM bpm;
 	
-	for (unsigned int eventIndex = 0; eventIndex < midifile[0].getSize(); eventIndex++) {
+	for (int eventIndex = 0; eventIndex < midifile[0].getSize(); eventIndex++) {
 		const smf::MidiEvent midiEvent = midifile[0][eventIndex];
 		if (midiEvent.isTrackName()) {
 			std::string compName = "";
-			for (unsigned int i = 3; i < midiEvent.getSize(); i++)
+			for (int i = 3; i < midiEvent.getSize(); i++)
 				compName += midiEvent[i];
 			comp.setName(compName);
 		}
@@ -131,7 +133,7 @@ music::Composition music::IO::readMIDI(std::string path) {
 			}
 			if (midiEvent.isTrackName()) {
 				std::string partName = "";
-				for (unsigned int i = 3; i < midiEvent.getSize(); i++)
+				for (int i = 3; i < midiEvent.getSize(); i++)
 					partName += midiEvent[i];
 				part.setName(partName);
 			}

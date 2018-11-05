@@ -15,7 +15,7 @@ std::ostream & music::operator<<(std::ostream & strm, const Duration & d) {
 	case 64: str = "xl\'\'\'\'"; break;
 	case 128: str = "xl\'\'\'\'\'"; break;
 	}
-	for (int i = 0; i < d.dots(); i++) {
+	for (unsigned int i = 0; i < d.dots(); i++) {
 		str = str + ".";
 	}
 	return strm << str;
@@ -63,7 +63,7 @@ music::Duration music::Duration::getDurationFromMidiTick(unsigned int tick, unsi
 		if (remainder > 0) {
 			dot++;
 		}
-		if (mult != 1 && mult & 2 != 0) {
+		if (mult != 1 && mult % 2 != 0) {
 			type *= 2;
 			dot++;
 		}
@@ -76,7 +76,7 @@ music::Duration music::Duration::getDurationFromMidiTick(unsigned int tick, unsi
 
 unsigned int music::Duration::tickLength() const {
 	int tick = MAX_DURATION / t;
-	for (int i = 0; i < d; i++) //add another note of half duration (defn of dot)
+	for (unsigned int i = 0; i < d; i++) //add another note of half duration (defn of dot)
 		tick += MAX_DURATION / (t * 2 * (i + 1));
 	return tick;
 }
@@ -93,13 +93,13 @@ bool music::Duration::add(Duration first, Duration second, Duration * result) {
 			//dotted half + quarter = whole
 			else if (second.d == 0) {
 				Duration tmp = Duration(first);
-				for (int i = 0; i < first.d; i++) tmp.halfDuration();
+				for (unsigned int i = 0; i < first.d; i++) tmp.halfDuration();
 				if (tmp.t == second.t) *result = Duration(first.t / 2, 0);
 				else return false;
 			}
 			else if (first.d == 0) {
 				Duration tmp = Duration(second);
-				for (int i = 0; i < second.d; i++) tmp.halfDuration();
+				for (unsigned int i = 0; i < second.d; i++) tmp.halfDuration();
 				if (tmp.t == first.t) *result = Duration(second.t / 2, 0);
 				else return false;
 			}

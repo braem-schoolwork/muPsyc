@@ -18,16 +18,16 @@ namespace music {
 	public:
 		Key() : n_pcs(0) {}
 		Key(std::string name, std::vector<unsigned int> pitchClasses) : n(name), sc_UP(pitchClasses),
-			sc_DN(pitchClasses), n_pcs(pitchClasses.size()) {}
+			sc_DN(pitchClasses), n_pcs(static_cast<unsigned int>(pitchClasses.size())) {}
 		Key(std::string name, std::vector<unsigned int> pitchClassesUp, std::vector<unsigned int> pitchClassesDown)
-			: n(name), sc_UP(pitchClassesUp), sc_DN(pitchClassesDown), n_pcs(pitchClassesUp.size()) {}
+			: n(name), sc_UP(pitchClassesUp), sc_DN(pitchClassesDown), n_pcs(static_cast<unsigned int>(pitchClassesUp.size())) {}
 
 		Key(std::string name, std::vector<unsigned int> pitchClasses, unsigned int numAccidentals, bool isFlatAccidentals, 
-			bool isMajor) : n(name), sc_UP(pitchClasses), sc_DN(pitchClasses), n_pcs(pitchClasses.size()), n_acc(numAccidentals),
+			bool isMajor) : n(name), sc_UP(pitchClasses), sc_DN(pitchClasses), n_pcs(static_cast<unsigned int>(pitchClasses.size())), n_acc(numAccidentals),
 			b(isFlatAccidentals), maj(isMajor) {}
 		Key(std::string name, std::vector<unsigned int> pitchClassesUp, std::vector<unsigned int> pitchClassesDown,
 			unsigned int numAccidentals, bool isFlatAccidentals, bool isMajor) : n(name), sc_UP(pitchClassesUp), sc_DN(pitchClassesDown),
-			n_pcs(pitchClassesUp.size()), n_acc(numAccidentals), b(isFlatAccidentals), maj(isMajor) {}
+			n_pcs(static_cast<unsigned int>(pitchClassesUp.size())), n_acc(numAccidentals), b(isFlatAccidentals), maj(isMajor) {}
 		
 		std::string name() const { return n; }
 		unsigned int numAccidentals() { return n_acc; }
@@ -112,17 +112,17 @@ namespace music {
 		void setScale(std::vector<unsigned int> scaleUp, std::vector<unsigned int> scaleDown) {
 			sc_UP = scaleUp;
 			sc_DN = scaleDown;
-			n_pcs = scaleUp.size();
+			n_pcs = static_cast<unsigned int>(scaleUp.size());
 		}
 		void setUpwardsScale(std::vector<unsigned int> scaleUp) {
 			sc_UP = scaleUp;
-			n_pcs = scaleUp.size();
+			n_pcs = static_cast<unsigned int>(scaleUp.size());
 		}
 		void setDownwardsScale(std::vector<unsigned int> scaleDown) {
 			sc_DN = scaleDown;
-			n_pcs = scaleDown.size();
+			n_pcs = static_cast<unsigned int>(scaleDown.size());
 		}
-		void setScale(std::vector<unsigned int> scale) { sc_UP = scale; sc_DN = scale; n_pcs = scale.size(); }
+		void setScale(std::vector<unsigned int> scale) { sc_UP = scale; sc_DN = scale; n_pcs = static_cast<unsigned int>(scale.size()); }
 		void setName(std::string name) { n = name; }
 
 		bool isInKey(unsigned int pc) const { return std::find(sc_UP.begin(), sc_UP.end(), pc) != sc_UP.end(); }

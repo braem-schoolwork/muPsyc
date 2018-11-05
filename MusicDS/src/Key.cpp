@@ -138,7 +138,7 @@ unsigned int music::Key::nextDownwardsPitchClass(unsigned int pc) {
 
 unsigned int music::Key::prevPitchClass(unsigned int pc) {
 	unsigned int deg = closestDegree(pc);
-	if (deg == 0) deg = sc_UP.size() - 1;
+	if (deg == 0) deg = static_cast<unsigned int>(sc_UP.size()) - 1;
 	return sc_UP[deg];
 }
 
@@ -148,7 +148,7 @@ unsigned int music::Key::prevUpwardsPitchClass(unsigned int pc) {
 
 unsigned int music::Key::prevDownwardsPitchClass(unsigned int pc) {
 	unsigned int deg = closestDegree(pc);
-	if (deg == 0) deg = sc_DN.size() - 1;
+	if (deg == 0) deg = static_cast<unsigned int>(sc_DN.size()) - 1;
 	return sc_DN[deg];
 }
 
@@ -223,7 +223,7 @@ music::Pitch music::Key::prevDownwardsPitchInScale(Pitch pitch) {
 unsigned int music::Key::degree(unsigned int pc) {
 	std::vector<unsigned int>::iterator itr = std::find(sc_UP.begin(), sc_UP.end(), pc);
 	if (itr != sc_UP.cend())
-		return std::distance(sc_UP.begin(), itr);
+		return static_cast<unsigned int>(std::distance(sc_UP.begin(), itr));
 	else return -1;
 }
 
@@ -234,7 +234,7 @@ unsigned int music::Key::degreeUpwards(unsigned int pc) {
 unsigned int music::Key::degreeDownwards(unsigned int pc) {
 	std::vector<unsigned int>::iterator itr = std::find(sc_DN.begin(), sc_DN.end(), pc);
 	if (itr != sc_DN.cend())
-		return std::distance(sc_DN.begin(), itr);
+		return static_cast<unsigned int>(std::distance(sc_DN.begin(), itr));
 	else return -1;
 }
 
@@ -256,7 +256,7 @@ unsigned int music::Key::closestDegree(unsigned int pc) {
 			return i;
 		}
 	}
-	return sc_UP.size() - 1;
+	return static_cast<unsigned int>(sc_UP.size()) - 1;
 }
 
 unsigned int music::Key::closestUpwardsDegree(unsigned int pc) {
@@ -269,7 +269,7 @@ unsigned int music::Key::closestDownwardsDegree(unsigned int pc) {
 			return i;
 		}
 	}
-	return sc_DN.size() - 1;
+	return static_cast<unsigned int>(sc_DN.size()) - 1;
 }
 
 unsigned int music::Key::closestDegree(Pitch pitch) {
@@ -334,11 +334,11 @@ void music::Key::forceInDownwardsScale(Pitch * pitch) {
 
 void music::Key::transpose(Pitch *pitch, int deg) {
 	int pcIndex = closestDegree(pitch->pitchClass());
-	int scaleSize = sc_UP.size();
+	int scaleSize = static_cast<int>(sc_UP.size());
 	//proper modulo needs this. (C is weird)
 	int newDegree = (((pcIndex + deg) % scaleSize) + scaleSize) % scaleSize;
 	int newPC = sc_UP[newDegree];
-	int octChange = pcIndex + deg >= 0 ? (pcIndex + deg) / sc_UP.size() :
+	int octChange = pcIndex + deg >= 0 ? (pcIndex + deg) / static_cast<int>(sc_UP.size()) :
 		( (pcIndex + deg + 1) / scaleSize ) - 1;
 	int newOct = pitch->octave() + octChange;
 	pitch->setPCandOctave(newPC, newOct);
@@ -351,10 +351,10 @@ void music::Key::transpose(Note *note, int degree) {
 }
 
 void music::Key::meanPitch(Pitch pitch1, Pitch pitch2, Pitch *mean) {
-	unsigned int absDegree1 = closestDegree(pitch1.pitchClass()) + (pitch1.octave() * sc_UP.size());
-	unsigned int absDegree2 = closestDegree(pitch2.pitchClass()) + (pitch2.octave() * sc_UP.size());
+	unsigned int absDegree1 = closestDegree(pitch1.pitchClass()) + (pitch1.octave() * static_cast<unsigned int>(sc_UP.size()));
+	unsigned int absDegree2 = closestDegree(pitch2.pitchClass()) + (pitch2.octave() * static_cast<unsigned int>(sc_UP.size()));
 	unsigned int degMean = (absDegree1 + absDegree2) / 2;
-	unsigned int oct = degMean / sc_UP.size();
+	unsigned int oct = degMean / static_cast<unsigned int>(sc_UP.size());
 	unsigned int pc = pitchClass(degMean % sc_UP.size());
 	mean->setPCandOctave(pc, oct);
 }

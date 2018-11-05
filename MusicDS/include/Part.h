@@ -18,7 +18,7 @@ namespace music {
 		std::string name() const { return n; }
 		unsigned char instrument() const { return i; }
 		std::vector<Measure> measures() const { return m; }
-		unsigned int numMeasures() const { return m.size(); }
+		unsigned int numMeasures() const { return static_cast<unsigned int>(m.size()); }
 		std::vector<Note> notes() const {
 			std::vector<Note> rtn;
 			for (Measure measure : m) {
@@ -29,7 +29,7 @@ namespace music {
 			return rtn;
 		}
 		unsigned int tickLength() const {
-			double rtn = 0.0;
+			unsigned int rtn = 0;
 			for (Measure measure : m)
 				rtn += measure.tickLength();
 			return rtn;

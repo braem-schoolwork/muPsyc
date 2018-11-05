@@ -30,7 +30,7 @@ namespace music {
 		Key key() const { return s; }
 		TimeSignature timeSignature() const { return ts; }
 		std::vector<Note> notes() const { return n; }
-		unsigned int numNotes() const { return n.size(); }
+		unsigned int numNotes() const { return static_cast<unsigned int>(n.size()); }
 		unsigned int tickLength() const { return ts.tickLength(); }
 		unsigned int beatTickLength() const { return ts.beatTickLength(); }
 

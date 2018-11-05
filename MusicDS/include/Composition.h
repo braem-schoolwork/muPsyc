@@ -29,7 +29,7 @@ namespace music {
 		std::vector<Part> parts() const { return p; }
 		std::vector<Dynamic> dynamics() const { return d; }
 		BPM bpm() const { return b; }
-		unsigned int numParts() const { return p.size(); }
+		unsigned int numParts() const { return static_cast<unsigned int>(p.size()); }
 		unsigned int numMeasures() const { return p[0].numMeasures(); }
 		std::vector<unsigned int> measureTickLengths() const {
 			std::vector<unsigned int> rtn(p[0].numMeasures());
