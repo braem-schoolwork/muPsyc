@@ -12,6 +12,8 @@
 #include "InitParams.h"
 #include "Parameters.h"
 
+#include "Globals.h"
+
 #include "CompositionGenerator.h"
 
 #include "FitnessInfo.h"

@@ -3,22 +3,22 @@
 #include <random>
 #include <limits>
 
-std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::selectElites(Population population, Parameters params) {
-	switch (params.selType) {
+std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::selectElites(Population population) {
+	switch (AlgorithmParameters.selType) {
 	case ROULETTE_WHEEL:
-	case FITNESS_PROPORTIONATE:		return rouletteSelection(population, params);			break;
-	case RANK_LINEAR:				return rankSelection(population, params, true);			break;
-	case RANK_NEGATIVE_EXPONENTIAL:	return rankSelection(population, params, false);		break;
-	case TOURNAMENT_DETERMINISTIC:	return tournamentSelection(population, params, true);	break;
-	case TOURNAMENT:				return tournamentSelection(population, params, false);	break;
+	case FITNESS_PROPORTIONATE:		return rouletteSelection(population);			break;
+	case RANK_LINEAR:				return rankSelection(population, true);			break;
+	case RANK_NEGATIVE_EXPONENTIAL:	return rankSelection(population, false);		break;
+	case TOURNAMENT_DETERMINISTIC:	return tournamentSelection(population, true);	break;
+	case TOURNAMENT:				return tournamentSelection(population, false);	break;
 	}
 }
 
-std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::rouletteSelection(Population population, Parameters params) {
-	std::vector<Chromosome> elites(params.numElites);
+std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::rouletteSelection(Population population) {
+	std::vector<Chromosome> elites(AlgorithmParameters.numElites);
 	std::uniform_real_distribution<double> selDist(0, 1);
-	for (unsigned int i = 0; i < params.numElites; i++) {
-		if (i < params.elitismCount) { //elitism: keep the very best
+	for (unsigned int i = 0; i < AlgorithmParameters.numElites; i++) {
+		if (i < AlgorithmParameters.elitismCount) { //elitism: keep the very best
 			unsigned int bestFitIndex = population.getBestFitIndex();
 			elites[i] = population[bestFitIndex];
 			population.setFitness(population.fitness() - population[bestFitIndex].fitness());
@@ -48,17 +48,17 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 	return elites;
 }
 
-std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::rankSelection(Population population, Parameters params, bool isLinear) {
-	std::vector<Chromosome> elites(params.numElites);
-	bool isParallel = params.selOptType == PARALLEL_CPU;
+std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::rankSelection(Population population, bool isLinear) {
+	std::vector<Chromosome> elites(AlgorithmParameters.numElites);
+	bool isParallel = AlgorithmParameters.selOptType == PARALLEL_CPU;
 	std::uniform_real_distribution<double> selDist(0, 1);
 	//p_i = ai + b (a<0) linear
 	//p_i = ae^(bi + c) negative exponential
 	//a = [2(1-c)] / [N(N-1)(1+c)]
 	//b = [a(1-Nc)] / [c-1]
 	//c ~ 2 typically
-	for (unsigned int i = 0; i < params.numElites; i++) {
-		if (i < params.elitismCount) { //elitism: keep the very best
+	for (unsigned int i = 0; i < AlgorithmParameters.numElites; i++) {
+		if (i < AlgorithmParameters.elitismCount) { //elitism: keep the very best
 			unsigned int bestFitIndex = population.getBestFitIndex();
 			elites[i] = population[bestFitIndex];
 			population.setFitness(population.fitness() - population[bestFitIndex].fitness());
@@ -95,12 +95,12 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 	return elites;
 }
 
-std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::tournamentSelection(Population population, Parameters params, bool isDeterministic) {
-	std::vector<Chromosome> elites(params.numElites);
-	bool isParallel = params.selOptType == PARALLEL_CPU;
+std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection::tournamentSelection(Population population, bool isDeterministic) {
+	std::vector<Chromosome> elites(AlgorithmParameters.numElites);
+	bool isParallel = AlgorithmParameters.selOptType == PARALLEL_CPU;
 	std::uniform_real_distribution<double> selDist(0, 1);
-	for (unsigned int i = 0; i < params.numElites; i++) {
-		if (i < params.elitismCount) { //elitism: keep the very best
+	for (unsigned int i = 0; i < AlgorithmParameters.numElites; i++) {
+		if (i < AlgorithmParameters.elitismCount) { //elitism: keep the very best
 			unsigned int bestFitIndex = population.getBestFitIndex();
 			elites[i] = population[bestFitIndex];
 			population.setFitness(population.fitness() - population[bestFitIndex].fitness());
@@ -113,18 +113,18 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 		population.shuffle(mt); //preserve randomness
 
 		//population size changes, so must be at this scope
-		std::uniform_int_distribution<unsigned int> indexDist(0, population.size() - params.tournamentSize - 1);
+		std::uniform_int_distribution<unsigned int> indexDist(0, population.size() - AlgorithmParameters.tournamentSize - 1);
 		unsigned int tmpIndex = indexDist(mt); //random index
-		if(isParallel)	population.sortParallel(tmpIndex, tmpIndex + params.tournamentSize); //sort this tournament
-		else			population.sort(tmpIndex, tmpIndex + params.tournamentSize);
+		if(isParallel)	population.sortParallel(tmpIndex, tmpIndex + AlgorithmParameters.tournamentSize); //sort this tournament
+		else			population.sort(tmpIndex, tmpIndex + AlgorithmParameters.tournamentSize);
 		if (isDeterministic) 
 			eliteIndex = tmpIndex; //always pick best individual of tournament
 		else {
 			unsigned int ctr = 0;
-			unsigned int endIndex = tmpIndex + params.tournamentSize;
+			unsigned int endIndex = tmpIndex + AlgorithmParameters.tournamentSize;
 			double randomNum = selDist(mt);
 			while (tmpIndex <= endIndex) {
-				double selProb = params.tournamentProb * pow(1.0 - params.tournamentProb, ctr);
+				double selProb = AlgorithmParameters.tournamentProb * pow(1.0 - AlgorithmParameters.tournamentProb, ctr);
 				if (randomNum <= selProb) { eliteIndex = tmpIndex; break; }
 				tmpIndex++; ctr++;
 			}

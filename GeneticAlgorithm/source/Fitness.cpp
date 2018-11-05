@@ -226,7 +226,7 @@ bool geneticalgorithm::fitness::rules::other::outOfInstrumentRegister(music::Not
 }
 
 
-void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composition, FitnessInfo * fitnessInfo, Parameters params) {
+void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composition, FitnessInfo * fitnessInfo) {
 	//fitness accumulators for each rule
 	double rcFit = 0.0, llFit = 0.0, pcFit = 0.0, poFit = 0.0, smFit = 0.0, pmFit = 0.0,
 		asabfiFit = 0.0, eiFit = 0.0, fiFit = 0.0, atfFit = 0.0, oatfiFit = 0.0, adatfiFit = 0.0, csFit = 0.0,
@@ -371,7 +371,7 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 	fitnessInfo->obliqueApproachToFusedIntervalsFitness = oatfiFit / static_cast<double>(oatfiCtr);
 	fitnessInfo->avoidDisjunctApproachToFusedIntervalsFitness = adatfiFit / static_cast<double>(adatfiCtr);
 	fitnessInfo->chordSpacingFitness = csFit / static_cast<double>(csCtr);
-	fitnessInfo->onsetSynchronizationFitness = onsetSync >= params.onsetSyncLowerBound && onsetSync <= params.onsetSyncUpperBound ? 1.0 : 0.0;
+	fitnessInfo->onsetSynchronizationFitness = onsetSync >= AlgorithmParameters.onsetSyncLowerBound && onsetSync <= AlgorithmParameters.onsetSyncUpperBound ? 1.0 : 0.0;
 	fitnessInfo->largeLeapResolutionFitness = llrFit / static_cast<double>(llrCtr);
 	fitnessInfo->unequalIntevalsFitness = ueiFit / static_cast<double>(ueiCtr);
 	fitnessInfo->scale7orLessDegreesFitness = s7ldFit / static_cast<double>(s7ldCtr);
@@ -407,27 +407,27 @@ bool geneticalgorithm::fitness::rules::huron2001::helper::isObliqueMotion(music:
 		(pastUpper - upper == 0 && pastLower - lower > 0);
 }
 
-void geneticalgorithm::fitness::evaluate(Chromosome & chromosome, Parameters params) {
+void geneticalgorithm::fitness::evaluate(Chromosome & chromosome) {
 	FitnessInfo fitnessInfo;
-	rules::applyAllRules(chromosome.composition(), &fitnessInfo, params);
+	rules::applyAllRules(chromosome.composition(), &fitnessInfo);
 	chromosome.setFitnessInfo(fitnessInfo);
 }
 
-void geneticalgorithm::fitness::evaluateAll(Population *population, Parameters params) {
+void geneticalgorithm::fitness::evaluateAll(Population *population) {
 	std::vector<double> fitnesses(population->size());
 
 	std::atomic<double> popFit(0.0);
-	bool isParallel = params.fitnessOptType == PARALLEL_CPU; 
+	bool isParallel = AlgorithmParameters.fitnessOptType == PARALLEL_CPU; 
 	#pragma omp parallel for if (isParallel)
 	for (int i = 0; i < population->size(); i++) {
-		evaluate(population->at(i), params);
+		evaluate(population->at(i));
 		//atomic += on double
 		double tmp = popFit.load();
 		while (!popFit.compare_exchange_weak(tmp, tmp + population->at(i).fitness()));
 	}
 	population->setFitness(static_cast<double>(popFit));
 
-	scaling::applyScaling(population, params);
+	scaling::applyScaling(population);
 }
 
 void geneticalgorithm::fitness::scaling::methods::applyLinear(double &fitness, double avgFitness) {
@@ -447,11 +447,11 @@ void geneticalgorithm::fitness::scaling::methods::applyPowerLaw(double & fitness
 	fitness = pow(fitness, power);
 }
 
-void geneticalgorithm::fitness::scaling::applyScaling(Population *population, Parameters params) {
-	if (params.fitnessScalingType == NONE) return;
+void geneticalgorithm::fitness::scaling::applyScaling(Population *population) {
+	if (AlgorithmParameters.fitnessScalingType == NONE) return;
 
-	bool isParallel = params.fitnessOptType == PARALLEL_CPU;
-	if (params.fitnessScalingType == SIGMA_TRUNCATION) { //need to calculate stdev
+	bool isParallel = AlgorithmParameters.fitnessOptType == PARALLEL_CPU;
+	if (AlgorithmParameters.fitnessScalingType == SIGMA_TRUNCATION) { //need to calculate stdev
 		const double mean = population->avgFitness();
 		std::atomic<double> sdCtr(0.0);
 		#pragma omp parallel for if (isParallel)
@@ -467,7 +467,7 @@ void geneticalgorithm::fitness::scaling::applyScaling(Population *population, Pa
 	#pragma omp parallel for if (isParallel)
 	for (int i = 0; i < population->size(); i++) {
 		FitnessInfo fitnessInfo = population->at(i).fitnessInfo();
-		switch (params.fitnessScalingType) {
+		switch (AlgorithmParameters.fitnessScalingType) {
 		case LINEAR: 
 			methods::applyLinear(fitnessInfo.fitness, population->avgFitness());
 			break;
@@ -475,7 +475,7 @@ void geneticalgorithm::fitness::scaling::applyScaling(Population *population, Pa
 			methods::applySigmaTruncation(fitnessInfo.fitness, population->avgFitness(), population->standardDeviation());
 			break;
 		case POWER_LAW: 
-			methods::applyPowerLaw(fitnessInfo.fitness, params.powerLawScalingPower); 
+			methods::applyPowerLaw(fitnessInfo.fitness, AlgorithmParameters.powerLawScalingPower); 
 			break;
 		}
 		population->at(i).setFitnessInfo(fitnessInfo);

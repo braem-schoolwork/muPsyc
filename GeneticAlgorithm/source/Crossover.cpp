@@ -17,13 +17,13 @@ Chromosome geneticalgorithm::operators::crossover::cross(Chromosome parent1, Chr
 	return Chromosome(comp);
 }
 
-std::vector<Chromosome> geneticalgorithm::operators::crossover::crossElites(std::vector<Chromosome> elites, Parameters params) {
-	std::vector<Chromosome> crossovers(params.numCrossovers);
+std::vector<Chromosome> geneticalgorithm::operators::crossover::crossElites(std::vector<Chromosome> elites) {
+	std::vector<Chromosome> crossovers(AlgorithmParameters.numCrossovers);
 	std::uniform_int_distribution<unsigned int> eliteDist(0, elites.size() - 1);
 	std::uniform_int_distribution<unsigned int> eliteDist2(0, elites.size() - 2);
-	bool isParallel = params.crossOptType == PARALLEL_CPU;
+	bool isParallel = AlgorithmParameters.crossOptType == PARALLEL_CPU;
 	#pragma omp parallel for if (isParallel)
-	for (int i = 0; i < params.numCrossovers; i++) {
+	for (int i = 0; i < AlgorithmParameters.numCrossovers; i++) {
 		unsigned int parent1Index = eliteDist(mt);
 		unsigned int parent2Index = eliteDist2(mt);
 		if (parent2Index >= parent1Index) parent2Index++;

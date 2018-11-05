@@ -8,62 +8,65 @@ using namespace music;
 using namespace geneticalgorithm;
 using namespace std;
 
+//extern geneticalgorithm::Parameters Algorithm_Parameters;
+
 int main() {
 	/*PARAMTER SETUP*/
-	initialization::InitParams initParams;
-	initParams.name = "Random Comp";
-	initParams.partNames = { "Part1", "Part2", "Part3", "Part4" };
+	initialization::InitParams iParams;
+	iParams.name = "Random Comp";
+	iParams.partNames = { "Part1", "Part2", "Part3", "Part4" };
 	char instr[4] = { ACOUSTICGRANDPIANO, ACOUSTICGRANDPIANO, ACOUSTICGRANDPIANO, ACOUSTICGRANDPIANO };
-	initParams.instruments = instr;
-	initParams.key = CMAJKEY;
-	initParams.timeSig = TimeSignature(4, 4);
-	initParams.bpm = BPM(60, 4);
-	initParams.numParts = 4;
-	initParams.numMeasures = 4;
-	initParams.lowerBounds = { C2, C3, G3, C4 };
-	initParams.upperBounds = { C4, G4, C5, D5 };
+	iParams.instruments = instr;
+	iParams.key = CMAJKEY;
+	iParams.timeSig = TimeSignature(4, 4);
+	iParams.bpm = BPM(60, 4);
+	iParams.numParts = 4;
+	iParams.numMeasures = 4;
+	iParams.lowerBounds = { C2, C3, G3, C4 };
+	iParams.upperBounds = { C4, G4, C5, D5 };
 
-	Parameters params;
-	params.initParams = initParams;
-	params.populationSize = 100;
-	params.numGenerations = 10;
+	Parameters algoParams;
+	algoParams.initParams = iParams;
+	algoParams.populationSize = 100;
+	algoParams.numGenerations = 10;
 
-	params.numElites = 20;
-	params.numMutations = 40;
-	params.numCrossovers = 40;
+	algoParams.numElites = 20;
+	algoParams.numMutations = 40;
+	algoParams.numCrossovers = 40;
 
-	params.elitismCount = 2;
+	algoParams.elitismCount = 2;
 
-	params.fitnessOptType = fitness::FitnessOptimizationType(fitness::PARALLEL_CPU);
-	params.selOptType = operators::selection::SelectionOptimizationType(operators::selection::PARALLEL_CPU);
-	params.mutOptType = operators::mutation::MutationOptimizationType(operators::mutation::PARALLEL_CPU);
-	params.crossOptType = operators::crossover::CrossoverOptimizationType(operators::crossover::PARALLEL_CPU);
-	params.selType = operators::selection::SelectionType(operators::selection::TOURNAMENT_DETERMINISTIC);
-	params.tournamentSize = 10;
-	params.tournamentProb = 0.8;
+	algoParams.fitnessOptType = fitness::FitnessOptimizationType(fitness::PARALLEL_CPU);
+	algoParams.selOptType = operators::selection::SelectionOptimizationType(operators::selection::PARALLEL_CPU);
+	algoParams.mutOptType = operators::mutation::MutationOptimizationType(operators::mutation::PARALLEL_CPU);
+	algoParams.crossOptType = operators::crossover::CrossoverOptimizationType(operators::crossover::PARALLEL_CPU);
+	algoParams.selType = operators::selection::SelectionType(operators::selection::TOURNAMENT_DETERMINISTIC);
+	algoParams.tournamentSize = 10;
+	algoParams.tournamentProb = 0.8;
 
-	params.fitnessScalingType = fitness::FitnessScalingType(fitness::POWER_LAW);
-	params.powerLawScalingPower = 2;
+	algoParams.fitnessScalingType = fitness::FitnessScalingType(fitness::POWER_LAW);
+	algoParams.powerLawScalingPower = 2;
 
-	params.onsetSyncLowerBound = 0.3;
-	params.onsetSyncUpperBound = 0.6;
+	algoParams.onsetSyncLowerBound = 0.3;
+	algoParams.onsetSyncUpperBound = 0.6;
 
-	params.op_randomTranspose = 0.4;
-	params.op_split = 0.25;
-	params.op_merge = 0.25;
-	params.op_repeat = 0.1;
+	algoParams.op_randomTranspose = 0.4;
+	algoParams.op_split = 0.25;
+	algoParams.op_merge = 0.25;
+	algoParams.op_repeat = 0.1;
 
-	params.op_old_leap = 0.125;
-	params.op_old_upperNeighbor = 0.0625;
-	params.op_old_lowerNeighbor = 0.0625;
-	params.op_old_arpeggiate = 0.125;
-	params.op_old_split = 0.125;
-	params.op_old_anticipation = 0.0;
-	params.op_old_delay = 0.0;
-	params.op_old_merge = 0.125;
-	params.op_old_removeNote = 0.125;
-	params.op_old_passingTone = 0.125;
-	params.op_old_forceStepwise = 0.125;
+	algoParams.op_old_leap = 0.125;
+	algoParams.op_old_upperNeighbor = 0.0625;
+	algoParams.op_old_lowerNeighbor = 0.0625;
+	algoParams.op_old_arpeggiate = 0.125;
+	algoParams.op_old_split = 0.125;
+	algoParams.op_old_anticipation = 0.0;
+	algoParams.op_old_delay = 0.0;
+	algoParams.op_old_merge = 0.125;
+	algoParams.op_old_removeNote = 0.125;
+	algoParams.op_old_passingTone = 0.125;
+	algoParams.op_old_forceStepwise = 0.125;
+	AlgorithmParameters = algoParams; //set global
 	/*END PARAMETER SETUP*/
 
 	/*RUN ALGORITHM & GET DATA*/
@@ -78,7 +81,7 @@ int main() {
 	for (unsigned int runIndex = 0; runIndex < numRuns; runIndex++) {
 		cout << "Starting Run " << runIndex + 1 << endl << endl;
 
-		RunInfo runInfo = runGA(params);
+		RunInfo runInfo = runGA();
 		string dirname, makeDirname;
 
 		//make midi directory

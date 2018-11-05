@@ -9,6 +9,7 @@ namespace geneticalgorithm {
 	extern std::random_device rd;
 	extern std::mt19937 mt;
 	extern std::uniform_int_distribution<int> boolDist;
+	extern Parameters AlgorithmParameters;
 	namespace operators {
 		namespace mutation {
 			namespace sub {
@@ -61,7 +62,7 @@ namespace geneticalgorithm {
 				unsigned const int soi_repeat = 3;
 			}
 			Chromosome mutate(Chromosome chromosome, std::vector<double> operatorProbabilities);
-			std::vector<Chromosome> mutateElites(std::vector<Chromosome> elites, Parameters params);
+			std::vector<Chromosome> mutateElites(std::vector<Chromosome> elites);
 		}
 	}
 }

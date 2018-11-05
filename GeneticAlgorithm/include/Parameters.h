@@ -69,5 +69,7 @@ namespace geneticalgorithm {
 		void setElitismCount(double elitismPercent) {
 			elitismCount = std::round((elitismPercent / 100.0) * (double)numElites);
 		}
+		
+		Parameters() {}
 	};
 }

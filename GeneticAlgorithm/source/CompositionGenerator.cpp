@@ -6,31 +6,31 @@
 
 using namespace music;
 
-music::Composition geneticalgorithm::initialization::generateComposition(InitParams params) {
-	std::vector<Part> parts(params.numParts);
-	for (int p = 0; p < params.numParts; p++) {
+music::Composition geneticalgorithm::initialization::generateComposition() {
+	std::vector<Part> parts(AlgorithmParameters.initParams.numParts);
+	for (int p = 0; p < AlgorithmParameters.initParams.numParts; p++) {
 		std::uniform_int_distribution<unsigned int> 
-			midiDist(params.lowerBounds[p].midi(), params.upperBounds[p].midi());
-		Part part = Part(params.partNames[p], params.instruments[p]);
-		std::vector<Measure> measures(params.numMeasures);
-		for (int m = 0; m < params.numMeasures; m++) {
+			midiDist(AlgorithmParameters.initParams.lowerBounds[p].midi(), AlgorithmParameters.initParams.upperBounds[p].midi());
+		Part part = Part(AlgorithmParameters.initParams.partNames[p], AlgorithmParameters.initParams.instruments[p]);
+		std::vector<Measure> measures(AlgorithmParameters.initParams.numMeasures);
+		for (int m = 0; m < AlgorithmParameters.initParams.numMeasures; m++) {
 			std::vector<Note> notes;
-			for (int n = 0; n < params.timeSig.number(); n++) {
+			for (int n = 0; n < AlgorithmParameters.initParams.timeSig.number(); n++) {
 				Pitch randPitch = Pitch(midiDist(mt));
-				params.key.forceInKey(&randPitch);
-				notes.push_back(Note(randPitch, Duration(params.timeSig.delineation())));
+				AlgorithmParameters.initParams.key.forceInKey(&randPitch);
+				notes.push_back(Note(randPitch, Duration(AlgorithmParameters.initParams.timeSig.delineation())));
 			}
-			measures[m] = Measure(params.timeSig, params.key, notes);
+			measures[m] = Measure(AlgorithmParameters.initParams.timeSig, AlgorithmParameters.initParams.key, notes);
 		}
-		parts[p] = Part(params.partNames[p], params.instruments[p], measures);
+		parts[p] = Part(AlgorithmParameters.initParams.partNames[p], AlgorithmParameters.initParams.instruments[p], measures);
 	}
-	return Composition(params.name, parts, params.bpm);
+	return Composition(AlgorithmParameters.initParams.name, parts, AlgorithmParameters.initParams.bpm);
 }
 
-geneticalgorithm::Population geneticalgorithm::initialization::generatePopulation(Parameters params) {
-	std::vector<Chromosome> chromosomes(params.populationSize);
+geneticalgorithm::Population geneticalgorithm::initialization::generatePopulation() {
+	std::vector<Chromosome> chromosomes(AlgorithmParameters.populationSize);
 	#pragma omp parallel for
-	for (int i = 0; i < params.populationSize; i++)
-		chromosomes[i] = Chromosome(generateComposition(params.initParams));
+	for (int i = 0; i < AlgorithmParameters.populationSize; i++)
+		chromosomes[i] = Chromosome(generateComposition());
 	return Population(chromosomes);
 }

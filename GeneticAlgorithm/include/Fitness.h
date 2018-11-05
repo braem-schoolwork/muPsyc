@@ -4,8 +4,10 @@
 #include "Parameters.h"
 #include "Chromosome.h"
 #include "Population.h"
+#include "Globals.h"
 
 namespace geneticalgorithm {
+	extern Parameters AlgorithmParameters;
 	namespace fitness {
 		namespace rules {
 			namespace huron2001 {
@@ -121,11 +123,11 @@ namespace geneticalgorithm {
 				bool outOfInstrumentRegister(music::Note note, char instrument);
 			}
 
-			void applyAllRules(music::Composition composition, FitnessInfo *fitnessInfo, Parameters params);
+			void applyAllRules(music::Composition composition, FitnessInfo *fitnessInfo);
 		}
 
 		namespace scaling {
-			void applyScaling(Population *population, Parameters params);
+			void applyScaling(Population *population);
 			namespace methods {
 				void applyLinear(double &fitness, double avgFitness);
 				void applySigmaTruncation(double &fitness, double avgFitness, double sd);
@@ -133,7 +135,7 @@ namespace geneticalgorithm {
 			}
 		}
 
-		void evaluate(Chromosome &chromosome, Parameters params);
-		void evaluateAll(Population *population, Parameters params);
+		void evaluate(Chromosome &chromosome);
+		void evaluateAll(Population *population);
 	}
 }
