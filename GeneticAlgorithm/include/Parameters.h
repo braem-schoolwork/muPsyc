@@ -78,12 +78,13 @@ namespace geneticalgorithm {
 
 
 		friend std::ostream& operator<<(std::ostream &strm, const Parameters & params) {
+			strm << "Initial Composition Generation Parameters:" << std::endl;
 			strm << params.initParams << std::endl;
 			strm << "Population Size: " << params.populationSize << std::endl;
-			strm << "Number of Generations: " << params.numGenerations << std::endl;
 			strm << "Number of Elites: " << params.numElites << std::endl;
 			strm << "Number of Mutations: " << params.numMutations << std::endl;
 			strm << "Number of Crossovers: " << params.numCrossovers << std::endl;
+			strm << "Number of Generations: " << params.numGenerations << std::endl;
 			strm << "Elitism Size: " << params.elitismCount << std::endl;
 			strm << "Selection Method: " << params.selType << std::endl;
 			if (params.selType == operators::selection::TOURNAMENT_DETERMINISTIC)
