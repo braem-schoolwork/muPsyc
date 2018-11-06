@@ -76,4 +76,37 @@ namespace geneticalgorithm {
 		
 		Parameters() {}
 	};
+	std::ostream& operator<<(std::ostream &strm, const Parameters params) {
+		strm << params.initParams << std::endl;
+		strm << "Population Size: " << params.populationSize << std::endl;
+		strm << "Number of Generations: " << params.numGenerations << std::endl;
+		strm << "Number of Elites: " << params.numElites << std::endl;
+		strm << "Number of Mutations: " << params.numMutations << std::endl;
+		strm << "Number of Crossovers: " << params.numCrossovers << std::endl;
+		strm << "Elitism Size: " << params.elitismCount << std::endl;
+		strm << "Selection Method: " << params.selType << std::endl;
+		if (params.selType == operators::selection::TOURNAMENT_DETERMINISTIC)
+			strm << "Tournament Size: " << params.tournamentSize << std::endl;
+		if (params.selType == operators::selection::TOURNAMENT) {
+			strm << "Tournament Size: " << params.tournamentSize << std::endl;
+			strm << "Tournament Selection Probability: " << params.tournamentProb << std::endl;
+		}
+		strm << "Fitness Scaling Method: " << params.fitnessScalingType << std::endl;
+		if (params.fitnessScalingType == fitness::POWER_LAW)
+			strm << "Power Law Power: " << params.powerLawScalingPower << std::endl;
+		strm << "Mutation Operator Probabilities: " << std::endl;
+		strm << "\t Random Transposition: " << params.op_randomTranspose << std::endl;
+		strm << "\t Split: " << params.op_split << std::endl;
+		strm << "\t Merge: " << params.op_merge << std::endl;
+		strm << "\t Repeat: " << params.op_repeat << std::endl;
+		strm << "Optimization: " << std::endl;
+		strm << "\t Fitness Function: " << params.fitnessOptType << std::endl;
+		strm << "\t Selection: " << params.selOptType << std::endl;
+		strm << "\t Mutation: " << params.mutOptType << std::endl;
+		strm << "\t Crossover: " << params.crossOptType << std::endl;
+		return strm;
+	}
+	std::ostream& operator>>(std::ostream &strm, const Parameters params) {
+
+	}
 }

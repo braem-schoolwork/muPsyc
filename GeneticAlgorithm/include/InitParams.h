@@ -20,5 +20,32 @@ namespace geneticalgorithm {
 
 			InitParams() {}
 		};
+		std::ostream& operator<<(std::ostream &strm, const InitParams iParams) {
+			strm << "Composition Name: " << iParams.name << std::endl;
+			strm << "Number of Parts: " << iParams.numParts << std::endl;
+			strm << "Number of Measures: " << iParams.numMeasures << std::endl;
+			strm << "Part Names: ";
+			for (size_t i = 0; i < iParams.partNames.size(); i++) {
+				strm << iParams.partNames[i];
+				if (i == iParams.partNames.size() - 1)
+					strm << ", ";
+				else strm << std::endl;
+			}
+			strm << "Time Signature: " << iParams.timeSig << std::endl;
+			strm << "BPM: " << iParams.bpm << std::endl;
+			strm << "Instruments: ";
+			for (size_t i = 0; i < iParams.instruments.size(); i++) {
+				strm << iParams.instruments[i];
+				if (i == iParams.instruments.size() - 1)
+					strm << ", ";
+				else strm << std::endl;
+			}
+			strm << "Bounds:" << std::endl;
+			for (size_t i = 0; i < iParams.lowerBounds.size(); i++) {
+				strm << "\t Part " << i << "--- Lower: " << iParams.lowerBounds[i] << 
+					", Upper: " << iParams.upperBounds[i] << std::endl;
+			}
+			return strm;
+		}
 	}
 }
