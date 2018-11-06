@@ -227,6 +227,9 @@
     <ClInclude Include="include\SelectionType.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\FitnessScalingType.cpp" />
+    <ClCompile Include="include\OptimizationType.cpp" />
+    <ClCompile Include="include\SelectionType.cpp" />
     <ClCompile Include="source\CompositionGenerator.cpp" />
     <ClCompile Include="source\Crossover.cpp" />
     <ClCompile Include="source\Globals.cpp" />
