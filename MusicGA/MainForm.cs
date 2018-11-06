@@ -8,23 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MusicGA
+namespace geneticalgorithm
 {
     public partial class MainForm : Form
     {
         public MainForm()
         {
             InitializeComponent();
-        }
-        
-        private void runExperimentButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void runAlgorithmButton_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

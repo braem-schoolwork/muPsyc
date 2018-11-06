@@ -1,4 +1,4 @@
-﻿namespace MusicGA
+﻿namespace geneticalgorithm
 {
     partial class MainForm
     {
@@ -1660,7 +1660,6 @@
             this.runAlgorithmButton.TabIndex = 23;
             this.runAlgorithmButton.Text = "Run";
             this.runAlgorithmButton.UseVisualStyleBackColor = true;
-            this.runAlgorithmButton.Click += new System.EventHandler(this.runAlgorithmButton_Click);
             // 
             // numRunsBox
             // 
@@ -1732,7 +1731,6 @@
             this.runExperimentButton.TabIndex = 23;
             this.runExperimentButton.Text = "Run Experiment";
             this.runExperimentButton.UseVisualStyleBackColor = true;
-            this.runExperimentButton.Click += new System.EventHandler(this.runExperimentButton_Click);
             // 
             // experimentTypeLabel
             // 
