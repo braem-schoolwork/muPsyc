@@ -110,6 +110,6 @@ namespace music {
 			return p[partIndex].removeNoteAt(measureIndex, noteIndex);
 		}
 
+		friend std::ostream& operator<<(std::ostream &strm, const Composition &c);
 	};
-	std::ostream& operator<<(std::ostream &strm, const Composition &c);
 }

@@ -64,6 +64,6 @@ namespace music {
 		Pitch operator+(const unsigned int& amt) const;
 		Pitch operator-(const unsigned int& amt) const;
 		unsigned int operator-(const Pitch& other) const;
+		friend std::ostream& operator<<(std::ostream &strm, const Pitch &p);
 	};
-	std::ostream& operator<<(std::ostream &strm, const Pitch &p);
 }

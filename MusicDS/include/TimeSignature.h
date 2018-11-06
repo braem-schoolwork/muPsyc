@@ -22,9 +22,10 @@ namespace music {
 
 		void setNumber(unsigned int number) { num = number; }
 		void setDelineation(unsigned int delineation) { den = delineation; }
+
+		friend std::ostream & operator<<(std::ostream & strm, const TimeSignature & timeSig) {
+			strm << timeSig.number() << "/" << timeSig.delineation();
+			return strm;
+		}
 	};
-	std::ostream & operator<<(std::ostream & strm, const TimeSignature & timeSig) {
-		strm << timeSig.number() << "/" << timeSig.delineation();
-		return strm;
-	}
 }

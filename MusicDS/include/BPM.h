@@ -16,9 +16,10 @@ namespace music {
 
 		void setSeconds(unsigned int seconds) { s = seconds; }
 		void setDelineation(unsigned int delineation) { d = delineation; }
+
+		friend std::ostream& operator<<(std::ostream &strm, const BPM & bpm) {
+			strm << bpm.seconds() << ", with a delineation of " << bpm.delineation();
+			return strm;
+		}
 	};
-	std::ostream& operator<<(std::ostream &strm, const BPM & bpm) {
-		strm << bpm.seconds() << ", with a delineation of " << bpm.delineation();
-		return strm;
-	}
 }

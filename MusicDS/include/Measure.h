@@ -91,6 +91,8 @@ namespace music {
 		void setTimeSignature(TimeSignature timeSig) { ts = timeSig; }
 		void setNotes(std::vector<Note> notes) { n = notes; }
 		void setScale(Key scale) { s = scale; }
+
+		friend std::ostream& operator<<(std::ostream &strm, const Measure &m);
 	};
-	std::ostream& operator<<(std::ostream &strm, const Measure &m);
+	
 }

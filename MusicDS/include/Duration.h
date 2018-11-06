@@ -46,6 +46,7 @@ namespace music {
 		bool operator<(const Duration &other) const;
 		unsigned int operator+(const Duration &other) const;
 		unsigned int operator-(const Duration &other) const;
+		friend std::ostream& operator<<(std::ostream &strm, const Duration &d);
 	};
-	std::ostream& operator<<(std::ostream &strm, const Duration &d);
+	
 }

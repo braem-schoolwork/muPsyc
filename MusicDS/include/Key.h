@@ -194,6 +194,8 @@ namespace music {
 		void meanPitch(Pitch pitch1, Pitch pitch2, Pitch *mean);
 		void meanPitch(Note note1, Note note2, Note *mean);
 		void meanPitch(Note note1, Note note2, Pitch *mean);
+
+		friend std::ostream& operator<<(std::ostream &strm, const Key &key);
 	};
-	std::ostream& operator<<(std::ostream &strm, const Key &key);
+	
 }
