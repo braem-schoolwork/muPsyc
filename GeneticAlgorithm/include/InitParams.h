@@ -20,7 +20,7 @@ namespace geneticalgorithm {
 
 			InitParams() {}
 		};
-		std::ostream& operator<<(std::ostream &strm, const InitParams iParams) {
+		std::ostream& operator<<(std::ostream &strm, const InitParams & iParams) {
 			strm << "Composition Name: " << iParams.name << std::endl;
 			strm << "Number of Parts: " << iParams.numParts << std::endl;
 			strm << "Number of Measures: " << iParams.numMeasures << std::endl;
@@ -31,6 +31,7 @@ namespace geneticalgorithm {
 					strm << ", ";
 				else strm << std::endl;
 			}
+			strm << "Key: " << iParams.key << std::endl;
 			strm << "Time Signature: " << iParams.timeSig << std::endl;
 			strm << "BPM: " << iParams.bpm << std::endl;
 			strm << "Instruments: ";
