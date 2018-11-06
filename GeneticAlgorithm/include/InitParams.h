@@ -34,9 +34,9 @@ namespace geneticalgorithm {
 				strm << "Key: " << iParams.key << std::endl;
 				strm << "Time Signature: " << iParams.timeSig << std::endl;
 				strm << "BPM: " << iParams.bpm << std::endl;
-				strm << "Instruments: ";
+				strm << "MIDI Instruments: ";
 				for (size_t i = 0; i < iParams.instruments.size(); i++) {
-					strm << iParams.instruments[i];
+					strm << static_cast<int>(iParams.instruments[i]);
 					if (i != iParams.instruments.size() - 1)
 						strm << ", ";
 					else strm << std::endl;
