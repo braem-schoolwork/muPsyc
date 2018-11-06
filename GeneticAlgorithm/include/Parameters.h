@@ -34,7 +34,7 @@ namespace geneticalgorithm {
 		double onsetSyncUpperBound = 0.6;
 
 		//operator probabilities
-		unsigned int numMutationSubOperators = 3;
+		unsigned int numMutationSubOperators = 4;
 		double op_randomTranspose = 0.4;
 		double op_split = 0.25;
 		double op_merge = 0.25;
