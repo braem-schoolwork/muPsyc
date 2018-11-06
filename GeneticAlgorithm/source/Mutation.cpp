@@ -292,7 +292,7 @@ std::vector<Chromosome> geneticalgorithm::operators::mutation::mutateElites(std:
 	int numMut = static_cast<int>(AlgorithmParameters.numMutations); //omp cant use unsigned int
 	#pragma omp parallel for if (isParallel)
 	for (int i = 0; i < numMut; i++)
-		mutations[i] = elites[eliteDist(mt)], operatorProbs;
+		mutations[i] = mutate(elites[eliteDist(mt)], operatorProbs);
 	return mutations;
 }
 
