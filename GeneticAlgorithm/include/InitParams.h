@@ -27,7 +27,7 @@ namespace geneticalgorithm {
 				strm << "Part Names: ";
 				for (size_t i = 0; i < iParams.partNames.size(); i++) {
 					strm << iParams.partNames[i];
-					if (i == iParams.partNames.size() - 1)
+					if (i != iParams.partNames.size() - 1)
 						strm << ", ";
 					else strm << std::endl;
 				}
@@ -37,7 +37,7 @@ namespace geneticalgorithm {
 				strm << "Instruments: ";
 				for (size_t i = 0; i < iParams.instruments.size(); i++) {
 					strm << iParams.instruments[i];
-					if (i == iParams.instruments.size() - 1)
+					if (i != iParams.instruments.size() - 1)
 						strm << ", ";
 					else strm << std::endl;
 				}
