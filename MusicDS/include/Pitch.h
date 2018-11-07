@@ -19,20 +19,7 @@ namespace music {
 	public:
 		Pitch() : pc(0), oct(4), m(60) {}
 		Pitch(std::string pitch) {
-			oct = std::stoi(pitch.substr(pitch.length() - 1, pitch.length()));
-			std::string pcTypeStr = pitch.substr(0, pitch.length() - 1);
-			if (pcTypeStr == "C") pc = 0;
-			else if (pcTypeStr == "Cs") pc = 1;
-			else if (pcTypeStr == "D") pc = 2;
-			else if (pcTypeStr == "Ds") pc = 3;
-			else if (pcTypeStr == "E") pc = 4;
-			else if (pcTypeStr == "F") pc = 5;
-			else if (pcTypeStr == "Fs") pc = 6;
-			else if (pcTypeStr == "G") pc = 7;
-			else if (pcTypeStr == "Gs") pc = 8;
-			else if (pcTypeStr == "A") pc = 9;
-			else if (pcTypeStr == "As") pc = 10;
-			else if (pcTypeStr == "B") pc = 11;
+			*this = Pitch::getPitchFromString(pitch);
 		}
 		Pitch(unsigned int pc, unsigned int oct) : pc(pc), oct(oct) { setNewMidiVal(); }
 		Pitch(unsigned int midiVal) : m(midiVal) { setFromMidiVal(); }
@@ -65,6 +52,25 @@ namespace music {
 			return static_cast<int>(pitch.m) - static_cast<int>(this->m);
 		}
 		static int difference(Pitch pitch1, Pitch pitch2) { return pitch1.difference(pitch2); }
+		static Pitch getPitchFromString(std::string pitchStr) {
+			Pitch newPitch;
+			newPitch.oct = std::stoi(pitchStr.substr(pitchStr.length() - 1, pitchStr.length()));
+			std::string pcTypeStr = pitchStr.substr(0, pitchStr.length() - 1);
+			if (pcTypeStr == "C") newPitch.pc = 0;
+			else if (pcTypeStr == "Cs") newPitch.pc = 1;
+			else if (pcTypeStr == "D") newPitch.pc = 2;
+			else if (pcTypeStr == "Ds") newPitch.pc = 3;
+			else if (pcTypeStr == "E") newPitch.pc = 4;
+			else if (pcTypeStr == "F") newPitch.pc = 5;
+			else if (pcTypeStr == "Fs") newPitch.pc = 6;
+			else if (pcTypeStr == "G") newPitch.pc = 7;
+			else if (pcTypeStr == "Gs") newPitch.pc = 8;
+			else if (pcTypeStr == "A") newPitch.pc = 9;
+			else if (pcTypeStr == "As") newPitch.pc = 10;
+			else if (pcTypeStr == "B") newPitch.pc = 11;
+			newPitch.setNewMidiVal();
+			return newPitch;
+		}
 
 		bool operator==(const Pitch &other) const;
 		bool operator!=(const Pitch &other) const;

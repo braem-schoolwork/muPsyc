@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Definitions.h"
 
 namespace music {
 	class TimeSignature {
@@ -10,9 +11,7 @@ namespace music {
 	public:
 		TimeSignature() : num(4), den(4) {}
 		TimeSignature(std::string timesig) {
-			size_t pos = timesig.find("/");
-			num = std::stoi(timesig.substr(0, pos));
-			den = std::stoi(timesig.substr(pos + 1, timesig.length()));
+			*this = TimeSignature::getTimeSignatureFromString(timesig);
 		}
 		TimeSignature(unsigned int number, unsigned int delineation) : num(number), den(delineation) {}
 
@@ -28,6 +27,14 @@ namespace music {
 
 		void setNumber(unsigned int number) { num = number; }
 		void setDelineation(unsigned int delineation) { den = delineation; }
+
+		static TimeSignature getTimeSignatureFromString(std::string timesig) {
+			TimeSignature newTimeSig;
+			size_t pos = timesig.find("/");
+			newTimeSig.num = std::stoi(timesig.substr(0, pos));
+			newTimeSig.den = std::stoi(timesig.substr(pos + 1, timesig.length()));
+			return newTimeSig;
+		}
 
 		friend std::ostream & operator<<(std::ostream & strm, const TimeSignature & timeSig) {
 			strm << timeSig.number() << "/" << timeSig.delineation();

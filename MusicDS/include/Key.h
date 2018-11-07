@@ -18,23 +18,7 @@ namespace music {
 	public:
 		Key() : n_pcs(0) {}
 		Key(std::string keyStr) {
-			std::string delim = ",";
-			size_t pos = keyStr.find_first_of(delim);
-			n = keyStr.substr(0, pos);
-			keyStr = keyStr.substr(pos + 2, keyStr.length());
-			pos = keyStr.find_first_of(delim);
-			n_pcs = std::stoi(keyStr.substr(0, pos));
-			keyStr = keyStr.substr(pos + 3, keyStr.length());
-			for (unsigned int i = 0; i < n_pcs; i++) {
-				if (i == n_pcs - 1) {
-					sc_DN.push_back(std::stoi(keyStr.substr(0, keyStr.length() - 1)));
-					break;
-				}
-				pos = keyStr.find_first_of(delim);
-				sc_DN.push_back(std::stoi(keyStr.substr(0, pos)));
-				keyStr = keyStr.substr(pos + 1, keyStr.length());
-			}
-			sc_UP = sc_DN;
+			*this = Key::getKeyFromString(keyStr);
 		}
 
 		Key(std::string name, std::vector<unsigned int> pitchClasses) : n(name), sc_UP(pitchClasses),
@@ -214,6 +198,28 @@ namespace music {
 		void meanPitch(Pitch pitch1, Pitch pitch2, Pitch *mean);
 		void meanPitch(Note note1, Note note2, Note *mean);
 		void meanPitch(Note note1, Note note2, Pitch *mean);
+
+		static Key getKeyFromString(std::string keyStr) {
+			Key newKey;
+			std::string delim = ",";
+			size_t pos = keyStr.find_first_of(delim);
+			newKey.n = keyStr.substr(0, pos);
+			keyStr = keyStr.substr(pos + 2, keyStr.length());
+			pos = keyStr.find_first_of(delim);
+			newKey.n_pcs = std::stoi(keyStr.substr(0, pos));
+			keyStr = keyStr.substr(pos + 3, keyStr.length());
+			for (unsigned int i = 0; i < newKey.n_pcs; i++) {
+				if (i == newKey.n_pcs - 1) {
+					newKey.sc_DN.push_back(std::stoi(keyStr.substr(0, keyStr.length() - 1)));
+					break;
+				}
+				pos = keyStr.find_first_of(delim);
+				newKey.sc_DN.push_back(std::stoi(keyStr.substr(0, pos)));
+				keyStr = keyStr.substr(pos + 1, keyStr.length());
+			}
+			newKey.sc_UP = newKey.sc_DN;
+			return newKey;
+		}
 
 		friend std::ostream& operator<<(std::ostream &strm, const Key &key);
 	};
