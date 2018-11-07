@@ -1,7 +1,14 @@
 #include "MusicDS.h"
 
 std::ostream & music::operator<<(std::ostream & strm, const Key & key) {
-	return strm << key.name();
+	strm << key.name() << ", " << key.sc_DN.size() << ", [";
+	for (size_t i = 0; i < key.sc_DN.size(); i++) {
+		strm << std::to_string(key.sc_DN[i]);
+		if (i != key.sc_DN.size() - 1)
+			strm << ",";
+	}
+	strm << "]";
+	return strm;
 }
 
 unsigned int music::Key::findNumAccidentals() {
