@@ -7,4 +7,5 @@ std::ostream & geneticalgorithm::operators::selection::operator<<(std::ostream &
 geneticalgorithm::operators::selection::SelectionType geneticalgorithm::operators::selection::getSelectionTypeFromString(std::string type) {
 	for (size_t i = 0; i < EnumStrings->size(); i++)
 		if (type == EnumStrings[i]) return SelectionType(i);
+	return ROULETTE_WHEEL;
 }
