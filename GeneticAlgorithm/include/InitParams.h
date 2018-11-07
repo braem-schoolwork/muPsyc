@@ -43,7 +43,7 @@ namespace geneticalgorithm {
 				}
 				strm << "Bounds:" << std::endl;
 				for (size_t i = 0; i < iParams.lowerBounds.size(); i++) {
-					strm << "\t Part " << i << "--- Lower: " << iParams.lowerBounds[i] <<
+					strm << "\t Part " << i + 1 << " --- Lower: " << iParams.lowerBounds[i] <<
 						", Upper: " << iParams.upperBounds[i] << std::endl;
 				}
 				return strm;
