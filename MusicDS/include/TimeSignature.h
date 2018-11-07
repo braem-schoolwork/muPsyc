@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace music {
 	class TimeSignature {
@@ -8,6 +9,11 @@ namespace music {
 
 	public:
 		TimeSignature() : num(4), den(4) {}
+		TimeSignature(std::string timesig) {
+			size_t pos = timesig.find("/");
+			num = std::stoi(timesig.substr(0, pos));
+			den = std::stoi(timesig.substr(pos + 1, timesig.length()));
+		}
 		TimeSignature(unsigned int number, unsigned int delineation) : num(number), den(delineation) {}
 
 		unsigned int number() const { return num; }

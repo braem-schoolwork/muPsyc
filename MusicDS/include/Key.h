@@ -17,6 +17,26 @@ namespace music {
 
 	public:
 		Key() : n_pcs(0) {}
+		Key(std::string keyStr) {
+			std::string delim = ",";
+			size_t pos = keyStr.find_first_of(delim);
+			n = keyStr.substr(0, pos);
+			keyStr = keyStr.substr(pos + 2, keyStr.length());
+			pos = keyStr.find_first_of(delim);
+			n_pcs = std::stoi(keyStr.substr(0, pos));
+			keyStr = keyStr.substr(pos + 3, keyStr.length());
+			for (unsigned int i = 0; i < n_pcs; i++) {
+				if (i == n_pcs - 1) {
+					sc_DN.push_back(std::stoi(keyStr.substr(0, keyStr.length() - 1)));
+					break;
+				}
+				pos = keyStr.find_first_of(delim);
+				sc_DN.push_back(std::stoi(keyStr.substr(0, pos)));
+				keyStr = keyStr.substr(pos + 1, keyStr.length());
+			}
+			sc_UP = sc_DN;
+		}
+
 		Key(std::string name, std::vector<unsigned int> pitchClasses) : n(name), sc_UP(pitchClasses),
 			sc_DN(pitchClasses), n_pcs(static_cast<unsigned int>(pitchClasses.size())) {}
 		Key(std::string name, std::vector<unsigned int> pitchClassesUp, std::vector<unsigned int> pitchClassesDown)

@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace music {
 	class BPM {
@@ -8,6 +9,12 @@ namespace music {
 
 	public:
 		BPM() : s(60), d(4) {}
+		BPM(std::string bpm) {
+			size_t pos = bpm.find(",");
+			s = std::stoi(bpm.substr(0, pos));
+			pos = bpm.find_last_of(" ");
+			d = std::stoi(bpm.substr(pos + 1, bpm.length()));
+		}
 		BPM(unsigned int seconds) : s(seconds), d(4) {}
 		BPM(unsigned int seconds, unsigned int delineation) : s(seconds), d(delineation) {}
 
