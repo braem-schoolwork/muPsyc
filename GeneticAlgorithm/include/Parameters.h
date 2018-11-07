@@ -1,4 +1,5 @@
 #pragma once
+#include "MusicDS.h"
 #include "InitParams.h"
 #include "OptimizationType.h"
 #include "SelectionType.h"
@@ -109,21 +110,99 @@ namespace geneticalgorithm {
 			return strm;
 		}
 		friend std::istream& operator>>(std::istream &strm, Parameters & params) {
-			/*
-			strm >> params.initParams >> params.populationSize >> params.numGenerations >> params.numElites >> params.numCrossovers
-				>> params.elitismCount >> params.selType;
+			std::string line, paramStr, delim = ":", secondaryDelim = ",";
+			size_t pos, pos2;
+			std::getline(strm, line); //initial comment. Not useful
+			std::getline(strm, line); pos = line.find(delim); //comp name
+			paramStr = line.substr(pos + 2, line.length()); params.initParams.name = paramStr;
+			std::getline(strm, line); pos = line.find(delim); //numParts
+			paramStr = line.substr(pos + 2, line.length()); params.initParams.numParts = std::stoi(paramStr);
+			std::getline(strm, line); pos = line.find(delim); //numMeasures
+			paramStr = line.substr(pos + 2, line.length()); params.initParams.numMeasures = std::stoi(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //part names
+			for (unsigned int i = 0; i < params.initParams.numParts; i++) {
+				if (i == params.initParams.numParts - 1) {
+					params.initParams.partNames[i] = paramStr.substr(0, paramStr.length());
+					break;
+				}
+				pos2 = paramStr.find_first_of(secondaryDelim);
+				params.initParams.partNames[i] = paramStr.substr(0, pos2);
+				paramStr = paramStr.substr(pos2 + 2, paramStr.length());
+			}
+			std::getline(strm, line); pos = line.find(delim); //key
+			paramStr = line.substr(pos + 2, line.length()); params.initParams.key = music::Key(paramStr);
+			std::getline(strm, line); pos = line.find(delim); //time sig
+			paramStr = line.substr(pos + 2, line.length()); params.initParams.timeSig = music::TimeSignature(paramStr);
+			std::getline(strm, line); pos = line.find(delim); //bpm
+			paramStr = line.substr(pos + 2, line.length()); params.initParams.bpm = music::BPM(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //midi instruments
+			for (unsigned int i = 0; i < params.initParams.numParts; i++) {
+				if (i == params.initParams.numParts - 1) {
+					params.initParams.instruments[i] = static_cast<char>(std::stoi(paramStr.substr(0, paramStr.length())));
+					break;
+				}
+				pos2 = paramStr.find_first_of(secondaryDelim);
+				params.initParams.instruments[i] = static_cast<char>(std::stoi(paramStr.substr(0, pos2)));
+				paramStr = paramStr.substr(pos2 + 2, paramStr.length());
+			}
+			std::getline(strm, line); //bounds header
+			for (unsigned int i = 0; i < params.initParams.numParts; i++) {
+				std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //instrument bounds
+				pos2 = paramStr.find(secondaryDelim);
+				params.initParams.lowerBounds[i] = music::Pitch(paramStr.substr(0, pos2));
+				pos = paramStr.find(delim);
+				params.initParams.upperBounds[i] = music::Pitch(paramStr.substr(pos + 2, paramStr.length()));
+			}
+			//DONE INITPARAMS
+			std::getline(strm, line); //whitespace between both param objs
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //population size
+			params.populationSize = std::stoi(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //elites
+			params.numElites = std::stoi(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //mutations
+			params.numMutations = std::stoi(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //crossovers
+			params.numCrossovers = std::stoi(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //num gens
+			params.numGenerations = std::stoi(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //elitism count
+			params.elitismCount = std::stoi(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //selection type
+			params.selType = operators::selection::getSelectionTypeFromString(paramStr);
 			if (params.selType == operators::selection::TOURNAMENT_DETERMINISTIC) {
-				strm >> params.tournamentSize;
+				std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //tourny size
+				params.tournamentSize = std::stoi(paramStr);
 			}
 			else if (params.selType == operators::selection::TOURNAMENT) {
-				strm >> params.tournamentSize >> params.tournamentProb;
+				std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //tourny size
+				params.tournamentSize = std::stoi(paramStr);
+				std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //tourny prob
+				params.tournamentProb = std::stod(paramStr);
 			}
-			strm >> params.fitnessScalingType;
-			if (params.fitnessScalingType == fitness::POWER_LAW)
-				strm >> params.powerLawScalingPower;
-			strm >> params.op_randomTranspose >> params.op_split >> params.op_merge >> params.op_repeat
-				>> params.fitnessOptType >> params.selOptType >> params.mutOptType >> params.crossOptType;
-				*/
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //fitness scaling type
+			params.fitnessScalingType = fitness::getFitnessScalingTypeFromString(paramStr);
+			if (params.fitnessScalingType == fitness::POWER_LAW) {
+				std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //power law power
+				params.powerLawScalingPower = std::stoi(paramStr);
+			}
+			std::getline(strm, line); //mutation op probs header
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //mut op random transpose
+			params.op_randomTranspose = std::stod(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //mut op split
+			params.op_split = std::stod(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //mut op merge
+			params.op_merge = std::stod(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //mut op repeat
+			params.op_repeat = std::stod(paramStr);
+			std::getline(strm, line); //optimization header
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //selection type
+			params.fitnessOptType = fitness::getFitnessOptimizationTypeFromString(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //selection type
+			params.selOptType = operators::selection::getSelectionOptimizationTypeFromString(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //selection type
+			params.mutOptType = operators::mutation::getMutationOptimizationTypeFromString(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //selection type
+			params.crossOptType = operators::crossover::getCrossoverOptimizationTypeFromString(paramStr);
 			return strm;
 		}
 	};
