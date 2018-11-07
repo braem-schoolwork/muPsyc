@@ -6,6 +6,5 @@
 
 namespace geneticalgorithm {
 	extern Parameters AlgorithmParameters;
-	RunInfo runGA(Population initialPop);
-	RunInfo runGA();
+	void runGA();
 }

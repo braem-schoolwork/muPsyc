@@ -4,6 +4,7 @@
 #include "OptimizationType.h"
 #include "SelectionType.h"
 #include "FitnessScalingType.h"
+#include "RunInfo.h"
 #include <algorithm>
 
 namespace geneticalgorithm {
@@ -40,6 +41,10 @@ namespace geneticalgorithm {
 		double op_split = 0.25;
 		double op_merge = 0.25;
 		double op_repeat = 0.1;
+
+		//multiple runs info
+		std::string mainDirectory = "output/";
+		unsigned int numRuns = 1;
 
 		//old operator probabilities
 		unsigned int old_numMutationSubOperators = 9;
@@ -107,6 +112,8 @@ namespace geneticalgorithm {
 			strm << "\t Selection: " << params.selOptType << std::endl;
 			strm << "\t Mutation: " << params.mutOptType << std::endl;
 			strm << "\t Crossover: " << params.crossOptType << std::endl;
+			strm << "Directory: " << params.mainDirectory << std::endl;
+			strm << "Number of Runs: " << params.numRuns << std::endl;
 			return strm;
 		}
 		friend std::istream& operator>>(std::istream &strm, Parameters & params) {
@@ -203,6 +210,10 @@ namespace geneticalgorithm {
 			params.mutOptType = operators::mutation::getMutationOptimizationTypeFromString(paramStr);
 			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //selection type
 			params.crossOptType = operators::crossover::getCrossoverOptimizationTypeFromString(paramStr);
+			std::getline(strm, line); pos = line.find(delim); //main directory
+			paramStr = line.substr(pos + 2, line.length()); params.mainDirectory = paramStr;
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //number of runs
+			params.numRuns = std::stoi(paramStr);
 			return strm;
 		}
 	};
