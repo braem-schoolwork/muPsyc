@@ -7,6 +7,7 @@ std::ostream & geneticalgorithm::fitness::operator<<(std::ostream & strm, const 
 geneticalgorithm::fitness::FitnessOptimizationType geneticalgorithm::fitness::getFitnessOptimizationTypeFromString(std::string type) {
 	for (size_t i = 0; i < OptEnumStrings->size(); i++)
 		if (type == OptEnumStrings[i]) return FitnessOptimizationType(i);
+	return PARALLEL_CPU;
 }
 
 std::ostream & geneticalgorithm::operators::selection::operator<<(std::ostream & strm, const SelectionOptimizationType type) {
@@ -16,6 +17,7 @@ std::ostream & geneticalgorithm::operators::selection::operator<<(std::ostream &
 geneticalgorithm::operators::selection::SelectionOptimizationType geneticalgorithm::operators::selection::getSelectionOptimizationTypeFromString(std::string type) {
 	for (size_t i = 0; i < OptEnumStrings->size(); i++)
 		if (type == OptEnumStrings[i]) return SelectionOptimizationType(i);
+	return PARALLEL_CPU;
 }
 
 std::ostream & geneticalgorithm::operators::mutation::operator<<(std::ostream & strm, const MutationOptimizationType type) {
@@ -25,6 +27,7 @@ std::ostream & geneticalgorithm::operators::mutation::operator<<(std::ostream & 
 geneticalgorithm::operators::mutation::MutationOptimizationType geneticalgorithm::operators::mutation::getMutationOptimizationTypeFromString(std::string type) {
 	for (size_t i = 0; i < EnumStrings->size(); i++)
 		if (type == EnumStrings[i]) return MutationOptimizationType(i);
+	return PARALLEL_CPU;
 }
 
 std::ostream & geneticalgorithm::operators::crossover::operator<<(std::ostream & strm, const CrossoverOptimizationType type) {
@@ -34,4 +37,5 @@ std::ostream & geneticalgorithm::operators::crossover::operator<<(std::ostream &
 geneticalgorithm::operators::crossover::CrossoverOptimizationType geneticalgorithm::operators::crossover::getCrossoverOptimizationTypeFromString(std::string type) {
 	for (size_t i = 0; i < EnumStrings->size(); i++)
 		if (type == EnumStrings[i]) return CrossoverOptimizationType(i);
+	return PARALLEL_CPU;
 }
