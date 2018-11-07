@@ -189,6 +189,19 @@
   <ItemGroup>
     <ClCompile Include="source\Main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="experiments\fitness_scaling\linear.cfg" />
+    <None Include="experiments\fitness_scaling\none.cfg" />
+    <None Include="experiments\fitness_scaling\power-law.cfg" />
+    <None Include="experiments\fitness_scaling\sigma-truncation.cfg" />
+    <None Include="experiments\optimization\parallelcpu.cfg" />
+    <None Include="experiments\optimization\singlethreaded.cfg" />
+    <None Include="experiments\selection_methods\fitness-proportionate.cfg" />
+    <None Include="experiments\selection_methods\rank-linear.cfg" />
+    <None Include="experiments\selection_methods\rank-negexp.cfg" />
+    <None Include="experiments\selection_methods\tournament-deterministic.cfg" />
+    <None Include="experiments\selection_methods\tournament.cfg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

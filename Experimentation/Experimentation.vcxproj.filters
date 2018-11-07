@@ -13,10 +13,57 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="configs">
+      <UniqueIdentifier>{a415e4ae-1aea-4852-9e8a-5b4ab51fcb11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="configs\optimization-test">
+      <UniqueIdentifier>{f9d17908-3740-40a0-88e4-a4c243bd1a02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="configs\selection-method-test">
+      <UniqueIdentifier>{a75f2551-7093-4f8a-87f8-80557bc47558}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="configs\fitness-scaling-test">
+      <UniqueIdentifier>{54342a9a-ee55-4745-a11c-a89528f86cf5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="experiments\optimization\parallelcpu.cfg">
+      <Filter>configs\optimization-test</Filter>
+    </None>
+    <None Include="experiments\optimization\singlethreaded.cfg">
+      <Filter>configs\optimization-test</Filter>
+    </None>
+    <None Include="experiments\selection_methods\fitness-proportionate.cfg">
+      <Filter>configs\selection-method-test</Filter>
+    </None>
+    <None Include="experiments\selection_methods\rank-linear.cfg">
+      <Filter>configs\selection-method-test</Filter>
+    </None>
+    <None Include="experiments\selection_methods\rank-negexp.cfg">
+      <Filter>configs\selection-method-test</Filter>
+    </None>
+    <None Include="experiments\selection_methods\tournament.cfg">
+      <Filter>configs\selection-method-test</Filter>
+    </None>
+    <None Include="experiments\selection_methods\tournament-deterministic.cfg">
+      <Filter>configs\selection-method-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\sigma-truncation.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\linear.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\none.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\power-law.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
   </ItemGroup>
 </Project>
