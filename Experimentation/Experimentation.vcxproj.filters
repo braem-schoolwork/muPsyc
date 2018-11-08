@@ -30,6 +30,9 @@
     <ClCompile Include="source\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\Experiments.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="experiments\optimization\parallelcpu.cfg">
@@ -53,18 +56,47 @@
     <None Include="experiments\selection_methods\tournament-deterministic.cfg">
       <Filter>configs\selection-method-test</Filter>
     </None>
-    <None Include="experiments\fitness_scaling\sigma-truncation.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\linear.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\none.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\power-law.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
     <None Include="config.cfg" />
+    <None Include="experiments\fitness_scaling\linear-fitness-proportionate.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\linear-rank-linear.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\linear-rank-negexp.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\none-fitness-proportionate.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\none-rank-linear.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\none-rank-negexp.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\power-law-fitness-proportionate.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\power-law-rank-linear.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\power-law-rank-negexp.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\sigma-truncation-fitness-proportionate.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\sigma-truncation-rank-linear.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+    <None Include="experiments\fitness_scaling\sigma-truncation-rank-negexp.cfg">
+      <Filter>configs\fitness-scaling-test</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Experiments.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

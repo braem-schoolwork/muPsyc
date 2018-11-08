@@ -187,14 +187,23 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\Experiments.cpp" />
     <ClCompile Include="source\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config.cfg" />
-    <None Include="experiments\fitness_scaling\linear.cfg" />
-    <None Include="experiments\fitness_scaling\none.cfg" />
-    <None Include="experiments\fitness_scaling\power-law.cfg" />
-    <None Include="experiments\fitness_scaling\sigma-truncation.cfg" />
+    <None Include="experiments\fitness_scaling\linear-fitness-proportionate.cfg" />
+    <None Include="experiments\fitness_scaling\linear-rank-linear.cfg" />
+    <None Include="experiments\fitness_scaling\linear-rank-negexp.cfg" />
+    <None Include="experiments\fitness_scaling\none-fitness-proportionate.cfg" />
+    <None Include="experiments\fitness_scaling\none-rank-linear.cfg" />
+    <None Include="experiments\fitness_scaling\none-rank-negexp.cfg" />
+    <None Include="experiments\fitness_scaling\power-law-fitness-proportionate.cfg" />
+    <None Include="experiments\fitness_scaling\power-law-rank-linear.cfg" />
+    <None Include="experiments\fitness_scaling\power-law-rank-negexp.cfg" />
+    <None Include="experiments\fitness_scaling\sigma-truncation-fitness-proportionate.cfg" />
+    <None Include="experiments\fitness_scaling\sigma-truncation-rank-linear.cfg" />
+    <None Include="experiments\fitness_scaling\sigma-truncation-rank-negexp.cfg" />
     <None Include="experiments\optimization\parallelcpu.cfg" />
     <None Include="experiments\optimization\singlethreaded.cfg" />
     <None Include="experiments\selection_methods\fitness-proportionate.cfg" />
@@ -202,6 +211,9 @@
     <None Include="experiments\selection_methods\rank-negexp.cfg" />
     <None Include="experiments\selection_methods\tournament-deterministic.cfg" />
     <None Include="experiments\selection_methods\tournament.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Experiments.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
