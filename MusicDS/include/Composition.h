@@ -33,7 +33,7 @@ namespace music {
 		unsigned int numMeasures() const { return p[0].numMeasures(); }
 		std::vector<unsigned int> measureTickLengths() const {
 			std::vector<unsigned int> rtn(p[0].numMeasures());
-			for (unsigned int measureIndex = 0; measureIndex < p.size(); measureIndex++)
+			for (unsigned int measureIndex = 0; measureIndex < p[0].numMeasures(); measureIndex++)
 				rtn[measureIndex] = p[0].measures()[measureIndex].tickLength();
 			return rtn;
 		}
