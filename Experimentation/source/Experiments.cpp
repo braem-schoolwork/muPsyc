@@ -8,6 +8,47 @@ void geneticalgorithm::experimentation::runExp(std::string cfgPath) {
 	runGA(); //run experiment
 }
 
+void geneticalgorithm::experimentation::runAllExperiments() {
+	std::cout << "Running all experiments.. this will take a long time" << std::endl << std::endl;
+
+	runOptimizationExperiments();
+	runSelectionMethodExperiments();
+	runScalingMethodExperiments();
+}
+
+void geneticalgorithm::experimentation::runOptimizationExperiments() {
+	std::cout << "Running all optimization experiments.." << std::endl;
+	optimization::parallelCPU();
+	optimization::singleThreaded();
+}
+
+void geneticalgorithm::experimentation::runSelectionMethodExperiments() {
+	std::cout << "Running all selection method experiments.." << std::endl;
+	selection_methods::fitnessProportionate();
+	selection_methods::rankLinear();
+	selection_methods::rankNegExp();
+	selection_methods::tournamentDeterministic();
+	selection_methods::tournament();
+}
+
+void geneticalgorithm::experimentation::runScalingMethodExperiments() {
+	std::cout << "Running all fitness scaling experiments.." << std::endl;
+	scaling_methods::none_fitnessProportionate();
+	scaling_methods::linear_fitnessProportionate();
+	scaling_methods::sigmaTruncation_fitnessProportionate();
+	scaling_methods::powerLaw_fitnessProportionate();
+
+	scaling_methods::none_rankLinear();
+	scaling_methods::linear_rankLinear();
+	scaling_methods::sigmaTruncation_rankLinear();
+	scaling_methods::powerLaw_rankLinear();
+
+	scaling_methods::none_rankNegExp();
+	scaling_methods::linear_rankNegExp();
+	scaling_methods::sigmaTruncation_rankNegExp();
+	scaling_methods::powerLaw_rankNegExp();
+}
+
 void geneticalgorithm::experimentation::optimization::parallelCPU() {
 	runExp(optimizationDirectory + "parallelcpu.cfg");
 	std::cout << "Finished Parallel (CPU) Experiment" << std::endl;

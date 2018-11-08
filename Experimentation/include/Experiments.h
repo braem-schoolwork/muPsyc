@@ -11,6 +11,12 @@ namespace geneticalgorithm {
 
 		void runExp(std::string cfgPath);
 
+		void runAllExperiments();
+
+		void runOptimizationExperiments();
+		void runSelectionMethodExperiments();
+		void runScalingMethodExperiments();
+
 		namespace optimization {
 			static const std::string optimizationDirectory = experimentsDirectory + "optimization/";
 			void parallelCPU();
