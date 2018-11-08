@@ -65,5 +65,6 @@
     <None Include="experiments\fitness_scaling\power-law.cfg">
       <Filter>configs\fitness-scaling-test</Filter>
     </None>
+    <None Include="config.cfg" />
   </ItemGroup>
 </Project>

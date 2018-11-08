@@ -190,6 +190,7 @@
     <ClCompile Include="source\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="config.cfg" />
     <None Include="experiments\fitness_scaling\linear.cfg" />
     <None Include="experiments\fitness_scaling\none.cfg" />
     <None Include="experiments\fitness_scaling\power-law.cfg" />
