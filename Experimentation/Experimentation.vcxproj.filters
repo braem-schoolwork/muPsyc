@@ -56,7 +56,6 @@
     <None Include="experiments\selection_methods\tournament-deterministic.cfg">
       <Filter>configs\selection-method-test</Filter>
     </None>
-    <None Include="config.cfg" />
     <None Include="experiments\fitness_scaling\linear-fitness-proportionate.cfg">
       <Filter>configs\fitness-scaling-test</Filter>
     </None>

@@ -191,7 +191,6 @@
     <ClCompile Include="source\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="config.cfg" />
     <None Include="experiments\fitness_scaling\linear-fitness-proportionate.cfg" />
     <None Include="experiments\fitness_scaling\linear-rank-linear.cfg" />
     <None Include="experiments\fitness_scaling\linear-rank-negexp.cfg" />
