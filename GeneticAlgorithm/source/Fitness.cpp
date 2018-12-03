@@ -234,11 +234,11 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 	//fitness accumulators for each rule
 	double rcFit = 0.0, llFit = 0.0, pcFit = 0.0, poFit = 0.0, smFit = 0.0, pmFit = 0.0,
 		asabfiFit = 0.0, eiFit = 0.0, fiFit = 0.0, atfFit = 0.0, oatfiFit = 0.0, adatfiFit = 0.0, csFit = 0.0,
-		onsetSync = 0.0, llrFit = 0.0, ueiFit = 0.0, s7ldFit = 0.0, ldvFit = 0.0, cFit = 0.0;
+		onsetSync = 0.0, llrFit = 0.0, ueiFit = 0.0, s7ldFit = 0.0, ldvFit = 0.0, cFit = 0.0, auFit = 0.0;
 	//number of times each rule is calculated
 	unsigned int rcCtr = 0, llCtr = 0, pcCtr = 0, poCtr = 0, smCtr = 0, pmCtr = 0,
 		asabfiCtr = 0, eiCtr = 0, fiCtr = 0, atfCtr = 0, oatfiCtr = 0, adatfiCtr = 0, csCtr = 0, onsetSyncCtr = 0,
-		llrCtr = 0, ueiCtr = 0, s7ldCtr = 0, ldvCtr = 0, cCtr = 0;
+		llrCtr = 0, ueiCtr = 0, s7ldCtr = 0, ldvCtr = 0, cCtr = 0, auCtr = 0;
 	std::vector<std::vector<Note>> notes = composition.notes(); //all notes in part
 	std::vector<std::vector<int>> absIntervals(composition.numParts());
 	std::vector<Duration> knownDurations;
@@ -291,6 +291,7 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 					pcFit += huron2001::partCrossing(currentNotes[partIndex], currentNotes[partIndex + 1]); pcCtr++;
 					fiFit += huron2001::parallelFusedIntervals(currentNotes[partIndex], currentNotes[partIndex + 1]); fiCtr++;
 					atfFit += huron2001::avoidTonalFusion(currentNotes[partIndex], currentNotes[partIndex + 1]); atfCtr++;
+					auFit += huron2001::avoidUnisons(currentNotes[partIndex], currentNotes[partIndex + 1]); auFit++;
 					if (noteIndices[partIndex] > 0 && noteIndices[partIndex + 1] > 0) { //prev notes exist
 						poFit += huron2001::pitchOverlapping(pastNotes[partIndex], currentNotes[partIndex + 1]); poCtr++;
 						smFit += huron2001::semblantMotion(pastNotes[partIndex], pastNotes[partIndex + 1],
@@ -380,8 +381,12 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 	fitnessInfo->unequalIntevalsFitness = ueiFit / static_cast<double>(ueiCtr);
 	fitnessInfo->scale7orLessDegreesFitness = s7ldFit / static_cast<double>(s7ldCtr);
 	fitnessInfo->limitedDurationValuesFitness = ldvFit / static_cast<double>(ldvCtr);
+	fitnessInfo->avoidUnisonsFitness = auFit / static_cast<double>(auCtr);
 	//fitnessInfo->contourFitness += cFit / static_cast<double>(cCtr);
-	fitnessInfo->setOverallFitness();
+	if (AlgorithmParameters.onlyTraditionalRules)
+		fitnessInfo->setTraditionalRulesFitness();
+	else
+		fitnessInfo->setOverallFitness();
 }
 
 bool geneticalgorithm::fitness::rules::huron2001::helper::isFusedInterval(music::Note lower, music::Note upper) {

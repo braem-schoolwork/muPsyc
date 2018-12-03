@@ -21,13 +21,15 @@ namespace geneticalgorithm {
 
 		unsigned int elitismCount = 4;
 
+		bool onlyTraditionalRules = false;
+
 		fitness::FitnessOptimizationType fitnessOptType = fitness::FitnessOptimizationType(fitness::PARALLEL_CPU);;
 		operators::selection::SelectionOptimizationType selOptType = operators::selection::SelectionOptimizationType(operators::selection::PARALLEL_CPU);;
 		operators::mutation::MutationOptimizationType mutOptType = operators::mutation::MutationOptimizationType(operators::mutation::PARALLEL_CPU);
 		operators::crossover::CrossoverOptimizationType crossOptType = operators::crossover::CrossoverOptimizationType(operators::crossover::PARALLEL_CPU);
 		operators::selection::SelectionType selType = operators::selection::SelectionType(operators::selection::TOURNAMENT);
 		unsigned int tournamentSize = 5;
-		double tournamentProb = 0.8;
+		double tournamentProb = 0.9;
 
 		fitness::FitnessScalingType fitnessScalingType = fitness::FitnessScalingType(fitness::NONE);
 		int powerLawScalingPower = 2;
@@ -91,6 +93,7 @@ namespace geneticalgorithm {
 			strm << "Number of Mutations: " << params.numMutations << std::endl;
 			strm << "Number of Crossovers: " << params.numCrossovers << std::endl;
 			strm << "Number of Generations: " << params.numGenerations << std::endl;
+			strm << "Using only Traditional Rules: " << params.onlyTraditionalRules << std::endl;
 			strm << "Elitism Size: " << params.elitismCount << std::endl;
 			strm << "Selection Method: " << params.selType << std::endl;
 			if (params.selType == operators::selection::TOURNAMENT_DETERMINISTIC)
@@ -172,6 +175,8 @@ namespace geneticalgorithm {
 			params.numCrossovers = std::stoi(paramStr);
 			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //num gens
 			params.numGenerations = std::stoi(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //traditional rules bool
+			params.onlyTraditionalRules = std::stoi(paramStr);
 			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //elitism count
 			params.elitismCount = std::stoi(paramStr);
 			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //selection type
