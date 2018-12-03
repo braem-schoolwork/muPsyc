@@ -77,6 +77,7 @@ namespace geneticalgorithm {
 				double parallelMotion(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote);
 				double avoidSemblantApproachBetweenFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote);
 				double exposedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote, music::Key key);
+				double avoidUnisons(music::Note lowerNote, music::Note upperNote);
 				double parallelFusedIntervals(music::Note lowerNote, music::Note upperNote);
 				double avoidTonalFusion(music::Note lowerNote, music::Note upperNote);
 				double obliqueApproachToFusedIntervals(music::Note pastLowerNote, music::Note pastUpperNote, music::Note lowerNote, music::Note upperNote);

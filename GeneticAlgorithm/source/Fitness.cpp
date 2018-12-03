@@ -91,6 +91,10 @@ double geneticalgorithm::fitness::rules::huron2001::exposedIntervals(music::Note
 	return -1.0;
 }
 
+double geneticalgorithm::fitness::rules::huron2001::avoidUnisons(music::Note lowerNote, music::Note upperNote) {
+	return lowerNote == upperNote ? 0.0 : 1.0;
+}
+
 double geneticalgorithm::fitness::rules::huron2001::parallelFusedIntervals(music::Note lowerNote, music::Note upperNote) {
 	return helper::isFusedInterval(lowerNote, upperNote) ? 0.0 : 1.0;
 }
