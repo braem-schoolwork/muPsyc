@@ -191,26 +191,50 @@ double geneticalgorithm::fitness::rules::brownjordana2011::limitedDurationValues
 }
 
 double geneticalgorithm::fitness::rules::brownjordana2011::contour(std::vector<int> cont) {
+	//get an overall contour
+	std::vector<int> conts;
+	std::vector<int> contLengths;
 	double fit = 0.0; int ctr = 0;
-	bool wasPrevAscending = false;
-	int prevContourType; //-1 for descending, 0 for same note, 1 for ascending
+	int prevContourType = -1; //-1 for descending, 0 for same note, 1 for ascending
+	int prevContourLength = 0, contourLength = 0; 
+	bool first = true;
 	for (unsigned int i = 0; i < cont.size(); i++) {
 		int contourType;
 		if (cont[i] > 0) { //ascending
-			wasPrevAscending = true; contourType = 1;
-			if (wasPrevAscending) {
-				fit -= 1.0; ctr--;
-			}
+			contourType = 1;
 		}
 		else if (cont[i] < 0) { //descending
-			fit += 1.0; ctr++; //always good
-			wasPrevAscending = false; contourType = -1;
+			contourType = -1;
 		}
 		else { //no movement
-			contourType = 0;
+			contourType = prevContourType;
+		}
+		//contourLength++;
+		if ((!first && contourType != prevContourType)) { //change in contour
+			conts.push_back(prevContourType);
+			contLengths.push_back(contourLength);
+			contourLength = 0;
 		}
 		prevContourType = contourType;
+		first = false;
+		contourLength++;
+		if (i == cont.size() - 1) {
+			conts.push_back(prevContourType);
+			contLengths.push_back(contourLength);
+		}
 	}
+
+	//search the overall contour for bad stuff
+	for (unsigned int i = 0; i < conts.size() - 1; i++) {
+		if (conts[i] == 1) { //ascending
+			if (contLengths[i + 1] >= contLengths[i]) { //descending should be equal or longer than ascending
+				fit += 1.0;
+			}
+			ctr++;
+		}
+	}
+	if (conts[conts.size() - 1] == 1) ctr++; //ends in ascend
+
 	if (ctr < 0 || fit < 0.0 + std::numeric_limits<double>::epsilon()) return 0.0;
 	return fit / static_cast<double>(ctr);
 }
