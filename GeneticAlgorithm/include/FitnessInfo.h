@@ -58,7 +58,7 @@ namespace geneticalgorithm {
 					pitchOverlappingFitness + semblantMotionFitness + parallelMotionFitness + avoidSemblantApproachBetweenFusedIntervalsFitness +
 					exposedIntervalsFitness + parallelFusedIntervalsFitness + avoidTonalFusionFitness + obliqueApproachToFusedIntervalsFitness +
 					avoidDisjunctApproachToFusedIntervalsFitness + chordSpacingFitness + limitedDurationValuesFitness + contourFitness + registralCompassFitness + 
-					partCrossingFitness + exposedIntervalsFitness + chordSpacingFitness + avoidUnisonsFitness)
+					partCrossingFitness + exposedIntervalsFitness + chordSpacingFitness)
 					/ static_cast<double>(numHuron2001FitnessRules + numTraditionalRules + numBrownJordana2011FitnessRules);
 				traditionalFitness = (registralCompassFitness + partCrossingFitness + exposedIntervalsFitness + chordSpacingFitness + avoidUnisonsFitness)
 					/ static_cast<double>(numTraditionalRules);
