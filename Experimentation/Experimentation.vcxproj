@@ -193,6 +193,9 @@
   <ItemGroup>
     <ClInclude Include="include\Experiments.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="config.cfg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
