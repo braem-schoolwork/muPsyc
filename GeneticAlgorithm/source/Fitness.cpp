@@ -187,7 +187,7 @@ double geneticalgorithm::fitness::rules::brownjordana2011::scale7orLessDegrees(m
 }
 
 double geneticalgorithm::fitness::rules::brownjordana2011::limitedDurationValues(std::vector<music::Duration> durations) {
-	return durations.size() > 5 ? 0.0 : 1.0;
+	return durations.size() >= 4 ? 0.0 : 1.0;
 }
 
 double geneticalgorithm::fitness::rules::brownjordana2011::contour(std::vector<int> cont) {
@@ -289,12 +289,13 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 			if (hasNoteChanged[partIndex]) {
 				isInInstrumentRegister = isInInstrumentRegister && 
 					!other::outOfInstrumentRegister(currentNotes[partIndex], composition.parts()[partIndex].instrument());
+				bool in = false;
 				for (unsigned int i = 0; i < knownDurations.size(); i++) {
-					if (currentNotes[partIndex].duration() != knownDurations[i]) {
-						knownDurations.push_back(currentNotes[partIndex].duration());
-						break;
+					if (currentNotes[partIndex].duration() == knownDurations[i]) {
+						in = true; break; //duration is known
 					}
 				} //for calculating the number of unique durations
+				if(!in) knownDurations.push_back(currentNotes[partIndex].duration());
 				rcFit += huron2001::registralCompass(currentNotes[partIndex]); rcCtr++;
 				if (noteIndices[partIndex] > 0) { //previous note exists
 					llFit += huron2001::leapLengthening(pastNotes[partIndex], currentNotes[partIndex]); llCtr++;
@@ -315,7 +316,7 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 					pcFit += huron2001::partCrossing(currentNotes[partIndex], currentNotes[partIndex + 1]); pcCtr++;
 					fiFit += huron2001::parallelFusedIntervals(currentNotes[partIndex], currentNotes[partIndex + 1]); fiCtr++;
 					atfFit += huron2001::avoidTonalFusion(currentNotes[partIndex], currentNotes[partIndex + 1]); atfCtr++;
-					auFit += huron2001::avoidUnisons(currentNotes[partIndex], currentNotes[partIndex + 1]); auFit++;
+					auFit += huron2001::avoidUnisons(currentNotes[partIndex], currentNotes[partIndex + 1]); auCtr++;
 					if (noteIndices[partIndex] > 0 && noteIndices[partIndex + 1] > 0) { //prev notes exist
 						poFit += huron2001::pitchOverlapping(pastNotes[partIndex], currentNotes[partIndex + 1]); poCtr++;
 						smFit += huron2001::semblantMotion(pastNotes[partIndex], pastNotes[partIndex + 1],
