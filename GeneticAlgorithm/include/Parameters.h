@@ -130,15 +130,17 @@ namespace geneticalgorithm {
 			std::getline(strm, line); pos = line.find(delim); //numMeasures
 			paramStr = line.substr(pos + 2, line.length()); params.initParams.numMeasures = std::stoi(paramStr);
 			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //part names
+			std::vector<std::string> partnames(params.initParams.numParts);
 			for (unsigned int i = 0; i < params.initParams.numParts; i++) {
 				if (i == params.initParams.numParts - 1) {
-					params.initParams.partNames[i] = paramStr.substr(0, paramStr.length());
+					partnames[i] = paramStr.substr(0, paramStr.length());
 					break;
 				}
 				pos2 = paramStr.find_first_of(secondaryDelim);
-				params.initParams.partNames[i] = paramStr.substr(0, pos2);
+				partnames[i] = paramStr.substr(0, pos2);
 				paramStr = paramStr.substr(pos2 + 2, paramStr.length());
 			}
+			params.initParams.partNames = partnames;
 			std::getline(strm, line); pos = line.find(delim); //key
 			paramStr = line.substr(pos + 2, line.length()); params.initParams.key = music::Key(paramStr);
 			std::getline(strm, line); pos = line.find(delim); //time sig
@@ -146,23 +148,29 @@ namespace geneticalgorithm {
 			std::getline(strm, line); pos = line.find(delim); //bpm
 			paramStr = line.substr(pos + 2, line.length()); params.initParams.bpm = music::BPM(paramStr);
 			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //midi instruments
+			std::vector<char> instrs(params.initParams.numParts);
 			for (unsigned int i = 0; i < params.initParams.numParts; i++) {
 				if (i == params.initParams.numParts - 1) {
-					params.initParams.instruments[i] = static_cast<char>(std::stoi(paramStr.substr(0, paramStr.length())));
+					instrs[i] = static_cast<char>(std::stoi(paramStr.substr(0, paramStr.length())));
 					break;
 				}
 				pos2 = paramStr.find_first_of(secondaryDelim);
-				params.initParams.instruments[i] = static_cast<char>(std::stoi(paramStr.substr(0, pos2)));
+				instrs[i] = static_cast<char>(std::stoi(paramStr.substr(0, pos2)));
 				paramStr = paramStr.substr(pos2 + 2, paramStr.length());
 			}
+			params.initParams.instruments = instrs;
 			std::getline(strm, line); //bounds header
+			std::vector<music::Pitch> lbnds(params.initParams.numParts);
+			std::vector<music::Pitch> ubnds(params.initParams.numParts);
 			for (unsigned int i = 0; i < params.initParams.numParts; i++) {
 				std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //instrument bounds
 				pos2 = paramStr.find(secondaryDelim);
-				params.initParams.lowerBounds[i] = music::Pitch(paramStr.substr(0, pos2));
+				lbnds[i] = music::Pitch(paramStr.substr(0, pos2));
 				pos = paramStr.find(delim);
-				params.initParams.upperBounds[i] = music::Pitch(paramStr.substr(pos + 2, paramStr.length()));
+				ubnds[i] = music::Pitch(paramStr.substr(pos + 2, paramStr.length()));
 			}
+			params.initParams.lowerBounds = lbnds;
+			params.initParams.upperBounds = ubnds;
 			//DONE INITPARAMS
 			std::getline(strm, line); //whitespace between both param objs
 			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //population size
