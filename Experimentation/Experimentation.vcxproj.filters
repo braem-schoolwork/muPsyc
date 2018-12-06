@@ -16,18 +16,6 @@
     <Filter Include="configs">
       <UniqueIdentifier>{a415e4ae-1aea-4852-9e8a-5b4ab51fcb11}</UniqueIdentifier>
     </Filter>
-    <Filter Include="configs\traditional">
-      <UniqueIdentifier>{1d0b88dd-0e19-4480-a1a5-52bfa1d6944d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="configs\allrules">
-      <UniqueIdentifier>{909a09ce-ef44-4a1c-a1ff-7b3931dd1091}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="configs\parallel">
-      <UniqueIdentifier>{81afd9b9-605c-4134-a442-a4d6fe40602f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="configs\singlethreaded">
-      <UniqueIdentifier>{e9ba4d7d-bc30-4c5b-8e8a-0e1a25a8c6df}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Main.cpp">
@@ -44,5 +32,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="config.cfg" />
+    <None Include="configs\allrules.cfg">
+      <Filter>configs</Filter>
+    </None>
+    <None Include="configs\parallel.cfg">
+      <Filter>configs</Filter>
+    </None>
+    <None Include="configs\singlethreaded.cfg">
+      <Filter>configs</Filter>
+    </None>
+    <None Include="configs\traditionalrules.cfg">
+      <Filter>configs</Filter>
+    </None>
   </ItemGroup>
 </Project>

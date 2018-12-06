@@ -195,6 +195,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="config.cfg" />
+    <None Include="configs\allrules.cfg" />
+    <None Include="configs\parallel.cfg" />
+    <None Include="configs\singlethreaded.cfg" />
+    <None Include="configs\traditionalrules.cfg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
