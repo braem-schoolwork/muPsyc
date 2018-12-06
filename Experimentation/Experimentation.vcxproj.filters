@@ -16,14 +16,17 @@
     <Filter Include="configs">
       <UniqueIdentifier>{a415e4ae-1aea-4852-9e8a-5b4ab51fcb11}</UniqueIdentifier>
     </Filter>
-    <Filter Include="configs\optimization-test">
-      <UniqueIdentifier>{f9d17908-3740-40a0-88e4-a4c243bd1a02}</UniqueIdentifier>
+    <Filter Include="configs\traditional">
+      <UniqueIdentifier>{1d0b88dd-0e19-4480-a1a5-52bfa1d6944d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="configs\selection-method-test">
-      <UniqueIdentifier>{a75f2551-7093-4f8a-87f8-80557bc47558}</UniqueIdentifier>
+    <Filter Include="configs\allrules">
+      <UniqueIdentifier>{909a09ce-ef44-4a1c-a1ff-7b3931dd1091}</UniqueIdentifier>
     </Filter>
-    <Filter Include="configs\fitness-scaling-test">
-      <UniqueIdentifier>{54342a9a-ee55-4745-a11c-a89528f86cf5}</UniqueIdentifier>
+    <Filter Include="configs\parallel">
+      <UniqueIdentifier>{81afd9b9-605c-4134-a442-a4d6fe40602f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="configs\singlethreaded">
+      <UniqueIdentifier>{e9ba4d7d-bc30-4c5b-8e8a-0e1a25a8c6df}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -33,65 +36,6 @@
     <ClCompile Include="source\Experiments.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="experiments\optimization\parallelcpu.cfg">
-      <Filter>configs\optimization-test</Filter>
-    </None>
-    <None Include="experiments\optimization\singlethreaded.cfg">
-      <Filter>configs\optimization-test</Filter>
-    </None>
-    <None Include="experiments\selection_methods\fitness-proportionate.cfg">
-      <Filter>configs\selection-method-test</Filter>
-    </None>
-    <None Include="experiments\selection_methods\rank-linear.cfg">
-      <Filter>configs\selection-method-test</Filter>
-    </None>
-    <None Include="experiments\selection_methods\rank-negexp.cfg">
-      <Filter>configs\selection-method-test</Filter>
-    </None>
-    <None Include="experiments\selection_methods\tournament.cfg">
-      <Filter>configs\selection-method-test</Filter>
-    </None>
-    <None Include="experiments\selection_methods\tournament-deterministic.cfg">
-      <Filter>configs\selection-method-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\linear-fitness-proportionate.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\linear-rank-linear.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\linear-rank-negexp.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\none-fitness-proportionate.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\none-rank-linear.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\none-rank-negexp.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\power-law-fitness-proportionate.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\power-law-rank-linear.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\power-law-rank-negexp.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\sigma-truncation-fitness-proportionate.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\sigma-truncation-rank-linear.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
-    <None Include="experiments\fitness_scaling\sigma-truncation-rank-negexp.cfg">
-      <Filter>configs\fitness-scaling-test</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Experiments.h">
