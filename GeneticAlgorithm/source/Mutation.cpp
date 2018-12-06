@@ -312,6 +312,7 @@ Chromosome geneticalgorithm::operators::mutation::sub::split(Chromosome chromoso
 	Note newNote1 = Note(selectedNote), newNote2 = Note(selectedNote.pitch(), selectedNote.duration());
 	Duration d = selectedNote.duration();
 	d.halfDuration();
+	if (d.type() > MAX_DURATION) return Chromosome(comp);
 	newNote1.setDuration(d); newNote2.setDuration(d);
 	comp.replaceNoteAt(partIndex, measureIndex, noteIndex, newNote1);
 	comp.addNoteAt(partIndex, measureIndex, noteIndex, newNote2);
