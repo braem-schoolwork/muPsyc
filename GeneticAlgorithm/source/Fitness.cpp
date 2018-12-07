@@ -386,7 +386,10 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 	onsetSync /= static_cast<double>(onsetSyncCtr);
 	ldvFit += brownjordana2011::limitedDurationValues(knownDurations); ldvCtr++;
 	//analyze contour of top-most part
-	fitnessInfo->contourFitness = brownjordana2011::contour(absIntervals[absIntervals.size() - 1]);
+	for (unsigned int i = 0; i < absIntervals.size(); i++) {
+		cFit += brownjordana2011::contour(absIntervals[i]);
+		cCtr++;
+	}
 
 	fitnessInfo->registralCompassFitness = rcFit / static_cast<double>(rcCtr);
 	fitnessInfo->leapLengtheningFitness = llFit / static_cast<double>(llCtr);
@@ -407,7 +410,7 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 	fitnessInfo->scale7orLessDegreesFitness = s7ldFit / static_cast<double>(s7ldCtr);
 	fitnessInfo->limitedDurationValuesFitness = ldvFit / static_cast<double>(ldvCtr);
 	fitnessInfo->avoidUnisonsFitness = auFit / static_cast<double>(auCtr);
-	//fitnessInfo->contourFitness += cFit / static_cast<double>(cCtr);
+	fitnessInfo->contourFitness = cFit / static_cast<double>(cCtr);
 	if (AlgorithmParameters.onlyTraditionalRules)
 		fitnessInfo->setTraditionalRulesFitness();
 	else
