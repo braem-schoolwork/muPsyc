@@ -1,13 +1,9 @@
 #include "MusicGA.h"
 #include <fstream>
+#include "Experiments.h"
 
 int main() {
-	std::ifstream ifs;
-	ifs.open("config.cfg");
-	ifs >> geneticalgorithm::AlgorithmParameters;
-	ifs.close();
-
-	geneticalgorithm::runGA();
+	geneticalgorithm::experimentation::allRules();
 
 	return 0;
 }
