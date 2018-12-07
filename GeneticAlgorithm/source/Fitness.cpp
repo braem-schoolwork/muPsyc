@@ -394,12 +394,12 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 	fitnessInfo->pitchOverlappingFitness = poFit / static_cast<double>(poCtr);
 	fitnessInfo->semblantMotionFitness = smFit / static_cast<double>(smCtr);
 	fitnessInfo->parallelMotionFitness = pmFit / static_cast<double>(pmCtr);
-	fitnessInfo->avoidSemblantApproachBetweenFusedIntervalsFitness = asabfiFit / static_cast<double>(asabfiCtr);
-	fitnessInfo->exposedIntervalsFitness = eiFit / static_cast<double>(eiCtr);
+	fitnessInfo->avoidSemblantApproachBetweenFusedIntervalsFitness = asabfiCtr == 0 ? 1.0 : asabfiFit / static_cast<double>(asabfiCtr);
+	fitnessInfo->exposedIntervalsFitness = eiCtr == 0 ? 1.0 : eiFit / static_cast<double>(eiCtr);
 	fitnessInfo->parallelFusedIntervalsFitness = fiFit / static_cast<double>(fiCtr);
 	fitnessInfo->avoidTonalFusionFitness = atfFit / static_cast<double>(atfCtr);
-	fitnessInfo->obliqueApproachToFusedIntervalsFitness = oatfiFit / static_cast<double>(oatfiCtr);
-	fitnessInfo->avoidDisjunctApproachToFusedIntervalsFitness = adatfiFit / static_cast<double>(adatfiCtr);
+	fitnessInfo->obliqueApproachToFusedIntervalsFitness = oatfiCtr == 0 ? 1.0 : oatfiFit / static_cast<double>(oatfiCtr);
+	fitnessInfo->avoidDisjunctApproachToFusedIntervalsFitness = adatfiCtr == 0 ? 1.0 : adatfiFit / static_cast<double>(adatfiCtr);
 	fitnessInfo->chordSpacingFitness = csFit / static_cast<double>(csCtr);
 	fitnessInfo->onsetSynchronizationFitness = onsetSync >= AlgorithmParameters.onsetSyncLowerBound && onsetSync <= AlgorithmParameters.onsetSyncUpperBound ? 1.0 : 0.0;
 	fitnessInfo->largeLeapResolutionFitness = llrFit / static_cast<double>(llrCtr);
