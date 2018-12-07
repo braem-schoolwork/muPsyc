@@ -196,18 +196,21 @@ double geneticalgorithm::fitness::rules::brownjordana2011::contour(std::vector<i
 	std::vector<int> contLengths;
 	double fit = 0.0; int ctr = 0;
 	int prevContourType = -1; //-1 for descending, 0 for same note, 1 for ascending
-	int prevContourLength = 0, contourLength = 0; 
+	int prevContourLength = 0, contourLength = 0, nomovementCtr = 0; 
 	bool first = true;
 	for (unsigned int i = 0; i < cont.size(); i++) {
 		int contourType;
 		if (cont[i] > 0) { //ascending
 			contourType = 1;
+			nomovementCtr = 0;
 		}
 		else if (cont[i] < 0) { //descending
 			contourType = -1;
+			nomovementCtr = 0;
 		}
 		else { //no movement
 			contourType = prevContourType;
+			nomovementCtr++;
 		}
 		//contourLength++;
 		if ((!first && contourType != prevContourType)) { //change in contour
@@ -218,6 +221,8 @@ double geneticalgorithm::fitness::rules::brownjordana2011::contour(std::vector<i
 		prevContourType = contourType;
 		first = false;
 		contourLength++;
+		if (nomovementCtr > 2) 
+			ctr++; //contour breaks if no movement for awhile
 		if (i == cont.size() - 1) {
 			conts.push_back(prevContourType);
 			contLengths.push_back(contourLength);
