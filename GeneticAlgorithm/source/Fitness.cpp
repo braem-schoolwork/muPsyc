@@ -342,8 +342,38 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 						if (tmp >= 0.0) { adatfiFit += tmp; adatfiCtr++; }
 					}
 				}
+				//calc all again for uppermost and bottommost parts
+			}
+		} //end partIndex loop
+		if (currentNotes.size() > 2) { //more than two parts -> calc stuff again on highest & lowest part
+			double tmp;
+			if (hasNoteChanged[0] && hasNoteChanged[currentNotes.size() - 1]) { //2 notes moved at same tick
+				pcFit += huron2001::partCrossing(currentNotes[0], currentNotes[currentNotes.size() - 1]); pcCtr++;
+				fiFit += huron2001::parallelFusedIntervals(currentNotes[0], currentNotes[currentNotes.size() - 1]); fiCtr++;
+				atfFit += huron2001::avoidTonalFusion(currentNotes[0], currentNotes[currentNotes.size() - 1]); atfCtr++;
+				auFit += huron2001::avoidUnisons(currentNotes[0], currentNotes[currentNotes.size() - 1]); auCtr++;
+				if (noteIndices[0] > 0 && noteIndices[currentNotes.size() - 1] > 0) { //prev notes exist
+					poFit += huron2001::pitchOverlapping(pastNotes[0], currentNotes[currentNotes.size() - 1]); poCtr++;
+					smFit += huron2001::semblantMotion(pastNotes[0], pastNotes[currentNotes.size() - 1],
+						currentNotes[0], currentNotes[currentNotes.size() - 1]); smCtr++;
+					pmFit += huron2001::parallelMotion(pastNotes[0], pastNotes[currentNotes.size() - 1],
+						currentNotes[0], currentNotes[currentNotes.size() - 1]); pmCtr++;
+					tmp = huron2001::avoidSemblantApproachBetweenFusedIntervals(pastNotes[0], pastNotes[currentNotes.size() - 1],
+						currentNotes[0], currentNotes[currentNotes.size() - 1]);
+					if (tmp >= 0.0) { asabfiFit += tmp; asabfiCtr++; }
+					tmp = huron2001::exposedIntervals(pastNotes[0], pastNotes[currentNotes.size() - 1],
+						currentNotes[0], currentNotes[currentNotes.size() - 1], key);
+					if (tmp >= 0.0) { eiFit += tmp; eiCtr++; }
+					tmp = huron2001::obliqueApproachToFusedIntervals(pastNotes[0], pastNotes[currentNotes.size() - 1],
+						currentNotes[0], currentNotes[currentNotes.size() - 1]);
+					if (tmp >= 0.0) { oatfiFit += tmp; oatfiCtr++; }
+					tmp = huron2001::avoidDisjunctApproachToFusedIntervals(pastNotes[0], pastNotes[currentNotes.size() - 1],
+						currentNotes[0], currentNotes[currentNotes.size() - 1], key);
+					if (tmp >= 0.0) { adatfiFit += tmp; adatfiCtr++; }
+				}
 			}
 		}
+
 		if (howManyMoved >= 3) { //chord
 			if (didBassMove) { //chordspacing only applies to bass voice
 				csFit += huron2001::chordSpacing(currentNotes);
