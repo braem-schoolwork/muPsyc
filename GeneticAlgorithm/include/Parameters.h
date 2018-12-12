@@ -23,6 +23,8 @@ namespace geneticalgorithm {
 
 		bool onlyTraditionalRules = false;
 
+		double threshold = 0.99;
+
 		fitness::FitnessOptimizationType fitnessOptType = fitness::FitnessOptimizationType(fitness::PARALLEL_CPU);;
 		operators::selection::SelectionOptimizationType selOptType = operators::selection::SelectionOptimizationType(operators::selection::PARALLEL_CPU);;
 		operators::mutation::MutationOptimizationType mutOptType = operators::mutation::MutationOptimizationType(operators::mutation::PARALLEL_CPU);
@@ -95,6 +97,7 @@ namespace geneticalgorithm {
 			strm << "Number of Generations: " << params.numGenerations << std::endl;
 			strm << "Using only Traditional Rules: " << params.onlyTraditionalRules << std::endl;
 			strm << "Elitism Size: " << params.elitismCount << std::endl;
+			strm << "Fitness Threshold: " << params.threshold << std::endl;
 			strm << "Selection Method: " << params.selType << std::endl;
 			if (params.selType == operators::selection::TOURNAMENT_DETERMINISTIC)
 				strm << "Tournament Size: " << params.tournamentSize << std::endl;
@@ -187,6 +190,8 @@ namespace geneticalgorithm {
 			params.onlyTraditionalRules = std::stoi(paramStr);
 			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //elitism count
 			params.elitismCount = std::stoi(paramStr);
+			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //threshold
+			params.threshold = std::stod(paramStr);
 			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //selection type
 			params.selType = operators::selection::getSelectionTypeFromString(paramStr);
 			if (params.selType == operators::selection::TOURNAMENT_DETERMINISTIC) {
