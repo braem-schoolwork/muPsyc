@@ -8,7 +8,7 @@ void geneticalgorithm::experimentation::runExp(std::string cfgpath) {
 }
 
 void geneticalgorithm::experimentation::parallelCPU() {
-	runExp("configs/parallelcpu.cfg");
+	runExp("configs/parallel.cfg");
 }
 
 void geneticalgorithm::experimentation::singleThreaded() {
