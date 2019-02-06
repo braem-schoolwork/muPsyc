@@ -218,6 +218,7 @@
     <ClInclude Include="include\InitParams.h" />
     <ClInclude Include="include\MusicGA.h" />
     <ClInclude Include="include\Mutation.h" />
+    <ClInclude Include="include\Mutation_dep.h" />
     <ClInclude Include="include\Operators.h" />
     <ClInclude Include="include\OptimizationType.h" />
     <ClInclude Include="include\Parameters.h" />
@@ -236,6 +237,7 @@
     <ClCompile Include="source\Fitness.cpp" />
     <ClCompile Include="source\GeneticAlgorithm.cpp" />
     <ClCompile Include="source\Mutation.cpp" />
+    <ClCompile Include="source\Mutation_dep.cpp" />
     <ClCompile Include="source\Selection.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
