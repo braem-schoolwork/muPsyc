@@ -20,10 +20,7 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 	std::uniform_real_distribution<double> selDist(0, 1);
 	for (unsigned int i = 0; i < AlgorithmParameters.numElites; i++) {
 		if (i < AlgorithmParameters.elitismCount) { //elitism: keep the very best
-			unsigned int bestFitIndex = population.getBestFitIndex();
-			elites[i] = population[bestFitIndex];
-			population.setFitness(population.fitness() - population[bestFitIndex].fitness());
-			population.removeChromosomeAt(bestFitIndex);
+			elites[i] = selectBest(population);
 			continue;
 		}
 		
@@ -40,6 +37,7 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 		eliteIndex = eliteIndex == std::numeric_limits<unsigned int>().infinity() ? eliteIndex = population.size() - 1 : eliteIndex;
 
 		elites[i] = population[eliteIndex]; //new elite
+		elites[i].incrementAge();
 
 		//to not get same one twice, remove this elite from the population
 		population.setFitness(population.fitness() - population[eliteIndex].fitness());
@@ -60,10 +58,7 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 	//c ~ 2 typically
 	for (unsigned int i = 0; i < AlgorithmParameters.numElites; i++) {
 		if (i < AlgorithmParameters.elitismCount) { //elitism: keep the very best
-			unsigned int bestFitIndex = population.getBestFitIndex();
-			elites[i] = population[bestFitIndex];
-			population.setFitness(population.fitness() - population[bestFitIndex].fitness());
-			population.removeChromosomeAt(bestFitIndex);
+			elites[i] = selectBest(population);
 			continue;
 		}
 
@@ -88,6 +83,7 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 		}
 
 		elites[i] = population[eliteIndex]; //new elite
+		elites[i].incrementAge();
 
 		//to not get same one twice, remove this elite from the population
 		population.setFitness(population.fitness() - population[eliteIndex].fitness());
@@ -102,10 +98,7 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 	std::uniform_real_distribution<double> selDist(0, 1);
 	for (unsigned int i = 0; i < AlgorithmParameters.numElites; i++) {
 		if (i < AlgorithmParameters.elitismCount) { //elitism: keep the very best
-			unsigned int bestFitIndex = population.getBestFitIndex();
-			elites[i] = population[bestFitIndex];
-			population.setFitness(population.fitness() - population[bestFitIndex].fitness());
-			population.removeChromosomeAt(bestFitIndex);
+			elites[i] = selectBest(population);
 			continue;
 		}
 
@@ -132,10 +125,20 @@ std::vector<geneticalgorithm::Chromosome> geneticalgorithm::operators::selection
 		}
 
 		elites[i] = population[eliteIndex]; //new elite
+		elites[i].incrementAge();
 
 		//to not get same one twice, remove this elite from the population
 		population.setFitness(population.fitness() - population[eliteIndex].fitness());
 		population.removeChromosomeAt(eliteIndex);
 	}
 	return elites;
+}
+
+geneticalgorithm::Chromosome geneticalgorithm::operators::selection::selectBest(Population population) {
+	unsigned int bestFitIndex = population.getBestFitIndex();
+	Chromosome chr = population[bestFitIndex];
+	chr.incrementAge();
+	population.setFitness(population.fitness() - population[bestFitIndex].fitness());
+	population.removeChromosomeAt(bestFitIndex);
+	return chr;
 }

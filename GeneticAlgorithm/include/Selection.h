@@ -15,6 +15,7 @@ namespace geneticalgorithm {
 			std::vector<Chromosome> rouletteSelection(Population population);
 			std::vector<Chromosome> rankSelection(Population population, bool isLinear);
 			std::vector<Chromosome> tournamentSelection(Population population, bool isDeterministic);
+			Chromosome selectBest(Population population);
 		}
 	}
 }
