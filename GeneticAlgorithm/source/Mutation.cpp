@@ -284,18 +284,6 @@ Chromosome geneticalgorithm::operators::mutation::mutate(Chromosome chromosome, 
 	}
 }
 
-std::vector<Chromosome> geneticalgorithm::operators::mutation::mutateElites(std::vector<Chromosome> elites) {
-	std::vector<Chromosome> mutations(AlgorithmParameters.numMutations);
-	std::uniform_int_distribution<unsigned int> eliteDist(0, static_cast<unsigned int>(elites.size() - 1));
-	std::vector<double> operatorProbs = { AlgorithmParameters.op_randomTranspose, AlgorithmParameters.op_split, AlgorithmParameters.op_merge, AlgorithmParameters.op_repeat };
-	bool isParallel = AlgorithmParameters.mutOptType == PARALLEL_CPU;
-	int numMut = static_cast<int>(AlgorithmParameters.numMutations); //omp cant use unsigned int
-	#pragma omp parallel for if (isParallel)
-	for (int i = 0; i < numMut; i++)
-		mutations[i] = mutate(elites[eliteDist(mt)], operatorProbs);
-	return mutations;
-}
-
 Chromosome geneticalgorithm::operators::mutation::sub::randomTranspose(Chromosome chromosome) {
 	Chromosome newChromosome = Chromosome(chromosome);
 	std::uniform_int_distribution<int> leapDist(INT_UNISON, INT_6TH);
@@ -339,4 +327,18 @@ Chromosome geneticalgorithm::operators::mutation::sub::merge(Chromosome chromoso
 
 Chromosome geneticalgorithm::operators::mutation::sub::repeat(Chromosome chromosome) {
 	return Chromosome(chromosome);
+}
+
+std::vector<Chromosome> geneticalgorithm::operators::mutation::mutateElites(std::vector<Chromosome> elites) {
+	std::vector<Chromosome> mutations(AlgorithmParameters.numMutations);
+	std::uniform_int_distribution<unsigned int> eliteDist(0, static_cast<unsigned int>(elites.size() - 1));
+	std::vector<double> operatorProbs = { AlgorithmParameters.op_randomTranspose, AlgorithmParameters.op_split, AlgorithmParameters.op_merge, AlgorithmParameters.op_repeat };
+	bool isParallel = AlgorithmParameters.mutOptType == PARALLEL_CPU;
+	int numMut = static_cast<int>(AlgorithmParameters.numMutations); //omp cant use unsigned int
+	#pragma omp parallel for if (isParallel)
+	for (int i = 0; i < numMut; i++) {
+		mutations[i] = mutate(elites[eliteDist(mt)], operatorProbs);
+		mutations[i].resetAge();
+	}
+	return mutations;
 }

@@ -29,6 +29,7 @@ std::vector<Chromosome> geneticalgorithm::operators::crossover::crossElites(std:
 		unsigned int parent2Index = eliteDist2(mt);
 		if (parent2Index >= parent1Index) parent2Index++;
 		crossovers[i] = cross(elites[parent1Index], elites[parent2Index]);
+		crossovers[i].resetAge();
 	}
 	return crossovers;
 }
