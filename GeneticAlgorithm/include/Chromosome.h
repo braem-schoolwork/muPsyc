@@ -24,6 +24,7 @@ namespace geneticalgorithm {
 		void setAge(unsigned int age) { a = age; }
 
 		void incrementAge() { a++; }
+		void resetAge() { a = 0; }
 		bool isOlder(Chromosome other) { return a > other.a; }
 		bool isYounger(Chromosome other) { return a < other.a; }
 		bool isSameAge(Chromosome other) { return a == other.a; }
