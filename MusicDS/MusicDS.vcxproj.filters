@@ -75,6 +75,12 @@
     <ClInclude Include="include\Intervals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Chord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Chords.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Composition.cpp">

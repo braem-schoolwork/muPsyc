@@ -167,6 +167,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\BPM.h" />
+    <ClInclude Include="include\Chord.h" />
+    <ClInclude Include="include\Chords.h" />
     <ClInclude Include="include\Composition.h" />
     <ClInclude Include="include\Definitions.h" />
     <ClInclude Include="include\Duration.h" />
