@@ -168,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="include\BPM.h" />
     <ClInclude Include="include\Chord.h" />
+    <ClInclude Include="include\ChordProgression.h" />
     <ClInclude Include="include\Chords.h" />
     <ClInclude Include="include\Composition.h" />
     <ClInclude Include="include\Definitions.h" />
@@ -190,6 +191,8 @@
     <ClInclude Include="include\TimeSignature.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\Chord.cpp" />
+    <ClCompile Include="include\ChordProgression.cpp" />
     <ClCompile Include="src\Composition.cpp" />
     <ClCompile Include="src\Duration.cpp" />
     <ClCompile Include="src\Functions.cpp" />
