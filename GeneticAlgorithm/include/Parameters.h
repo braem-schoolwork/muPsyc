@@ -177,6 +177,8 @@ namespace geneticalgorithm {
 			}
 			params.initParams.lowerBounds = lbnds;
 			params.initParams.upperBounds = ubnds;
+			std::getline(strm, line); //chords header
+			strm >> params.initParams.chordProgression;
 			//DONE INITPARAMS
 			std::getline(strm, line); //whitespace between both param objs
 			std::getline(strm, line); pos = line.find(delim); paramStr = line.substr(pos + 2, line.length()); //population size

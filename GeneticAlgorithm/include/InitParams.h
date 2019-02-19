@@ -17,6 +17,8 @@ namespace geneticalgorithm {
 			unsigned int numMeasures = 4;
 			std::vector<music::Pitch> lowerBounds{ music::C2, music::C3, music::G3, music::C4 };
 			std::vector<music::Pitch> upperBounds{ music::C4, music::G4, music::C5, music::D5 };
+			music::ChordProgression chordProgression = music::ChordProgression(std::vector<music::Chord>{ C_CMajor, C_CMajor, C_CMajor, C_CMajor }, 
+				std::vector<unsigned int>{1, 1, 1, 1});
 
 			InitParams() {}
 
@@ -46,6 +48,7 @@ namespace geneticalgorithm {
 					strm << "\t Part " << i + 1 << " --- Lower: " << iParams.lowerBounds[i] <<
 						", Upper: " << iParams.upperBounds[i] << std::endl;
 				}
+				strm << "Chords: " << std::endl << iParams.chordProgression << std::endl;
 				return strm;
 			}
 		};
