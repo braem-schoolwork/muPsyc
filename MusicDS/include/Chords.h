@@ -1,20 +1,19 @@
 #pragma once
-#pragma once
 
-#define C_CMajor	music::Chord({C, E, G})
-#define C_CMajor7	music::Chord({C, E, G, B})
-#define C_Dminor	music::Chord({D, F, A})
-#define C_Dminor7	music::Chord({D, F, A, C})
-#define C_Eminor	music::Chord({E, G, B})
-#define C_Eminor7	music::Chord({E, G, B, D})
-#define C_FMajor	music::Chord({F, A, C})
-#define C_FMajor7	music::Chord({F, A, C, E})
-#define C_GMajor	music::Chord({G, B, D})
-#define C_Gdom7		music::Chord({G, B, D, F})
-#define C_Aminor	music::Chord({A, C, E})
-#define C_Aminor7	music::Chord({A, C, E, G})
-#define C_Bdim		music::Chord({B, D, F})
-#define C_Bminor7b5 music::Chord({B, D, F, A})
+#define C_CMajor	music::Chord({PC_C, PC_E, PC_G})
+#define C_CMajor7	music::Chord({PC_C, PC_E, PC_G, PC_B})
+#define C_Dminor	music::Chord({PC_D, PC_F, PC_A})
+#define C_Dminor7	music::Chord({PC_D, PC_F, PC_A, PC_C})
+#define C_Eminor	music::Chord({PC_E, PC_G, PC_B})
+#define C_Eminor7	music::Chord({PC_E, PC_G, PC_B, PC_D})
+#define C_FMajor	music::Chord({PC_F, PC_A, PC_C})
+#define C_FMajor7	music::Chord({PC_F, PC_A, PC_C, PC_E})
+#define C_GMajor	music::Chord({PC_G, PC_B, PC_D})
+#define C_Gdom7		music::Chord({PC_G, PC_B, PC_D, PC_F})
+#define C_Aminor	music::Chord({PC_A, PC_C, PC_E})
+#define C_Aminor7	music::Chord({PC_A, PC_C, PC_E, PC_G})
+#define C_Bdim		music::Chord({PC_B, PC_D, PC_F})
+#define C_Bminor7b5 music::Chord({PC_B, PC_D, PC_F, PC_A})
 
 //C Major chords
 #define CMajor_I		C_CMajor
