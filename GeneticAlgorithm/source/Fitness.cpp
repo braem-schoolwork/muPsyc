@@ -258,33 +258,46 @@ bool geneticalgorithm::fitness::rules::other::outOfInstrumentRegister(music::Not
 	return false;
 }
 
+double geneticalgorithm::fitness::rules::other::fitsChordPlan(music::Chord plannedChord, music::Chord actualChord) {
+	if (plannedChord.isSimilarChord(actualChord)) return 1.0;
+	else return 0.0;
+}
+
 
 void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composition, FitnessInfo * fitnessInfo) {
 	//fitness accumulators for each rule
 	double rcFit = 0.0, llFit = 0.0, pcFit = 0.0, poFit = 0.0, smFit = 0.0, pmFit = 0.0,
 		asabfiFit = 0.0, eiFit = 0.0, fiFit = 0.0, atfFit = 0.0, oatfiFit = 0.0, adatfiFit = 0.0, csFit = 0.0,
-		onsetSync = 0.0, llrFit = 0.0, ueiFit = 0.0, s7ldFit = 0.0, ldvFit = 0.0, cFit = 0.0, auFit = 0.0;
+		onsetSync = 0.0, llrFit = 0.0, ueiFit = 0.0, s7ldFit = 0.0, ldvFit = 0.0, cFit = 0.0, auFit = 0.0, chdFit = 0.0;
 	//number of times each rule is calculated
 	unsigned int rcCtr = 0, llCtr = 0, pcCtr = 0, poCtr = 0, smCtr = 0, pmCtr = 0,
 		asabfiCtr = 0, eiCtr = 0, fiCtr = 0, atfCtr = 0, oatfiCtr = 0, adatfiCtr = 0, csCtr = 0, onsetSyncCtr = 0,
-		llrCtr = 0, ueiCtr = 0, s7ldCtr = 0, ldvCtr = 0, cCtr = 0, auCtr = 0;
+		llrCtr = 0, ueiCtr = 0, s7ldCtr = 0, ldvCtr = 0, cCtr = 0, auCtr = 0, chdCtr = 0;
+	ChordProgression chordProgression = AlgorithmParameters.initParams.chordProgression;
 	std::vector<std::vector<Note>> notes = composition.notes(); //all notes in part
 	std::vector<std::vector<int>> absIntervals(composition.numParts());
-	std::vector<Duration> knownDurations;
-	knownDurations.push_back(notes[0][0].duration());
+	std::vector<Duration> knownDurations; knownDurations.push_back(notes[0][0].duration());
 	std::vector<unsigned int> noteIndices(composition.numParts(), 0); //indices of each note
 	std::vector<unsigned int> partTickTotals(composition.numParts(), 0); //holds overall ticks of each part
 	std::vector<Note> pastNotes(composition.numParts()); //holds the notes of ticks past
 	std::vector<std::vector<Note>> allPastNotes;
 	std::vector<unsigned int> measureTickLengths = composition.measureTickLengths(); //holds tick lengths of each measure (may vary if different time sig)
 	std::vector<bool> hasNoteChanged(composition.numParts(), false); //mask of what notes have moved in a tick
-	unsigned int tick = 0, partTickLength = composition.parts()[0].tickLength(), measureIndex = 0, measureTick = 0; //ticks
+	unsigned int tick = 0, partTickLength = composition.parts()[0].tickLength(), measureTick = 0, chordTick = 0; //ticks
+	unsigned int measureIndex = 0, chordIndex = 0; //indices
+	unsigned int numChordsInMeasure = chordProgression.numChordsOfMeasure(0), ticksPerChord = measureTickLengths[0] / numChordsInMeasure;
 	bool isInInstrumentRegister = true;
 	Key key = composition.parts()[0].measures()[measureIndex].key(); //key of current measure
 	while (tick < partTickLength && isInInstrumentRegister) { //iterate through entire part
 		std::vector<Note> currentNotes; //holds notes currently being played
 		for (unsigned int partIndex = 0; partIndex < noteIndices.size(); partIndex++)
 			currentNotes.push_back(notes[partIndex][noteIndices[partIndex]]); //fill current notes vector
+
+		if (measureTick == 0 || measureTick == ticksPerChord / (chordIndex)) {
+			chdFit += other::fitsChordPlan(chordProgression[measureIndex][chordIndex], Chord(currentNotes));
+			chdCtr++;
+			chordIndex++;
+		}
 
 		//CALCULATE HURONS RULES
 		bool didAllMove = true, didBassMove = hasNoteChanged[0]; unsigned int howManyMoved = 0;
@@ -388,29 +401,36 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 		for (unsigned int partIndex = 0; partIndex < partTickTotals.size(); partIndex++)
 			noteTicks.push_back(notes[partIndex][noteIndices[partIndex]].tickLength() + partTickTotals[partIndex]);
 		//find minimum tick values
-		unsigned int minValue = noteTicks[0], minValIndex = 0;
-		for (unsigned int partIndex = 1; partIndex < noteTicks.size(); partIndex++)
-			if (noteTicks[partIndex] < minValue) { minValue = noteTicks[partIndex]; minValIndex = partIndex; }
+		unsigned int minTickValue = noteTicks[0], minTickValNoteIndex = 0;
+		for (unsigned int partIndex = 1; partIndex < noteTicks.size(); partIndex++) //find shortest note tick
+			if (noteTicks[partIndex] < minTickValue) { minTickValue = noteTicks[partIndex]; minTickValNoteIndex = partIndex; }
+		measureTick += currentNotes[minTickValNoteIndex].tickLength(); //move measure along
 		//note has the lowest tick total = move the index forward
 		for (unsigned int partIndex = 0; partIndex < noteTicks.size(); partIndex++) {
-			if (noteTicks[partIndex] == minValue) {
+			if (noteTicks[partIndex] == minTickValue) { //shortest note or one that is equal to it in duration
 				noteIndices[partIndex]++;
 				allPastNotes.push_back(pastNotes);
 				pastNotes[partIndex] = currentNotes[partIndex];
 				partTickTotals[partIndex] = noteTicks[partIndex];
 				hasNoteChanged[partIndex] = true;
 			}
-			else hasNoteChanged[partIndex] = false;
+			else hasNoteChanged[partIndex] = false; //longer than shortest note
 		}
-		tick = minValue;
+		tick = minTickValue;
 		//update measure index
-		if (tick / (measureIndex + 1) >= measureTickLengths[measureIndex]) {
+		if (tick / (measureIndex + 1) >= measureTickLengths[measureIndex]) { //new measure
 			//key related fitness tests
 			ueiFit += brownjordana2011::unequalIntervals(key); ueiCtr++;
 			s7ldFit += brownjordana2011::scale7orLessDegrees(key); s7ldCtr++;
 			measureIndex++;
-			if(measureIndex < composition.numMeasures())
+			measureTick = 0;
+			if (measureIndex < composition.numMeasures()) {
 				key = composition.parts()[0].measures()[measureIndex].key(); //new key
+				//update numChordsInMeasure
+				numChordsInMeasure = chordProgression.numChordsOfMeasure(measureIndex);
+				ticksPerChord = measureTickLengths[measureIndex] / numChordsInMeasure;
+			}
+			chordIndex = 0;
 		}
 	}
 	if (!isInInstrumentRegister) {
@@ -446,6 +466,7 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 	fitnessInfo->limitedDurationValuesFitness = ldvFit / static_cast<double>(ldvCtr);
 	fitnessInfo->avoidUnisonsFitness = auFit / static_cast<double>(auCtr);
 	fitnessInfo->contourFitness = cFit / static_cast<double>(cCtr);
+	fitnessInfo->chordFitness = chdFit / static_cast<double>(chdCtr);
 	if (AlgorithmParameters.onlyTraditionalRules)
 		fitnessInfo->setTraditionalRulesFitness();
 	else

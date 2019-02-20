@@ -122,6 +122,7 @@ namespace geneticalgorithm {
 
 			namespace other {
 				bool outOfInstrumentRegister(music::Note note, char instrument);
+				double fitsChordPlan(music::Chord plannedChord, music::Chord actualChord);
 			}
 
 			void applyAllRules(music::Composition composition, FitnessInfo *fitnessInfo);
