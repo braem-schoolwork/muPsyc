@@ -18,6 +18,7 @@ namespace music {
 
 		std::vector<std::vector<Chord>> chords() const { return c; }
 		std::vector<Chord> chordsOfMeasure(unsigned int measureNum) const { return c[measureNum]; }
+		unsigned int numChordsOfMeasure(unsigned int measureNum) const { return static_cast<unsigned int>(c[measureNum].size()); }
 		void setChords(std::vector<std::vector<Chord>> chords) { c = chords; }
 		void setChords(std::vector<Chord> chords, unsigned int chordsPerMeasure) {
 			c.clear();
