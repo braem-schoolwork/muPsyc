@@ -1,9 +1,6 @@
 #pragma once
 
 #include "Definitions.h"
-#include "Chord.h"
-#include "Chords.h"
-#include "ChordProgression.h"
 #include "Durations.h"
 #include "Keys.h"
 #include "Pitches.h"
@@ -19,6 +16,9 @@
 #include "Measure.h"
 #include "Part.h"
 #include "Composition.h"
+#include "Chord.h"
+#include "Chords.h"
+#include "ChordProgression.h"
 #include "Functions.h"
 
 #include "MidIO.h"
