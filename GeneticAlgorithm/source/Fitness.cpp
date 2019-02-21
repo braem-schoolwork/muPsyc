@@ -296,6 +296,8 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 		if (measureTick == 0 || measureTick == ticksPerChord / (chordIndex)) {
 			chdFit += other::fitsChordPlan(chordProgression[measureIndex][chordIndex], Chord(currentNotes));
 			chdCtr++;
+			csFit += huron2001::chordSpacing(currentNotes);
+			csCtr++;
 			chordIndex++;
 		}
 
