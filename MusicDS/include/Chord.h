@@ -28,6 +28,13 @@ namespace music {
 		bool isTriad();
 		bool isSimilarChord(Chord other);
 
+		size_t size() { return p.size(); }
+
+		unsigned int& at(unsigned int i) { return p[i]; }
+		const unsigned int& at(unsigned int i)const { return p[i]; }
+		unsigned int& operator[](unsigned int i) { return p[i]; }
+		const unsigned int& operator[](unsigned int i)const { return p[i]; }
+
 		friend std::ostream& operator<<(std::ostream &strm, const Chord &chord);
 		//[0,2,4]
 		friend std::istream & operator >> (std::istream &strm, Chord &ch);
