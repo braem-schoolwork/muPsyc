@@ -293,7 +293,7 @@ void geneticalgorithm::fitness::rules::applyAllRules(music::Composition composit
 		for (unsigned int partIndex = 0; partIndex < noteIndices.size(); partIndex++)
 			currentNotes.push_back(notes[partIndex][noteIndices[partIndex]]); //fill current notes vector
 
-		if (measureTick == 0 || measureTick == ticksPerChord / (chordIndex)) {
+		if ((measureTick == 0 || measureTick == ticksPerChord / (chordIndex)) && measureTick != measureTickLengths[measureIndex]) {
 			chdFit += other::fitsChordPlan(chordProgression[measureIndex][chordIndex], Chord(currentNotes));
 			chdCtr++;
 			csFit += huron2001::chordSpacing(currentNotes);
