@@ -11,3 +11,12 @@ std::ostream& music::operator<<(std::ostream& strm, const Measure& m) {
 	}
 	return strm;
 }
+
+bool music::Measure::isValidMeasure() {
+	unsigned int ticklength;
+	for (Note note : this->n)
+		ticklength += note.tickLength();
+	if (ticklength != this->tickLength()) 
+		return false;
+	else return true;
+}

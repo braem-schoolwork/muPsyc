@@ -92,6 +92,8 @@ namespace music {
 		void setNotes(std::vector<Note> notes) { n = notes; }
 		void setScale(Key scale) { s = scale; }
 
+		bool isValidMeasure();
+
 		friend std::ostream& operator<<(std::ostream &strm, const Measure &m);
 	};
 	
