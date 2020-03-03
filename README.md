@@ -9,7 +9,7 @@ https://ieeexplore.ieee.org/abstract/document/8790099
 This work was also the subject of my master's thesis.
 
 ## Use
-A standalone version is available here: <br>
+A standalone version is available here: http://www.braebie.com/downloads/μPsyc.zip <br>
 Just run the executable to use. It will make and write information (CSVs and MIDIs) to a folder named output. Different settings can be edited in the settings.cfg file to change how to algorithm runs. Note that the parsing is very sensitive (doesn't trim spaces, etc.) Sorry!
 
 Alternatively, compile the code here using visual studio (start Music.sln).
