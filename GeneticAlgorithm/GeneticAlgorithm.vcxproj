@@ -207,7 +207,6 @@
     <ClInclude Include="include\Chromosome.h" />
     <ClInclude Include="include\CompositionGenerator.h" />
     <ClInclude Include="include\Crossover.h" />
-    <ClInclude Include="include\Globals.h" />
     <ClInclude Include="include\Fitness.h" />
     <ClInclude Include="include\FitnessInfo.h" />
     <ClInclude Include="include\FitnessScalingType.h" />
@@ -215,27 +214,28 @@
     <ClInclude Include="include\InitParams.h" />
     <ClInclude Include="include\MusicGA.h" />
     <ClInclude Include="include\Mutation.h" />
-    <ClInclude Include="include\Mutation_dep.h" />
-    <ClInclude Include="include\Operators.h" />
     <ClInclude Include="include\OptimizationType.h" />
     <ClInclude Include="include\Parameters.h" />
     <ClInclude Include="include\Population.h" />
+    <ClInclude Include="include\RandUtils.h" />
     <ClInclude Include="include\RunInfo.h" />
     <ClInclude Include="include\Selection.h" />
     <ClInclude Include="include\SelectionType.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\FitnessScalingType.cpp" />
-    <ClCompile Include="include\OptimizationType.cpp" />
-    <ClCompile Include="include\SelectionType.cpp" />
+    <ClCompile Include="source\Chromosome.cpp" />
     <ClCompile Include="source\CompositionGenerator.cpp" />
     <ClCompile Include="source\Crossover.cpp" />
-    <ClCompile Include="source\Globals.cpp" />
+    <ClCompile Include="source\FitnessScalingType.cpp" />
     <ClCompile Include="source\Fitness.cpp" />
     <ClCompile Include="source\GeneticAlgorithm.cpp" />
+    <ClCompile Include="source\InitParams.cpp" />
     <ClCompile Include="source\Mutation.cpp" />
-    <ClCompile Include="source\Mutation_dep.cpp" />
+    <ClCompile Include="source\OptimizationType.cpp" />
+    <ClCompile Include="source\Parameters.cpp" />
+    <ClCompile Include="source\Population.cpp" />
     <ClCompile Include="source\Selection.cpp" />
+    <ClCompile Include="source\SelectionType.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

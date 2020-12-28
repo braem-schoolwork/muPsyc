@@ -1,16 +1,20 @@
-#include "MusicGA.h"
-#include <fstream>
+#include <iostream>
+
 #include "Experiments.h"
 
-int main(int argc, char* argv[]) {
-	//geneticalgorithm::experimentation::allRules();
-	if (argc >= 2) {
-		std::cout << "Running algorithm using config: " << argv[1] << std::endl;
-		geneticalgorithm::experimentation::runExp(argv[1]);
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+	if (argc >= 2) 
+    {
+		cout << "Running algorithm using config: " << argv[1] << endl;
+		EXP_Run(argv[1]);
 	}
-	else {
-		std::cout << "Running algorithm using default config: ./settings.cfg" << std::endl;
-		geneticalgorithm::experimentation::runExp("settings.cfg");
+	else 
+    {
+		cout << "Running algorithm using default config: ./settings.cfg" << endl;
+		EXP_Run("settings.cfg");
 	}
 	return 0;
 }

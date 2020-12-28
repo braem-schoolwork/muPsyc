@@ -124,7 +124,7 @@ MidiMessage& MidiMessage::operator=(const std::vector<int>& bytes) {
 //
 
 void MidiMessage::setSize(int asize) {
-	this->resize(asize);
+	resize(asize);
 }
 
 
@@ -135,7 +135,7 @@ void MidiMessage::setSize(int asize) {
 //
 
 int MidiMessage::getSize(void) const {
-	return (int)this->size();
+	return (int)size();
 }
 
 
@@ -150,7 +150,7 @@ int MidiMessage::getSize(void) const {
 //
 
 int MidiMessage::setSizeToCommand(void) {
-	int osize = (int)this->size();
+	int osize = (int)size();
 	if (osize < 1) {
 		return 0;
 	}
@@ -997,14 +997,14 @@ void MidiMessage::setCommand(int value) {
 //
 
 void MidiMessage::setCommand(int value, int p1) {
-	this->resize(2);
+	resize(2);
 	(*this)[0] = (uchar)value;
 	(*this)[1] = (uchar)p1;
 }
 
 
 void MidiMessage::setCommand(int value, int p1, int p2) {
-	this->resize(3);
+	resize(3);
 	(*this)[0] = (uchar)value;
 	(*this)[1] = (uchar)p1;
 	(*this)[2] = (uchar)p2;
@@ -1018,8 +1018,8 @@ void MidiMessage::setCommand(int value, int p1, int p2) {
 //
 
 void MidiMessage::setCommandNibble(int value) {
-	if (this->size() < 1) {
-		this->resize(1);
+	if (size() < 1) {
+		resize(1);
 	}
 	if (value <= 0x0f) {
 		(*this)[0] = ((*this)[0] & 0x0f) | ((uchar)((value << 4) & 0xf0));
@@ -1037,8 +1037,8 @@ void MidiMessage::setCommandNibble(int value) {
 //
 
 void MidiMessage::setChannelNibble(int value) {
-	if (this->size() < 1) {
-		this->resize(1);
+	if (size() < 1) {
+		resize(1);
 	}
 	(*this)[0] = ((*this)[0] & 0xf0) | ((uchar)(value & 0x0f));
 }
@@ -1085,8 +1085,8 @@ void MidiMessage::setParameters(int p1, int p2) {
 //
 
 void MidiMessage::setMessage(const std::vector<uchar>& message) {
-	this->resize(message.size());
-	for (int i=0; i<(int)this->size(); i++) {
+	resize(message.size());
+	for (int i=0; i<(int)size(); i++) {
 		(*this)[i] = message[i];
 	}
 }
@@ -1396,8 +1396,8 @@ std::string MidiMessage::getMetaContent(void) {
 			}
 		}
 	}
-	output.reserve(this->size());
-	for (int i=start; i<(int)this->size(); i++) {
+	output.reserve(size());
+	for (int i=start; i<(int)size(); i++) {
 		output.push_back(operator[](i));
 	}
 	return output;
@@ -1415,7 +1415,7 @@ std::string MidiMessage::getMetaContent(void) {
 //
 
 void MidiMessage::setMetaContent(const std::string& content) {
-	if (this->size() < 2) {
+	if (size() < 2) {
 		// invalid message, so ignore request
 		return;
 	}
@@ -1423,7 +1423,7 @@ void MidiMessage::setMetaContent(const std::string& content) {
 		// not a meta message, so ignore request
 		return;
 	}
-	this->resize(2);
+	resize(2);
 	
 	// add the size of the meta message data (VLV)
 	int dsize = (int)content.size();

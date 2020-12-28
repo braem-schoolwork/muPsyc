@@ -1,67 +1,43 @@
 #pragma once
-#include "MusicDS.h"
 #include "FitnessInfo.h"
+#include "Composition.h"
 
-namespace geneticalgorithm {
-	class Chromosome {
-	private:
-		music::Composition c;
-		fitness::FitnessInfo f;
-		unsigned int a;
+class Chromosome
+{
+public:
+	Chromosome() = default;
+	Chromosome(Composition composition);
 
-	public:
-		Chromosome() {}
-		Chromosome(music::Composition composition) : c(composition), a(0) {}
+    [[nodiscard]] Composition GetComposition() const { return m_Composition; }
+    [[nodiscard]] FitnessInfo GetFitnessInfo() const { return m_FitnessInfo; }
+    [[nodiscard]] double GetFitness() const { return m_FitnessInfo.fitness; }
+    [[nodiscard]] int GetAge() const { return m_iAge; }
 
-		music::Composition composition() const { return c; }
-		fitness::FitnessInfo fitnessInfo() const { return f; }
-		double fitness() const { return f.fitness; }
-		unsigned int age() const { return a; }
+	void SetComposition(Composition composition) { m_Composition = composition; }
+	void SetFitnessInfo(FitnessInfo fitnessInfo) { m_FitnessInfo = fitnessInfo; }
+	void SetFitness(double fitness) { m_FitnessInfo.fitness = fitness; }
+	void SetAge(int age) { m_iAge = age; }
 
-		void setComposition(music::Composition composition) { c = composition; }
-		void setFitnessInfo(fitness::FitnessInfo fitnessInfo) { f = fitnessInfo; }
-		void setFitness(double fitness) { f.fitness = fitness; }
-		void setAge(unsigned int age) { a = age; }
+	void IncrementAge() { m_iAge++; }
+	void ResetAge() { m_iAge = 0; }
+    [[nodiscard]] bool IsOlder(const Chromosome& other) const { return m_iAge > other.m_iAge; }
+    [[nodiscard]] bool IsYounger(const Chromosome& other) const  { return m_iAge < other.m_iAge; }
+    [[nodiscard]] bool IsSameAge(const Chromosome& other) const { return m_iAge == other.m_iAge; }
 
-		void incrementAge() { a++; }
-		void resetAge() { a = 0; }
-		bool isOlder(Chromosome other) { return a > other.a; }
-		bool isYounger(Chromosome other) { return a < other.a; }
-		bool isSameAge(Chromosome other) { return a == other.a; }
+	bool operator==(const Chromosome & other) const;
 
-		bool operator==(const Chromosome & other) const {
-			double thisFit = this->fitness(), otherFit = other.fitness(), epsilon = std::numeric_limits<double>().epsilon();
-			if (thisFit <= otherFit + epsilon && thisFit >= otherFit - epsilon) return true;
-			else return false;
-		}
+	bool operator!=(const Chromosome & other) const { return !(*this == other); }
 
-		bool operator!=(const Chromosome & other) const {
-			return !(*this == other);
-		}
+	bool operator>=(const Chromosome & other) const;
 
-		bool operator>=(const Chromosome & other) const {
-			if (*this == other) return true;
-			else if (this->fitness() > other.fitness()) return true;
-			else return false;
-		}
+	bool operator>(const Chromosome & other) const;
 
-		bool operator>(const Chromosome & other) const {
-			if (*this == other) return false;
-			else if (this->fitness() > other.fitness()) return true;
-			else return false;
-		}
+	bool operator<=(const Chromosome & other) const;
 
-		bool operator<=(const Chromosome & other) const {
-			if (*this == other) return true;
-			else if (this->fitness() < other.fitness()) return true;
-			else return false;
-		}
+	bool operator<(const Chromosome & other) const;
 
-		bool operator<(const Chromosome & other) const {
-			if (*this == other) return false;
-			else if (this->fitness() > other.fitness()) return true;
-			else return false;
-		}
-
-	};
-}
+private:
+    Composition m_Composition;
+    FitnessInfo m_FitnessInfo;
+    int m_iAge;
+};

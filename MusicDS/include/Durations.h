@@ -1,22 +1,25 @@
 #pragma once
 
-#define WHOLE			music::Duration(1, 0)
-#define HALF			music::Duration(2, 0)
-#define QUARTER			music::Duration(4, 0)
-#define EIGHTH			music::Duration(8, 0)
-#define SIXTEENTH		music::Duration(16, 0)
-#define THIRTYSECONDS	music::Duration(32, 0)
-#define SIXTYFOURTHS	music::Duration(64, 0)
+#define MIN_DURATION 1
+#define MAX_DURATION 64
 
-#define HUNDREDTWENTYEIGHTHS music::Duration(128, 0)
+#define MAKE_WHOLE			Duration(1, 0)
+#define MAKE_HALF			Duration(2, 0)
+#define MAKE_QUARTER		Duration(4, 0)
+#define MAKE_EIGHTH			Duration(8, 0)
+#define MAKE_SIXTEENTH		Duration(16, 0)
+#define MAKE_THIRTYSECONDS	Duration(32, 0)
+#define MAKE_SIXTYFOURTHS	Duration(64, 0)
 
-#define DOTTEDHALF			music::Duration(2, 1)
-#define DOTTEDQUARTER		music::Duration(4, 1)
-#define DOTTEDEIGHTH		music::Duration(8, 1)
-#define DOTTEDSIXTEENTH		music::Duration(16, 1)
-#define DOTTEDTHIRTYSECONDS	music::Duration(32, 1)
+#define MAKE_HUNDREDTWENTYEIGHTHS Duration(128, 0)
 
-#define DOUBLEDOTTEDHALF		music::Duration(2, 2)
-#define DOUBLEDOTTEDQUARTER		music::Duration(4, 2)
-#define DOUBLEDOTTEDEIGHTH		music::Duration(8, 2)
-#define DOUBLEDOTTEDSIXTEENTH	music::Duration(16, 2)
+#define MAKE_DOTTEDHALF			    Duration(2, 1)
+#define MAKE_DOTTEDQUARTER		    Duration(4, 1)
+#define MAKE_DOTTEDEIGHTH		    Duration(8, 1)
+#define MAKE_DOTTEDSIXTEENTH		Duration(16, 1)
+#define MAKE_DOTTEDTHIRTYSECONDS	Duration(32, 1)
+
+#define MAKE_DOUBLEDOTTEDHALF		Duration(2, 2)
+#define MAKE_DOUBLEDOTTEDQUARTER	Duration(4, 2)
+#define MAKE_DOUBLEDOTTEDEIGHTH		Duration(8, 2)
+#define MAKE_DOUBLEDOTTEDSIXTEENTH	Duration(16, 2)

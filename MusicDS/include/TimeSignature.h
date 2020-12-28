@@ -1,44 +1,25 @@
 #pragma once
+#include <iostream>
 #include <string>
-#include "Definitions.h"
 
-namespace music {
-	class TimeSignature {
-	private:
-		unsigned int num;
-		unsigned int den;
+class TimeSignature
+{
+public:
+	TimeSignature();
+	TimeSignature(const std::string &strTimeSig);
+	TimeSignature(int number, int delineation);
 
-	public:
-		TimeSignature() : num(4), den(4) {}
-		TimeSignature(std::string timesig) {
-			*this = TimeSignature::getTimeSignatureFromString(timesig);
-		}
-		TimeSignature(unsigned int number, unsigned int delineation) : num(number), den(delineation) {}
+    [[nodiscard]] int TickLength() const;
+    [[nodiscard]] int BeatTickLength() const;
 
-		unsigned int number() const { return num; }
-		unsigned int delineation() const { return den; }
+    [[nodiscard]] int GetNumber() const { return m_iNum; }
+    [[nodiscard]] int GetDelineation() const { return m_iDen; }
+	void SetNumber(int number) { m_iNum = number; }
+	void SetDelineation(int delineation) { m_iDen = delineation; }
 
-		unsigned int tickLength() const {
-			return num * (MAX_DURATION / den);
-		}
-		unsigned int beatTickLength() const {
-			return MAX_DURATION / den;
-		}
+	friend std::ostream & operator<<(std::ostream &strm, const TimeSignature &timeSig);
 
-		void setNumber(unsigned int number) { num = number; }
-		void setDelineation(unsigned int delineation) { den = delineation; }
-
-		static TimeSignature getTimeSignatureFromString(std::string timesig) {
-			TimeSignature newTimeSig;
-			size_t pos = timesig.find("/");
-			newTimeSig.num = std::stoi(timesig.substr(0, pos));
-			newTimeSig.den = std::stoi(timesig.substr(pos + 1, timesig.length()));
-			return newTimeSig;
-		}
-
-		friend std::ostream & operator<<(std::ostream & strm, const TimeSignature & timeSig) {
-			strm << timeSig.number() << "/" << timeSig.delineation();
-			return strm;
-		}
-	};
-}
+private:
+    int m_iNum;
+    int m_iDen;
+};

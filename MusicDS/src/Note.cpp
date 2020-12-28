@@ -1,127 +1,142 @@
-#include "MusicDS.h"
+#include "Note.h"
+#include "BPM.h"
 
-std::ostream & music::operator<<(std::ostream & strm, const Note & n) {
-	return strm << n.pitch() << "-" << n.duration();
+Note::Note() : m_Pitch(Pitch()), m_Duration(Duration()), m_bTieStart(false), m_bTieEnd(false), m_cVelocity(75)
+{
 }
 
-bool music::Note::operator==(const Note & other) const {
-	if (p == other.p)
-		return true;
-	else return false;
+Note::Note(Pitch pitch, Duration duration) : m_Pitch(pitch), m_Duration(duration), m_bTieStart(false), m_bTieEnd(false), m_cVelocity(75)
+{
 }
 
-bool music::Note::operator!=(const Note & other) const {
-	if (p != other.p)
-		return true;
-	else return false;
+Note::Note(Pitch pitch, Duration duration, char velocity) : m_Pitch(pitch), m_Duration(duration),
+    m_bTieStart(false), m_bTieEnd(false), m_cVelocity(velocity)
+{
 }
 
-bool music::Note::operator>=(const Note & other) const {
-	if (p >= other.p)
-		return true;
-	else return false;
+Note::Note(Pitch pitch, Duration duration, bool tie_start, bool tie_end, char velocity) : m_Pitch(pitch), m_Duration(duration),
+    m_bTieStart(tie_start), m_bTieEnd(tie_end), m_cVelocity(velocity)
+{
 }
 
-bool music::Note::operator>(const Note & other) const {
-	if (p > other.p)
-		return true;
-	else return false;
+double Note::GetMillis(BPM bpm)
+{
+    return m_Duration.GetMillis(bpm);
 }
 
-bool music::Note::operator<=(const Note & other) const {
-	if (p <= other.p)
-		return true;
-	else return false;
+double Note::GetSeconds(BPM bpm)
+{
+    return m_Duration.GetSeconds(bpm);
 }
 
-bool music::Note::operator<(const Note & other) const {
-	if (p < other.p)
-		return true;
-	else return false;
+std::ostream & operator<<(std::ostream & strm, const Note & n)
+{
+	return strm << n.GetPitch() << "-" << n.GetDuration();
 }
 
-bool music::Note::operator==(const Pitch & other) const {
-	if (p == other)
-		return true;
-	else return false;
+bool Note::operator==(const Note & other) const
+{
+	return m_Pitch == other.m_Pitch;
 }
 
-bool music::Note::operator!=(const Pitch & other) const {
-	if (p != other)
-		return true;
-	else return false;
+bool Note::operator!=(const Note & other) const
+{
+	return m_Pitch != other.m_Pitch;
 }
 
-bool music::Note::operator>=(const Pitch & other) const {
-	if (p >= other)
-		return true;
-	else return false;
+bool Note::operator>=(const Note & other) const
+{
+    return m_Pitch >= other.m_Pitch;
 }
 
-bool music::Note::operator>(const Pitch & other) const {
-	if (p > other)
-		return true;
-	else return false;
+bool Note::operator>(const Note & other) const
+{
+    return m_Pitch > other.m_Pitch;
 }
 
-bool music::Note::operator<=(const Pitch & other) const {
-	if (p <= other)
-		return true;
-	else return false;
+bool Note::operator<=(const Note & other) const
+{
+    return m_Pitch <= other.m_Pitch;
 }
 
-bool music::Note::operator<(const Pitch & other) const {
-	if (p < other)
-		return true;
-	else return false;
+bool Note::operator<(const Note & other) const
+{
+    return m_Pitch < other.m_Pitch;
 }
 
-bool music::Note::operator==(const Duration & other) const {
-	if (d == other)
-		return true;
-	else return false;
+bool Note::operator==(const Pitch & other) const
+{
+    return m_Pitch == other;
 }
 
-bool music::Note::operator!=(const Duration & other) const {
-	if (d != other)
-		return true;
-	else return false;
+bool Note::operator!=(const Pitch & other) const
+{
+    return m_Pitch != other;
 }
 
-bool music::Note::operator>=(const Duration & other) const {
-	if (d >= other)
-		return true;
-	else return false;
+bool Note::operator>=(const Pitch & other) const
+{
+    return m_Pitch >= other;
 }
 
-bool music::Note::operator>(const Duration & other) const {
-	if (d > other)
-		return true;
-	else return false;
+bool Note::operator>(const Pitch & other) const
+{
+    return m_Pitch > other;
 }
 
-bool music::Note::operator<=(const Duration & other) const {
-	if (d <= other)
-		return true;
-	else return false;
+bool Note::operator<=(const Pitch & other) const
+{
+    return m_Pitch <= other;
 }
 
-bool music::Note::operator<(const Duration & other) const {
-	if (d < other)
-		return true;
-	else return false;
+bool Note::operator<(const Pitch & other) const
+{
+    return m_Pitch < other;
 }
 
-unsigned int music::Note::operator-(const Pitch & other) const {
-	return this->p - other;
+bool Note::operator==(const Duration & other) const
+{
+    return m_Duration == other;
 }
 
-unsigned int music::Note::operator-(const Note & other) const {
-	return this->p - other.p;
+bool Note::operator!=(const Duration & other) const
+{
+    return m_Duration != other;
 }
 
-music::Note music::Note::operator+(const unsigned int & amt) const {
+bool Note::operator>=(const Duration & other) const
+{
+    return m_Duration >= other;
+}
+
+bool Note::operator>(const Duration & other) const
+{
+    return m_Duration > other;
+}
+
+bool Note::operator<=(const Duration & other) const
+{
+    return m_Duration <= other;
+}
+
+bool Note::operator<(const Duration & other) const
+{
+    return m_Duration < other;
+}
+
+int Note::operator-(const Pitch & other) const
+{
+	return m_Pitch - other;
+}
+
+int Note::operator-(const Note & other) const
+{
+	return m_Pitch - other.m_Pitch;
+}
+
+Note Note::operator+(const int & amt) const
+{
 	Note rtn = *this;
-	rtn.p += amt;
+	rtn.m_Pitch += amt;
 	return rtn;
 }

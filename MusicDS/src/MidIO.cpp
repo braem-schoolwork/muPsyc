@@ -1,49 +1,61 @@
-#include "MusicDS.h"
+#include "MidIO.h"
 #include "MidiFile.h"
 #include "Options.h"
+
 #include <vector>
 #include <string>
 
-void music::IO::writeCompositionToMIDI(std::string path, Composition comp) {
+#include "TimeSignature.h"
+#include "Part.h"
+#include "Composition.h"
+#include "Key.h"
+
+using namespace std;
+
+void MidIO_CompToMIDI(const string &path, const Composition &comp)
+{
 	smf::MidiFile midifile;
-	midifile.addTracks(comp.numParts());
-	midifile.setTicksPerQuarterNote(comp.bpm().seconds());
+	midifile.addTracks(comp.GetNumParts());
+	midifile.setTicksPerQuarterNote(comp.GetBPM().GetSeconds());
 
 	//time signature of first measure
-	TimeSignature timeSignature = comp.parts()[0].measures()[0].timeSignature();
+	TimeSignature timeSignature = comp.GetParts()[0].GetMeasures()[0].GetTimeSignature();
 
 	int actiontick = 0;
 	int track = 0;
-	midifile.addTrackName(track, actiontick, comp.name());
-	midifile.addTempo(track, actiontick, static_cast<double>(comp.bpm().seconds()));
-	midifile.addTimeSignature(track, actiontick, timeSignature.number(), timeSignature.delineation());
+	midifile.addTrackName(track, actiontick, comp.GetName());
+	midifile.addTempo(track, actiontick, static_cast<double>(comp.GetBPM().GetSeconds()));
+	midifile.addTimeSignature(track, actiontick, timeSignature.GetNumber(), timeSignature.GetDelineation());
 
-	Key key = comp.parts()[0].measures()[0].key();
-	std::vector<unsigned char> metadata;
-	unsigned char numAcc = key.findNumAccidentals();
-	if (key.findAccidentalType() && numAcc != 0) metadata.push_back((256 - numAcc));
-	else metadata.push_back((numAcc));
-	metadata.push_back(static_cast<unsigned char>(key.isMinor()));
+	Key key = comp.GetParts()[0].GetMeasures()[0].GetKey();
+	vector<unsigned char> metadata;
+	int numAcc = key.GetNumAccidentals();
+    metadata.push_back(key.IsUsingFlatAccidentals() && numAcc != 0 ? static_cast<unsigned char>(256 - numAcc) : static_cast<unsigned char>(numAcc));
+
+	metadata.push_back(static_cast<unsigned char>(key.IsMinor()));
 	midifile.addMetaEvent(track, actiontick, 0x59, metadata);
 
-	std::vector<std::string> trackNames;
-	for (Part part : comp.parts())
-		trackNames.push_back(part.name());
-	std::reverse(trackNames.begin(), trackNames.end()); //bass is 0th
+	vector<string> trackNames;
+	for (const Part &part : comp.GetParts())
+		trackNames.push_back(part.GetName());
+	reverse(trackNames.begin(), trackNames.end()); //bass is 0th
 
 	int channel = 0;
 	track = 1;
-	for (int i = comp.numParts() - 1; i >= 0; i--) {
+	for (int i = comp.GetNumParts() - 1; i >= 0; i--) 
+    {
 		midifile.addTrackName(track, actiontick, trackNames.at(i));
-		midifile.addPatchChange(track, actiontick, channel, comp.parts()[i].instrument());
-		for (Measure &measure : comp.parts()[i].measures()) {
-			for (Note &note : measure.notes()) {
-				midifile.addNoteOn(track, actiontick, channel, note.pitch().midi(), note.velocity());
-				double note_duration = note.duration().realDuration();
+		midifile.addPatchChange(track, actiontick, channel, comp.GetParts()[i].GetInstrument());
+		for (Measure &measure : comp.GetParts()[i].GetMeasures()) 
+        {
+			for (Note &note : measure.GetNotes())
+            {
+				midifile.addNoteOn(track, actiontick, channel, note.GetPitch().GetMidiVal(), note.GetVelocity());
+				double note_duration = note.GetDuration().RealDuration();
 				//put note duration in terms of quarters
 				actiontick += static_cast<int>
-					(static_cast<double>(comp.bpm().seconds()) * note_duration * static_cast<double>(comp.bpm().delineation())); 
-				midifile.addNoteOff(track, actiontick, channel, note.pitch().midi(), note.velocity());
+					(static_cast<double>(comp.GetBPM().GetSeconds()) * note_duration * static_cast<double>(comp.GetBPM().GetDelineation())); 
+				midifile.addNoteOff(track, actiontick, channel, note.GetPitch().GetMidiVal(), note.GetVelocity());
 			}
 		}
 		actiontick = 0;
@@ -55,92 +67,106 @@ void music::IO::writeCompositionToMIDI(std::string path, Composition comp) {
 	midifile.write(path);
 }
 
-music::Composition music::IO::readMIDI(std::string path) {
+Composition MidIO_MIDIToComp(const string &path)
+{
 	smf::Options options;
 	smf::MidiFile midifile;
 	midifile.read(path);
 	midifile.doTimeAnalysis();
 	midifile.linkNotePairs();
-	unsigned int tpq = midifile.getTicksPerQuarterNote();
-	unsigned int numTracks = midifile.getTrackCount();
+	int tpq = midifile.getTicksPerQuarterNote();
+	int numTracks = midifile.getTrackCount();
 
 	Composition comp;
 	Key key;
 	TimeSignature timeSig;
 	BPM bpm;
 	
-	for (int eventIndex = 0; eventIndex < midifile[0].getSize(); eventIndex++) {
+	for (int eventIndex = 0; eventIndex < midifile[0].getSize(); eventIndex++)
+    {
 		const smf::MidiEvent midiEvent = midifile[0][eventIndex];
-		if (midiEvent.isTrackName()) {
-			std::string compName = "";
+		if (midiEvent.isTrackName())
+        {
+			string compName = "";
 			for (int i = 3; i < midiEvent.getSize(); i++)
 				compName += midiEvent[i];
-			comp.setName(compName);
+			comp.SetName(compName);
 		}
-		if (midiEvent.isTempo()) {
-			bpm.setSeconds(static_cast<unsigned int>(midiEvent.getTempoBPM()));
-			comp.setBPM(bpm);
+		if (midiEvent.isTempo())
+        {
+			bpm.SetSeconds(static_cast<int>(midiEvent.getTempoBPM()));
+			comp.SetBPM(bpm);
 		}
-		if (midiEvent.isKeySignature()) {
-			unsigned int a = midiEvent[1];
-			key.setAccidentalsFromMidi(midiEvent[3]);
+		if (midiEvent.isKeySignature())
+        {
+			int a = midiEvent[1];
+			key.SetAccidentalsFromMidi(midiEvent[3]);
 			bool isMinor = midiEvent[4];
-			key.setIfMinor(isMinor);
-			key.findAndSetScale();
+			key.SetIfMinor(isMinor);
+			key.FindAndSetScale();
 		}
-		if (midiEvent.isTimeSignature()) {
+		if (midiEvent.isTimeSignature())
+        {
 			timeSig = TimeSignature(midiEvent[2], midiEvent[3]);
 		}
 	}
 
-	std::vector<Part> parts;
-	for (unsigned int trackIndex = 1; trackIndex < numTracks; trackIndex++) {
-		unsigned int numEvents = midifile.getEventCount(trackIndex);
+	vector<Part> parts;
+	for (int trackIndex = 1; trackIndex < numTracks; trackIndex++)
+    {
+		int numEvents = midifile.getEventCount(trackIndex);
 		Part part;
-		std::vector<Measure> measures;
+		vector<Measure> measures;
 		Measure currentMeasure = Measure(timeSig, key);
-		unsigned int noteCtr = 1;
-		unsigned int measureTick = 0;
-		for (unsigned int eventIndex = 0; eventIndex < numEvents; eventIndex++) {
+		int noteCtr = 1;
+		int measureTick = 0;
+		for (int eventIndex = 0; eventIndex < numEvents; eventIndex++)
+        {
 			const smf::MidiEvent midiEvent = midifile[trackIndex][eventIndex];
-			if (midiEvent.isKeySignature()) {
-				unsigned int w = 0;
+			if (midiEvent.isKeySignature()) 
+            {
+				int w = 0;
 			}
-			else if (midiEvent.isTimeSignature()) {
-				unsigned int w = 0;
+			else if (midiEvent.isTimeSignature()) 
+            {
+				int w = 0;
 			}
-			if (midiEvent.isNoteOff()) {
-				Pitch pitch = Pitch(midiEvent[1]);
-				unsigned char velocity = midiEvent[2];
-				unsigned int tick = midiEvent.tick;
-				Duration duration = Duration::getDurationFromMidiTick(tick / noteCtr, tpq);
+			if (midiEvent.isNoteOff())
+            {
+				auto pitch = Pitch(midiEvent[1]);
+				char velocity = midiEvent[2];
+				int tick = midiEvent.tick;
+				Duration duration = Duration::GetDurationFromMidiTick(tick / noteCtr, tpq);
 				Note note = Note(pitch, duration, velocity);
-				currentMeasure.addNote(note);
+				currentMeasure.AddNote(note);
 				noteCtr++;
-				measureTick += duration.tickLength();
-				if (measureTick >= currentMeasure.tickLength()) {
+				measureTick += duration.TickLength();
+				if (measureTick >= currentMeasure.TickLength()) {
 					measureTick = 0;
 					measures.push_back(currentMeasure);
 					currentMeasure = Measure(timeSig, key);
 				}
 			}
-			if (midiEvent.isEndOfTrack()) {
-				if(currentMeasure.numNotes() > 0)
+			if (midiEvent.isEndOfTrack())
+            {
+				if(currentMeasure.NumNotes() > 0)
 					measures.push_back(currentMeasure);
 			}
-			if (midiEvent.isPatchChange()) {
-				part.setInstrument(midiEvent[1]);
+			if (midiEvent.isPatchChange())
+            {
+				part.SetInstrument(midiEvent[1]);
 			}
-			if (midiEvent.isTrackName()) {
-				std::string partName = "";
+			if (midiEvent.isTrackName())
+            {
+				string partName;
 				for (int i = 3; i < midiEvent.getSize(); i++)
 					partName += midiEvent[i];
-				part.setName(partName);
+				part.SetName(partName);
 			}
 		} //end event loop
-		part.setMeasures(measures);
+		part.SetMeasures(measures);
 		parts.push_back(part);
 	}
-	comp.setParts(parts);
+	comp.SetParts(parts);
 	return comp;
 }

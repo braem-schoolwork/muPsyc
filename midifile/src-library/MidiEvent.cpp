@@ -61,8 +61,8 @@ MidiEvent::MidiEvent(const MidiEvent& mfevent) : MidiMessage() {
 	seq     = mfevent.seq;
 	m_eventlink = NULL;
 
-	this->resize(mfevent.size());
-	for (int i=0; i<(int)this->size(); i++) {
+	resize(mfevent.size());
+	for (int i=0; i<(int)size(); i++) {
 		(*this)[i] = mfevent[i];
 	}
 }
@@ -79,7 +79,7 @@ MidiEvent::~MidiEvent() {
 	tick    = -1;
 	seconds = -1.0;
 	seq     = -1;
-	this->resize(0);
+	resize(0);
 	m_eventlink = NULL;
 }
 
@@ -112,8 +112,8 @@ MidiEvent& MidiEvent::operator=(const MidiEvent& mfevent) {
 	seconds = mfevent.seconds;
 	seq     = mfevent.seq;
 	m_eventlink = NULL;
-	this->resize(mfevent.size());
-	for (int i=0; i<(int)this->size(); i++) {
+	resize(mfevent.size());
+	for (int i=0; i<(int)size(); i++) {
 		(*this)[i] = mfevent[i];
 	}
 	return *this;
@@ -125,8 +125,8 @@ MidiEvent& MidiEvent::operator=(const MidiMessage& message) {
 		return *this;
 	}
 	clearVariables();
-	this->resize(message.size());
-	for (int i=0; i<(int)this->size(); i++) {
+	resize(message.size());
+	for (int i=0; i<(int)size(); i++) {
 		(*this)[i] = message[i];
 	}
 	return *this;
@@ -135,8 +135,8 @@ MidiEvent& MidiEvent::operator=(const MidiMessage& message) {
 
 MidiEvent& MidiEvent::operator=(const vector<uchar>& bytes) {
 	clearVariables();
-	this->resize(bytes.size());
-	for (int i=0; i<(int)this->size(); i++) {
+	resize(bytes.size());
+	for (int i=0; i<(int)size(); i++) {
 		(*this)[i] = bytes[i];
 	}
 	return *this;

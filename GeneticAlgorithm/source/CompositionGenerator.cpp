@@ -1,55 +1,74 @@
 #include "CompositionGenerator.h"
 #include "Chromosome.h"
-#include "MusicDS.h"
-#include <random>
-#include <omp.h>
+#include "Population.h"
+#include "Parameters.h"
+#include "RandUtils.h"
 
-using namespace music;
+#include "Pitch.h"
+#include "Note.h"
+#include "Measure.h"
+#include "Duration.h"
+#include "Part.h"
+#include "Chord.h"
 
-music::Composition geneticalgorithm::initialization::generateComposition() {
-	std::vector<Part> parts(AlgorithmParameters.initParams.numParts);
-	for (unsigned int p = 0; p < AlgorithmParameters.initParams.numParts; p++) { //parts
-		Pitch lowerBound = AlgorithmParameters.initParams.lowerBounds[p], upperBound = AlgorithmParameters.initParams.upperBounds[p];
+Composition INIT_GenerateComposition()
+{
+	std::vector<Part> parts(g_AlgorithmParameters.m_InitParams.m_iNumParts);
+	for (auto p = 0; p < g_AlgorithmParameters.m_InitParams.m_iNumParts; p++) 
+    { //parts
+		Pitch lowerBound = g_AlgorithmParameters.m_InitParams.m_vecLowerBounds[p], upperBound = g_AlgorithmParameters.m_InitParams.m_vecUpperBounds[p];
 		//distribution for notes
-		std::uniform_int_distribution<unsigned int> midiDist(lowerBound.midi(), upperBound.midi());
-		Part part = Part(AlgorithmParameters.initParams.partNames[p], AlgorithmParameters.initParams.instruments[p]);
-		std::vector<Measure> measures(AlgorithmParameters.initParams.numMeasures);
-		for (unsigned int m = 0; m < AlgorithmParameters.initParams.numMeasures; m++) { //measures
-			unsigned int numChords = AlgorithmParameters.initParams.chordProgression.numChordsOfMeasure(m), timeSigN = AlgorithmParameters.initParams.timeSig.number();
-			unsigned int ctr = 0, chdIndex = 0;
-			std::vector<Chord> chords = AlgorithmParameters.initParams.chordProgression.chordsOfMeasure(m);
+        MAKE_INT_DIST(midiDist, lowerBound.GetMidiVal(), upperBound.GetMidiVal());
+		Part part = Part(g_AlgorithmParameters.m_InitParams.m_vecPartNames[p], g_AlgorithmParameters.m_InitParams.m_vecInstruments[p]);
+		std::vector<Measure> measures(g_AlgorithmParameters.m_InitParams.m_iNumMeasures);
+		for (auto m = 0; m < g_AlgorithmParameters.m_InitParams.m_iNumMeasures; m++)
+        { //measures
+			int numChords = g_AlgorithmParameters.m_InitParams.m_ChordProgression.GetNumChordsOfMeasure(m), timeSigN = g_AlgorithmParameters.m_InitParams.m_TimeSig.GetNumber();
+			int ctr = 0, chdIndex = 0;
+			std::vector<Chord> chords = g_AlgorithmParameters.m_InitParams.m_ChordProgression.GetChordsOfMeasure(m);
 			std::vector<Note> notes;
-			for (unsigned int n = 0; n < timeSigN; n++) { //notes
-				Pitch randPitch = Pitch(midiDist(mt));
-				if (ctr == n) { //place chord
-					if (p >= chords[chdIndex].size()) {
-						std::uniform_int_distribution<unsigned int> chordDist(0, chords[chdIndex].size());
-						randPitch.setPitchClass(chords[chdIndex][chordDist(mt)]);
+			for (auto n = 0; n < timeSigN; n++)
+            { //notes
+                auto randPitch = Pitch(midiDist(g_MT));
+				if (ctr == n) 
+                { //place chord
+                    const int iNumChords = static_cast<int>(chords[chdIndex].GetSize());
+					if (p >= iNumChords) 
+                    {
+                        MAKE_INT_DIST(chordDist, 0, iNumChords - 1);
+						randPitch.SetPitchClass(chords[chdIndex][chordDist(g_MT)]);
 					}
-					else randPitch.setPitchClass(chords[chdIndex][p]);
-					if (randPitch > upperBound || randPitch < lowerBound) {
-						randPitch.setOctave(randPitch.octave() - 2);
+					else
+					{
+                        randPitch.SetPitchClass(chords[chdIndex][p]);
+                    }
+					if (randPitch > upperBound || randPitch < lowerBound) 
+                    {
+						randPitch.SetOctave(randPitch.GetOctave() - 2);
 						if (randPitch > upperBound || randPitch < lowerBound)
-							randPitch.setOctave(randPitch.octave() + 2);
+							randPitch.SetOctave(randPitch.GetOctave() + 2);
 					}
 					ctr += timeSigN / numChords;
 					chdIndex++;
 				}
-				AlgorithmParameters.initParams.key.forceInKey(&randPitch);
-				notes.push_back(Note(randPitch, Duration(AlgorithmParameters.initParams.timeSig.delineation())));
+				g_AlgorithmParameters.m_InitParams.m_Key.ForceInKey(&randPitch);
+				notes.push_back(Note(randPitch, Duration(g_AlgorithmParameters.m_InitParams.m_TimeSig.GetDelineation())));
 			}
-			measures[m] = Measure(AlgorithmParameters.initParams.timeSig, AlgorithmParameters.initParams.key, notes);
+			measures[m] = Measure(g_AlgorithmParameters.m_InitParams.m_TimeSig, g_AlgorithmParameters.m_InitParams.m_Key, notes);
 		}
-		parts[p] = Part(AlgorithmParameters.initParams.partNames[p], AlgorithmParameters.initParams.instruments[p], measures);
+		parts[p] = Part(g_AlgorithmParameters.m_InitParams.m_vecPartNames[p], g_AlgorithmParameters.m_InitParams.m_vecInstruments[p], measures);
 	}
-	return Composition(AlgorithmParameters.initParams.name, parts, AlgorithmParameters.initParams.bpm);
+	return Composition(g_AlgorithmParameters.m_InitParams.m_vecName, parts, g_AlgorithmParameters.m_InitParams.m_BPM);
 }
 
-geneticalgorithm::Population geneticalgorithm::initialization::generatePopulation() {
-	std::vector<Chromosome> chromosomes(AlgorithmParameters.populationSize);
-	int popSize = static_cast<int>(AlgorithmParameters.populationSize); //omp cant use unsigned int
-	#pragma omp parallel for
-	for (int i = 0; i < popSize; i++)
-		chromosomes[i] = Chromosome(generateComposition());
+Population INIT_GeneratePopulation()
+{
+	std::vector<Chromosome> chromosomes(g_AlgorithmParameters.m_iPopulationSize);
+	int popSize = static_cast<int>(g_AlgorithmParameters.m_iPopulationSize);
+
+#pragma omp parallel for
+	for (auto i = 0; i < popSize; i++)
+		chromosomes[i] = Chromosome(INIT_GenerateComposition());
+
 	return Population(chromosomes);
 }

@@ -1,19 +1,19 @@
 #pragma once
 
-#define C_CMajor	music::Chord(std::vector<unsigned int>{PC_C, PC_E, PC_G})
-#define C_CMajor7	music::Chord(std::vector<unsigned int>{PC_C, PC_E, PC_G, PC_B})
-#define C_Dminor	music::Chord(std::vector<unsigned int>{PC_D, PC_F, PC_A})
-#define C_Dminor7	music::Chord(std::vector<unsigned int>{PC_D, PC_F, PC_A, PC_C})
-#define C_Eminor	music::Chord(std::vector<unsigned int>{PC_E, PC_G, PC_B})
-#define C_Eminor7	music::Chord(std::vector<unsigned int>{PC_E, PC_G, PC_B, PC_D})
-#define C_FMajor	music::Chord(std::vector<unsigned int>{PC_F, PC_A, PC_C})
-#define C_FMajor7	music::Chord(std::vector<unsigned int>{PC_F, PC_A, PC_C, PC_E})
-#define C_GMajor	music::Chord(std::vector<unsigned int>{PC_G, PC_B, PC_D})
-#define C_Gdom7		music::Chord(std::vector<unsigned int>{PC_G, PC_B, PC_D, PC_F})
-#define C_Aminor	music::Chord(std::vector<unsigned int>{PC_A, PC_C, PC_E})
-#define C_Aminor7	music::Chord(std::vector<unsigned int>{PC_A, PC_C, PC_E, PC_G})
-#define C_Bdim		music::Chord(std::vector<unsigned int>{PC_B, PC_D, PC_F})
-#define C_Bminor7b5 music::Chord(std::vector<unsigned int>{PC_B, PC_D, PC_F, PC_A})
+#define C_CMajor	Chord(std::vector<int>{PC_C, PC_E, PC_G})
+#define C_CMajor7	Chord(std::vector<int>{PC_C, PC_E, PC_G, PC_B})
+#define C_Dminor	Chord(std::vector<int>{PC_D, PC_F, PC_A})
+#define C_Dminor7	Chord(std::vector<int>{PC_D, PC_F, PC_A, PC_C})
+#define C_Eminor	Chord(std::vector<int>{PC_E, PC_G, PC_B})
+#define C_Eminor7	Chord(std::vector<int>{PC_E, PC_G, PC_B, PC_D})
+#define C_FMajor	Chord(std::vector<int>{PC_F, PC_A, PC_C})
+#define C_FMajor7	Chord(std::vector<int>{PC_F, PC_A, PC_C, PC_E})
+#define C_GMajor	Chord(std::vector<int>{PC_G, PC_B, PC_D})
+#define C_Gdom7		Chord(std::vector<int>{PC_G, PC_B, PC_D, PC_F})
+#define C_Aminor	Chord(std::vector<int>{PC_A, PC_C, PC_E})
+#define C_Aminor7	Chord(std::vector<int>{PC_A, PC_C, PC_E, PC_G})
+#define C_Bdim		Chord(std::vector<int>{PC_B, PC_D, PC_F})
+#define C_Bminor7b5 Chord(std::vector<int>{PC_B, PC_D, PC_F, PC_A})
 
 //C Major chords
 #define CMajor_I		C_CMajor

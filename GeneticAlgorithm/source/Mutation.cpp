@@ -1,141 +1,177 @@
 #include "Mutation.h"
-#include "MusicDS.h"
+#include "Parameters.h"
 #include "Chromosome.h"
-#include <random>
-#include <omp.h>
+#include "RandUtils.h"
 
-using namespace geneticalgorithm;
-using namespace music;
+#include "Part.h"
+#include "Durations.h"
 
+using namespace std;
 
-void geneticalgorithm::operators::mutation::sub::helper::getRandomNoteIndex(Chromosome chromosome, unsigned int * partIndex,
-	unsigned int * measureIndex, unsigned int * noteIndex) {
-	std::uniform_int_distribution<int> partDist(0, chromosome.composition().numParts() - 1);
-	std::uniform_int_distribution<int> measureDist(0, chromosome.composition().numMeasures() - 1);
-	*partIndex = partDist(mt);
-	*measureIndex = measureDist(mt);
-	std::uniform_int_distribution<int> noteDist(0, chromosome.composition().parts()[*partIndex].measures()[*measureIndex].numNotes() - 1);
-	*noteIndex = noteDist(mt);
+void GetRandomNoteIndex(const Chromosome& chromosome, int *partIndex,int *measureIndex, int *noteIndex)
+{
+    GEN_RAND_INT(0, chromosome.GetComposition().GetNumParts() - 1, *partIndex)
+    GEN_RAND_INT(0, chromosome.GetComposition().GetNumMeasures() - 1, *measureIndex)
+    GEN_RAND_INT(0, chromosome.GetComposition().GetParts()[*partIndex].GetMeasures()[*measureIndex].NumNotes() - 1, *noteIndex)
 }
 
-void geneticalgorithm::operators::mutation::sub::helper::getRandomNoteIndices(Chromosome chromosome, 
-	unsigned int * partIndex, unsigned int * measureIndex, unsigned int * noteIndex1, unsigned int * noteIndex2) {
-	std::uniform_int_distribution<int> partDist(0, chromosome.composition().numParts() - 1);
-	std::uniform_int_distribution<int> measureDist(0, chromosome.composition().numMeasures() - 1);
-	*partIndex = partDist(mt);
-	*measureIndex = measureDist(mt);
-	if (chromosome.composition().parts()[*partIndex].measures()[*measureIndex].numNotes() == 1) {
-		*noteIndex1 = 0; *noteIndex2 = -1; return;
+void GetRandomNoteIndices(const Chromosome& chromosome, int *partIndex, int *measureIndex, int *noteIndex1, int *noteIndex2)
+{
+    GEN_RAND_INT(0, chromosome.GetComposition().GetNumParts() - 1, *partIndex)
+    GEN_RAND_INT(0, chromosome.GetComposition().GetNumMeasures() - 1, *measureIndex)
+	if (chromosome.GetComposition().GetParts()[*partIndex].GetMeasures()[*measureIndex].NumNotes() == 1) 
+    {
+		*noteIndex1 = 0;
+	    *noteIndex2 = -1;
+	    return;
 	}
-	std::uniform_int_distribution<int> noteDist(0, chromosome.composition().parts()[*partIndex].measures()[*measureIndex].numNotes() - 2);
-	*noteIndex1 = noteDist(mt);
+    GEN_RAND_INT(0, chromosome.GetComposition().GetParts()[*partIndex].GetMeasures()[*measureIndex].NumNotes() - 2, *noteIndex1)
 	*noteIndex2 = *noteIndex1 + 1;
 }
 
-void geneticalgorithm::operators::mutation::sub::helper::getRandomNoteCoupleIndices(Chromosome chromosome, unsigned int * partIndex, unsigned int * measureIndex, unsigned int * noteIndex1, unsigned int * noteIndex2) {
-	std::uniform_int_distribution<int> partDist(0, chromosome.composition().numParts() - 1);
-	std::uniform_int_distribution<int> measureDist(0, chromosome.composition().numMeasures() - 1);
-	*partIndex = partDist(mt);
-	*measureIndex = measureDist(mt);
-	std::vector<Note> notes = chromosome.composition().parts()[*partIndex].measures()[*measureIndex].notes();
-	if (notes.size() <= 1) {
-		*noteIndex1 = -1; *noteIndex2 = -1; return;
+void GetRandomNoteCoupleIndices(const Chromosome& chromosome, int *partIndex, int *measureIndex, int *noteIndex1, int *noteIndex2)
+{
+    GEN_RAND_INT(0, chromosome.GetComposition().GetNumParts() - 1, *partIndex)
+    GEN_RAND_INT(0, chromosome.GetComposition().GetNumMeasures() - 1, *measureIndex)
+	vector<Note> notes = chromosome.GetComposition().GetParts()[*partIndex].GetMeasures()[*measureIndex].GetNotes();
+	if (notes.size() <= 1) 
+    {
+		*noteIndex1 = -1;
+	    *noteIndex2 = -1;
+	    return;
 	}
-	std::vector<unsigned int> possibleIndices;
-	for (unsigned int i = 1; i < notes.size(); i++) {
-		if (notes[i - 1].duration() == notes[i].duration())
+	vector<int> possibleIndices;
+	for (auto i = 1; i < notes.size(); i++)
+    {
+		if (notes[i - 1u].GetDuration() == notes[i].GetDuration())
 			possibleIndices.push_back(i - 1);
 	}
-	if (possibleIndices.size() == 0) {
-		*noteIndex1 = -1; *noteIndex2 = -1; return;
+	if (possibleIndices.empty()) 
+    {
+		*noteIndex1 = -1;
+	    *noteIndex2 = -1;
+	    return;
 	}
-	std::uniform_int_distribution<unsigned int> noteIndexDist(0, static_cast<unsigned int>(possibleIndices.size() - 1));
-	*noteIndex1 = possibleIndices[noteIndexDist(mt)];
+    MAKE_INT_DIST(noteIndexDist, 0, static_cast<int>(possibleIndices.size() - 1));
+	*noteIndex1 = possibleIndices[noteIndexDist(g_MT)];
 	*noteIndex2 = *noteIndex1 + 1;
 }
 
-void geneticalgorithm::operators::mutation::sub::helper::transposeRandomNote(Chromosome * chromosome, int degree) {
-	unsigned int partIndex, measureIndex, noteIndex; Composition comp = chromosome->composition();
-	getRandomNoteIndex(*chromosome, &partIndex, &measureIndex, &noteIndex);
-	Note selectedNote = comp.parts()[partIndex].measures()[measureIndex].notes()[noteIndex];
-	Key selectedKey = comp.parts()[partIndex].measures()[measureIndex].key();
-	selectedKey.transpose(&selectedNote, degree);
-	comp.replaceNoteAt(partIndex, measureIndex, noteIndex, selectedNote);
-	chromosome->setComposition(comp);
+void TransposeRandomNote(Chromosome *chromosome, int degree)
+{
+	int partIndex, measureIndex, noteIndex; Composition comp = chromosome->GetComposition();
+	GetRandomNoteIndex(*chromosome, &partIndex, &measureIndex, &noteIndex);
+	Note selectedNote = comp.GetParts()[partIndex].GetMeasures()[measureIndex].GetNotes()[noteIndex];
+	Key selectedKey = comp.GetParts()[partIndex].GetMeasures()[measureIndex].GetKey();
+	selectedKey.Transpose(&selectedNote, degree);
+	comp.ReplaceNoteAt(partIndex, measureIndex, noteIndex, selectedNote);
+	chromosome->SetComposition(comp);
 }
 
-Chromosome geneticalgorithm::operators::mutation::mutate(Chromosome chromosome, std::vector<double> operatorProbabilities) {
-	unsigned int operatorIndex = -1;
-	std::uniform_real_distribution<double> selDist(0, 1);
-	double randomNum = selDist(mt);
-	double lastProb = 0.0;
-	for (unsigned int i = 0; i < operatorProbabilities.size(); i++)
-		if (randomNum <= operatorProbabilities[i] + lastProb) { operatorIndex = i; break; }
-		else lastProb += operatorProbabilities[i];
-	switch (operatorIndex) {
-	case sub::soi_randomTranspose: return sub::randomTranspose(chromosome);
-	case sub::soi_split: return sub::split(chromosome);
-	case sub::soi_merge: return sub::merge(chromosome);
-	case sub::soi_repeat: return sub::repeat(chromosome);
-	default: throw std::invalid_argument("Operator Index Out of Range");
-	}
-}
-
-Chromosome geneticalgorithm::operators::mutation::sub::randomTranspose(Chromosome chromosome) {
+Chromosome RandomTranspose(const Chromosome& chromosome)
+{
 	Chromosome newChromosome = Chromosome(chromosome);
-	std::uniform_int_distribution<int> leapDist(INT_UNISON, INT_6TH);
-	if (boolDist(mt)) helper::transposeRandomNote(&newChromosome, leapDist(mt));
-	else helper::transposeRandomNote(&newChromosome, 0 - leapDist(mt));
+    MAKE_INT_DIST(leapDist, INT_UNISON, INT_6TH);
+    TransposeRandomNote(&newChromosome, g_BoolDist(g_MT) ? leapDist(g_MT) : 0 - leapDist(g_MT));
 	return newChromosome;
 }
 
-Chromosome geneticalgorithm::operators::mutation::sub::split(Chromosome chromosome) {
-	unsigned int partIndex, measureIndex, noteIndex; Composition comp = chromosome.composition();
-	helper::getRandomNoteIndex(chromosome, &partIndex, &measureIndex, &noteIndex);
-	Note selectedNote = comp.parts()[partIndex].measures()[measureIndex].notes()[noteIndex];
+Chromosome Split(const Chromosome& chromosome)
+{
+	int partIndex, measureIndex, noteIndex; Composition comp = chromosome.GetComposition();
+	GetRandomNoteIndex(chromosome, &partIndex, &measureIndex, &noteIndex);
+    const Note selectedNote = comp.GetParts()[partIndex].GetMeasures()[measureIndex].GetNotes()[noteIndex];
 	//2nd note doesnt carry over the ties
-	Note newNote1 = Note(selectedNote), newNote2 = Note(selectedNote.pitch(), selectedNote.duration());
-	Duration d = selectedNote.duration();
-	d.halfDuration();
-	if (d.type() > MAX_DURATION) return Chromosome(comp);
-	newNote1.setDuration(d); newNote2.setDuration(d);
-	comp.replaceNoteAt(partIndex, measureIndex, noteIndex, newNote1);
-	comp.addNoteAt(partIndex, measureIndex, noteIndex, newNote2);
+	Note newNote1 = Note(selectedNote), newNote2 = Note(selectedNote.GetPitch(), selectedNote.GetDuration());
+	Duration d = selectedNote.GetDuration();
+	d.HalfDuration();
+	if (d.GetType() > MAX_DURATION) 
+        return Chromosome(comp);
+	newNote1.SetDuration(d); newNote2.SetDuration(d);
+	comp.ReplaceNoteAt(partIndex, measureIndex, noteIndex, newNote1);
+	comp.AddNoteAt(partIndex, measureIndex, noteIndex, newNote2);
 	return Chromosome(comp);
 }
 
-Chromosome geneticalgorithm::operators::mutation::sub::merge(Chromosome chromosome) {
-	unsigned int partIndex, measureIndex, noteIndex1, noteIndex2; Composition comp = chromosome.composition();
-	helper::getRandomNoteCoupleIndices(chromosome, &partIndex, &measureIndex, &noteIndex1, &noteIndex2);
-	Measure m1 = comp.parts()[partIndex].measures()[measureIndex], m2 = comp.parts()[partIndex].measures()[measureIndex];
-	if (noteIndex1 >= m1.numNotes() || noteIndex2 >= m2.numNotes()) return Chromosome(comp);
-	Note selectedNote1 = m1.notes()[noteIndex1];
-	Note selectedNote2 = m2.notes()[noteIndex2];
-	Key key = comp.parts()[partIndex].measures()[measureIndex].key();
+Chromosome Merge(const Chromosome& chromosome)
+{
+	int partIndex, measureIndex, noteIndex1, noteIndex2;
+    Composition comp = chromosome.GetComposition();
+	GetRandomNoteCoupleIndices(chromosome, &partIndex, &measureIndex, &noteIndex1, &noteIndex2);
+	Measure m1 = comp.GetParts()[partIndex].GetMeasures()[measureIndex], m2 = comp.GetParts()[partIndex].GetMeasures()[measureIndex];
+	if (noteIndex1 < 0 || noteIndex2 < 0 || noteIndex1 >= m1.NumNotes() || noteIndex2 >= m2.NumNotes()) 
+        return Chromosome(comp);
+	Note selectedNote1 = m1.GetNotes()[noteIndex1];
+	Note selectedNote2 = m2.GetNotes()[noteIndex2];
+	Key key = comp.GetParts()[partIndex].GetMeasures()[measureIndex].GetKey();
 	Pitch newPitch; Duration newDuration;
-	key.meanPitch(selectedNote1.pitch(), selectedNote2.pitch(), &newPitch);
-	if (Duration::add(selectedNote1.duration(), selectedNote2.duration(), &newDuration)) {
+	key.MeanPitch(selectedNote1.GetPitch(), selectedNote2.GetPitch(), &newPitch);
+	if (Duration::Add(selectedNote1.GetDuration(), selectedNote2.GetDuration(), &newDuration)) 
+    {
 		Note newNote = Note(newPitch, newDuration);
-		comp.replaceNoteAt(partIndex, measureIndex, noteIndex1, newNote);
-		comp.removeNoteAt(partIndex, measureIndex, noteIndex2);
+		comp.ReplaceNoteAt(partIndex, measureIndex, noteIndex1, newNote);
+		comp.RemoveNoteAt(partIndex, measureIndex, noteIndex2);
 	}
 	return Chromosome(comp);
 }
 
-Chromosome geneticalgorithm::operators::mutation::sub::repeat(Chromosome chromosome) {
+Chromosome Repeat(const Chromosome& chromosome)
+{
 	return Chromosome(chromosome);
 }
 
-std::vector<Chromosome> geneticalgorithm::operators::mutation::mutateElites(std::vector<Chromosome> elites) {
-	std::vector<Chromosome> mutations(AlgorithmParameters.numMutations);
-	std::uniform_int_distribution<unsigned int> eliteDist(0, static_cast<unsigned int>(elites.size() - 1));
-	std::vector<double> operatorProbs = { AlgorithmParameters.op_randomTranspose, AlgorithmParameters.op_split, AlgorithmParameters.op_merge, AlgorithmParameters.op_repeat };
-	bool isParallel = AlgorithmParameters.mutOptType == PARALLEL_CPU;
-	int numMut = static_cast<int>(AlgorithmParameters.numMutations); //omp cant use unsigned int
-	#pragma omp parallel for if (isParallel)
-	for (int i = 0; i < numMut; i++) {
-		mutations[i] = mutate(elites[eliteDist(mt)], operatorProbs);
-		mutations[i].resetAge();
+enum MutationType_t
+{
+    MUT_TYPE_INVALID = -1,
+
+    MUT_TYPE_RANDOM_TRANSPOSE = 0,
+    MUT_TYPE_SPLIT,
+    MUT_TYPE_MERGE,
+    MUT_TYPE_REPEAT
+};
+
+Chromosome Mutate(const Chromosome& chromosome, vector<double> operatorProbabilities)
+{
+    MutationType_t eMutationType = MUT_TYPE_INVALID;
+    double randomNum = g_DblDist(g_MT);
+    double lastProb = 0.0;
+    for (auto i = 0; i < operatorProbabilities.size(); i++)
+    {
+        if (randomNum <= operatorProbabilities[i] + lastProb)
+        {
+            eMutationType = static_cast<MutationType_t>(i);
+            break;
+        }
+        lastProb += operatorProbabilities[i];
+    }
+    switch (eMutationType)
+    {
+    case MUT_TYPE_RANDOM_TRANSPOSE: return RandomTranspose(chromosome);
+    case MUT_TYPE_SPLIT:            return Split(chromosome);
+    case MUT_TYPE_MERGE:            return Merge(chromosome);
+    case MUT_TYPE_REPEAT:           return Repeat(chromosome);
+    case MUT_TYPE_INVALID:
+    default: throw std::invalid_argument("Invalid Mutation Type");
+    }
+}
+
+vector<Chromosome> OP_MutateElites(vector<Chromosome> elites)
+{
+	vector<Chromosome> mutations(g_AlgorithmParameters.m_iNumMutations);
+	const vector<double> operatorProbs = 
+    {
+        g_AlgorithmParameters.m_dbRandomTransposeProb,
+        g_AlgorithmParameters.m_dbSplitProb,
+        g_AlgorithmParameters.m_dbMergeProb,
+        g_AlgorithmParameters.m_dbRepeatProb
+    };
+    MAKE_INT_DIST(eliteDist, 0, static_cast<int>(elites.size() - 1));
+	const int numMut = static_cast<int>(g_AlgorithmParameters.m_iNumMutations);
+#pragma omp parallel for if (g_AlgorithmParameters.m_MutOptType == MUTATION_OPT_PARALLEL_CPU)
+	for (int i = 0; i < numMut; i++) 
+    {
+		mutations[i] = Mutate(elites[eliteDist(g_MT)], operatorProbs);
+		mutations[i].ResetAge();
 	}
 	return mutations;
 }

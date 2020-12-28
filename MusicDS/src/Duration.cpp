@@ -1,175 +1,270 @@
 #include <iostream>
 #include <string>
-#include <math.h>
-#include "MusicDS.h"
+#include "Duration.h"
+#include "BPM.h"
+#include "Durations.h"
+#include "Utils.h"
 
-std::ostream & music::operator<<(std::ostream & strm, const Duration & d) {
+std::ostream & operator<<(std::ostream & strm, const Duration & d)
+{
 	std::string str;
-	switch (d.type()) {
-	case 1: str = "o"; break;
-	case 2: str = "ol"; break;
-	case 4: str = "xl"; break;
-	case 8: str = "xl\'"; break;
-	case 16: str = "xl\'\'"; break;
-	case 32: str = "xl\'\'\'"; break;
-	case 64: str = "xl\'\'\'\'"; break;
-	case 128: str = "xl\'\'\'\'\'"; break;
+	switch (d.GetType())
+    {
+	case DURATION_WHOLE:                str = "o"; break;
+	case DURATION_HALF:                 str = "ol"; break;
+	case DURATION_QUARTER:              str = "xl"; break;
+	case DURATION_EIGHTH:               str = "xl\'"; break;
+	case DURATION_SIXTEENTH:            str = "xl\'\'"; break;
+	case DURATION_THIRTYSECONDS:        str = "xl\'\'\'"; break;
+	case DURATION_SIXTYFOURTHS:         str = "xl\'\'\'\'"; break;
+	case DURATION_HUNDREDTWENTYEIGHTHS: str = "xl\'\'\'\'\'"; break;
 	}
-	for (unsigned int i = 0; i < d.dots(); i++) {
-		str = str + ".";
+
+	for (auto i = 0; i < d.GetDots(); i++) 
+    {
+		str += ".";
 	}
 	return strm << str;
 }
 
-void music::Duration::fraction(unsigned int * numerator, unsigned int * denominator) const {
+Duration::Duration() : m_iType(4), m_iDots(0)
+{
+}
+
+Duration::Duration(int type) : m_iType(type), m_iDots(0)
+{
+}
+
+Duration::Duration(int type, int dots) : m_iType(type), m_iDots(dots)
+{
+}
+
+void Duration::SetType(int t)
+{
+    if (t > DURATION_LAST || t < DURATION_FIRST)
+        return;
+
+    if (!UTIL_IsPowerOfTwo(t))
+        return;
+
+    SetType(static_cast<Duration_t>(t));
+}
+
+void Duration::Fraction(int &numerator, int &denominator) const
+{
 	int num = 1;
-	int den = t;
-	for (unsigned int i = 0; i < d; i++) { // 1/4 -> 3/8 -> 7/16 -> 15/32
+	int den = m_iType;
+	for (auto i = 0; i < m_iDots; i++) // 1/4 -> 3/8 -> 7/16 -> 15/32
+    {
 		den *= 2;
 		num = (den / 2) - 1;
 	}
-	*numerator = num;
-	*denominator = den;
+	numerator = num;
+	denominator = den;
 }
 
-double music::Duration::realDuration() {
-	unsigned int num, den;
-	fraction(&num, &den);
+double Duration::RealDuration() const
+{
+	int num, den;
+	Fraction(num, den);
 	return static_cast<double>(num) / static_cast<double>(den);
 }
 
-double music::Duration::getMillis(BPM bpm) {
-	return getSeconds(bpm) * 1000.0;
+double Duration::GetMillis(BPM bpm) const
+{
+	return GetSeconds(bpm) * 1000.0;
 }
 
-double music::Duration::getSeconds(BPM bpm) {
-	return realDuration() * (1.0 / bpm.delineation()) * (1.0 / bpm.seconds()) * 60.0;
+double Duration::GetSeconds(BPM bpm) const
+{
+	return RealDuration() * (1.0 / bpm.GetDelineation()) * (1.0 / bpm.GetSeconds()) * 60.0;
 }
 
-//NOTE: does not work for doubly dotted notes
-music::Duration music::Duration::getDurationFromMidiTick(unsigned int tick, unsigned int tpq) {
-	if (tpq > tick) { //less than quarter
-		unsigned int mult = tpq / tick; //how many times less
-		unsigned int remainder = tpq % tick, dot = 0, type = 4 * mult;
-		if (remainder > 0) {
-			type *= 2;
-			dot++;
-		}
-		return Duration(type, dot);
-	}
-	else if (tpq < tick) { //more than quarter
-		unsigned int mult = tick / tpq; //how many times more
-		unsigned int remainder = tick % tpq, dot = 0, type = 4 / mult;
-		if (remainder > 0) {
-			dot++;
-		}
-		if (mult != 1 && mult % 2 != 0) {
-			type *= 2;
-			dot++;
-		}
-		return Duration(type, dot);
-	}
-	else {
-		return Duration(4, 0);
-	}
+//FIXME: does not work for doubly dotted notes
+Duration Duration::GetDurationFromMidiTick(int tick, int tpq)
+{
+    if (tpq == tick)
+        return Duration(4, 0);
+
+    const bool bLessThanQuarter = tpq > tick;
+    const int iMult = bLessThanQuarter ? tpq / tick : tick / tpq;
+    const int iRemainder = bLessThanQuarter ? tpq % tick : tick % tpq;
+    int iDot = 0;
+    int iType = bLessThanQuarter ? 4 * iMult : 4 / iMult;
+
+    if (iRemainder > 0)
+    {
+        iDot++;
+        if (bLessThanQuarter)
+        {
+            iType *= 2;
+        }
+    }
+    if (!bLessThanQuarter && iMult != 1 && iMult % 2 != 0)
+    {
+        iDot++;
+        iType *= 2;
+    }
+
+    return Duration(iType, iDot);
 }
 
-unsigned int music::Duration::tickLength() const {
-	int tick = MAX_DURATION / t;
-	for (unsigned int i = 0; i < d; i++) //add another note of half duration (defn of dot)
-		tick += MAX_DURATION / (t * 2 * (i + 1));
+int Duration::TickLength() const
+{
+	int tick = MAX_DURATION / m_iType;
+	for (auto i = 0; i < m_iDots; i++) //add another note of half duration (defn of dot)
+		tick += MAX_DURATION / (m_iType * 2 * (i + 1));
 	return tick;
 }
 
-bool music::Duration::add(Duration first, Duration second, Duration * result) {
-	if (first.t == second.t && first.d == 0 && second.d == 0) {
-		*result = Duration(first.t / 2, 0);
+bool Duration::Add(Duration first, Duration second, Duration *result)
+{
+    if (first.m_iDots == 0 && second.m_iDots == 0)
+    {
+        if (first.m_iType == second.m_iType)
+        {
+            *result = Duration(first.m_iType / 2, 0);
+            return true;
+        }
+
+        if (second.m_iType / 2 == first.m_iType)
+        {
+            *result = Duration(first.m_iType, 1);
+        }
+        else if (first.m_iType / 2 == second.m_iType)
+        {
+            *result = Duration(second.m_iType, 1);
+        }
+        else
+        {
+            return false;
+        }
+        return true;
+    }
+
+	//half + dotted quarter = double dotted half
+	if (first.m_iDots == 0 && second.m_iType / 2 == first.m_iType)
+	{
+        *result = Duration(first.m_iType, second.m_iDots + 1);
+    }
+	else if (second.m_iDots == 0 && first.m_iType / 2 == second.m_iType)
+	{
+        *result = Duration(second.m_iType, first.m_iDots + 1);
+    }
+	//dotted half + quarter = whole
+	else if (second.m_iDots == 0)
+    {
+		auto tmp = Duration(first);
+		for (auto i = 0; i < first.m_iDots; i++) 
+		{
+			tmp.HalfDuration();
+        }
+		if (tmp.m_iType == second.m_iType) 
+            *result = Duration(first.m_iType / 2, 0);
+		else 
+            return false;
 	}
-	else {
-		if (first.d > 0 || second.d > 0) { //dotted
-			//half + dotted quarter = double dotted half
-			if (first.d == 0 && second.t / 2 == first.t) *result = Duration(first.t, second.d + 1);
-			else if (second.d == 0 && first.t / 2 == second.t) *result = Duration(second.t, first.d + 1);
-			//dotted half + quarter = whole
-			else if (second.d == 0) {
-				Duration tmp = Duration(first);
-				for (unsigned int i = 0; i < first.d; i++) tmp.halfDuration();
-				if (tmp.t == second.t) *result = Duration(first.t / 2, 0);
-				else return false;
-			}
-			else if (first.d == 0) {
-				Duration tmp = Duration(second);
-				for (unsigned int i = 0; i < second.d; i++) tmp.halfDuration();
-				if (tmp.t == first.t) *result = Duration(second.t / 2, 0);
-				else return false;
-			}
-			else if (first.d == second.d && first.t == second.t) *result = Duration(first.t / 2, first.d);
-			else return false;
-		}
-		else { //not dotted
-			if (second.t / 2 == first.t) *result = Duration(first.t, 1);
-			else if (first.t / 2 == second.t) *result = Duration(second.t, 1);
-			else return false;
-		}
+	else if (first.m_iDots == 0)
+    {
+        auto tmp = Duration(second);
+		for (auto i = 0; i < second.m_iDots; i++)
+		{
+			tmp.HalfDuration();
+        }
+		if (tmp.m_iType == first.m_iType) 
+            *result = Duration(second.m_iType / 2, 0);
+		else 
+            return false;
 	}
+	else if (first.m_iDots == second.m_iDots && first.m_iType == second.m_iType)
+	{
+        *result = Duration(first.m_iType / 2, first.m_iDots);
+	}
+	else
+	{
+        return false;
+    }
+
 	return true;
 }
 
-bool music::Duration::operator==(const Duration & other) const {
-	if (this->t == other.t)
+bool Duration::operator==(const Duration & other) const
+{
+	if (m_iType == other.m_iType)
 		return true;
-	else return false;
+
+	return false;
 }
 
-bool music::Duration::operator!=(const Duration & other) const {
+bool Duration::operator!=(const Duration & other) const
+{
 	if (*this == other) 
 		return false;
-	else return true;
+
+	return true;
 }
 
 //for <, <=, >, >= : a half note will never be as long or longer than a whole note
 // & vice versa; lower t will always be longer
-bool music::Duration::operator>=(const Duration & other) const {
+bool Duration::operator>=(const Duration & other) const
+{
 	if (*this > other)
 		return true;
-	else if (*this == other)
+
+    if (*this == other)
 		return true;
-	else return false;
+
+    return false;
 }
 
-bool music::Duration::operator>(const Duration & other) const {
-	if (t < other.t)
+bool Duration::operator>(const Duration & other) const
+{
+	if (m_iType < other.m_iType)
 		return true;
-	else if (t == other.t) {
-		if (d > other.d) return true;
-		else return false;
+
+    if (m_iType == other.m_iType)
+    {
+		if (m_iDots > other.m_iDots) 
+            return true;
+
+		return false;
 	}
-	else return false;
+
+    return false;
 }
 
-bool music::Duration::operator<=(const Duration & other) const {
+bool Duration::operator<=(const Duration & other) const
+{
 	if (*this < other)
 		return true;
-	else if (*this == other)
+
+    if (*this == other)
 		return true;
-	else return false;
+	
+    return false;
 }
 
-bool music::Duration::operator<(const Duration & other) const {
-	if (t > other.t)
+bool Duration::operator<(const Duration & other) const
+{
+	if (m_iType > other.m_iType)
 		return true;
-	else if (t == other.t) {
-		if (d < other.d) return true;
-		else return false;
+
+	if (m_iType == other.m_iType)
+    {
+		if (m_iDots < other.m_iDots) 
+            return true;
+
+		return false;
 	}
-	else return false;
+    return false;
 }
 
-unsigned int music::Duration::operator+(const Duration & other) const {
-	return this->tickLength() + other.tickLength();
+int Duration::operator+(const Duration & other) const
+{
+	return TickLength() + other.TickLength();
 }
 
-unsigned int music::Duration::operator-(const Duration & other) const {
-	return this->tickLength() >= other.tickLength() ? 
-		this->tickLength() - other.tickLength() : other.tickLength() - this->tickLength();
+int Duration::operator-(const Duration & other) const
+{
+	return TickLength() >= other.TickLength() ? TickLength() - other.TickLength() : other.TickLength() - TickLength();
 }

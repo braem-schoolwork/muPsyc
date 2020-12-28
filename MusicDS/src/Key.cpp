@@ -1,377 +1,251 @@
-#include "MusicDS.h"
+#include "Key.h"
 
-std::ostream & music::operator<<(std::ostream & strm, const Key & key) {
-	strm << key.name() << ", " << key.sc_DN.size() << ", [";
-	for (size_t i = 0; i < key.sc_DN.size(); i++) {
-		strm << std::to_string(key.sc_DN[i]);
-		if (i != key.sc_DN.size() - 1)
-			strm << ",";
-	}
-	strm << "]";
-	return strm;
+#include <utility>
+#include "Keys.h"
+#include "Utils.h"
+
+using namespace std;
+
+Key::Key() : m_numPCs(0)
+{
 }
 
-unsigned int music::Key::findNumAccidentals() {
-	unsigned int ctr = 0;
-	for (unsigned int pc : sc_UP)
-		if (pc != 0 && pc != 2 && pc != 4 && pc != 5 && pc != 7 && pc != 9 && pc != 11)
-			ctr++;
-	this->n_acc = ctr;
-	return ctr;
+Key::Key(string keyStr)
+{
+    const string delim = ",";
+    auto pos = keyStr.find_first_of(delim);
+    m_strName = keyStr.substr(0, pos);
+    keyStr = keyStr.substr(pos + 2, keyStr.length());
+    pos = keyStr.find_first_of(delim);
+    m_numPCs = stoi(keyStr.substr(0, pos));
+    keyStr = keyStr.substr(pos + 3, keyStr.length());
+    for (auto i = 0; i < m_numPCs; i++)
+    {
+        if (i == m_numPCs - 1)
+        {
+            m_vecScaleDownwards.push_back(stoi(keyStr.substr(0, keyStr.length() - 1)));
+            break;
+        }
+        pos = keyStr.find_first_of(delim);
+        m_vecScaleDownwards.push_back(stoi(keyStr.substr(0, pos)));
+        keyStr = keyStr.substr(pos + 1, keyStr.length());
+    }
+    m_vecScaleUpwards = m_vecScaleDownwards;
 }
 
-bool music::Key::findAccidentalType() {
-	bool type;
-	if (maj) {
-		switch (sc_UP[0]) {
-		case 2:	case 4:	case 7:	case 9:	case 11: case 6: type = 0;
-		case 1:	case 3:	case 5:	case 8:	case 10: type = 1;
-		default: return 0;
-		}
-	}
-	else {
-		switch (sc_UP[0]) {
-		case 4: case 11: case 6: case 1: case 8: case 3: type = 0;
-		case 10: case 5: case 0: case 7: case 2: type = 1;
-		default: return 0;
-		}
-	}
-	this->b = type;
-	return type;
+Key::Key(string name, vector<int> pitchClasses)
+    : m_strName(std::move(name)), m_vecScaleUpwards(std::move(pitchClasses)), m_vecScaleDownwards(std::move(pitchClasses)), m_numPCs(static_cast<int>(pitchClasses.size()))
+{
 }
 
-bool music::Key::findIfMajor() {
-	unsigned int fundapc = sc_UP[0];
-	unsigned int numAccs = findNumAccidentals();
-	bool ifMaj;
-	switch (sc_UP[0]) {
-	case 7: if (numAccs == 1) ifMaj = 1; else if (numAccs == 2) ifMaj = 0;
-	case 2: if (numAccs == 2) ifMaj = 1; else if (numAccs == 1) ifMaj = 0;
-	case 9: if (numAccs == 3) ifMaj = 1;
-	case 4: if (numAccs == 4) ifMaj = 1; else if (numAccs == 1) ifMaj = 0;
-	case 11: if (numAccs == 5) ifMaj = 1; else if (numAccs == 2) ifMaj = 0;
-	case 6: if (numAccs == 6) ifMaj = 1; else if (numAccs == 3) ifMaj = 0;
-	case 1: if (numAccs == 5) ifMaj = 1; else if (numAccs == 4) ifMaj = 0;
-	case 8: if (numAccs == 4) ifMaj = 1; else if (numAccs == 5) ifMaj = 0;
-	case 3: if (numAccs == 3) ifMaj = 1; else if (numAccs == 6) ifMaj = 0;
-	case 10: if (numAccs == 2) ifMaj = 1; else if (numAccs == 5) ifMaj = 0;
-	case 5: if (numAccs == 1) ifMaj = 1; else if (numAccs == 4) ifMaj = 0;
-	default: return 0;
-	}
-	this->maj = ifMaj;
-	return ifMaj;
+Key::Key(string name, vector<int> pitchClassesUp, vector<int> pitchClassesDown)
+    : m_strName(std::move(name)), m_vecScaleUpwards(std::move(pitchClassesUp)), m_vecScaleDownwards(std::move(pitchClassesDown)), m_numPCs(static_cast<int>(pitchClassesUp.size()))
+{
 }
 
-bool music::Key::findAndSetScale() {
-	std::vector<unsigned int> newScale = findScale(this->n_acc, b, maj);
-	if (newScale.size() == 0) return false;
-	this->sc_UP = newScale;
-	this->sc_DN = newScale;
+Key::Key(string name, vector<int> pitchClasses, int numAccidentals, bool isFlatAccidentals, bool isMajor)
+    : m_strName(std::move(name)), m_vecScaleUpwards(std::move(pitchClasses)), m_vecScaleDownwards(std::move(pitchClasses)),
+    m_numPCs(static_cast<int>(pitchClasses.size())), m_numAccs(numAccidentals), m_bIsFlatAccidentals(isFlatAccidentals), m_bIsMajor(isMajor)
+{
+}
+
+Key::Key(string name, vector<int> pitchClassesUp, vector<int> pitchClassesDown, int numAccidentals, bool isFlatAccidentals, bool isMajor)
+    : m_strName(std::move(name)), m_vecScaleUpwards(std::move(pitchClassesUp)), m_vecScaleDownwards(std::move(pitchClassesDown)),
+    m_numPCs(static_cast<int>(pitchClassesUp.size())), m_numAccs(numAccidentals), m_bIsFlatAccidentals(isFlatAccidentals), m_bIsMajor(isMajor)
+{
+}
+
+bool Key::FindAndSetScale()
+{
+	const vector<int> newScale = UTIL_FindScale(m_numAccs, m_bIsFlatAccidentals, m_bIsMajor);
+	if (newScale.empty()) 
+        return false;
+
+	m_vecScaleUpwards = newScale;
+	m_vecScaleDownwards = newScale;
 	return true;
 }
 
-std::vector<unsigned int> music::Key::findScale() {
-	return findScale(this->n_acc, b, maj);
-}
-
-std::vector<unsigned int> music::Key::findScale(unsigned int numAccidentals, bool isFlat, bool isMajor) {
-	std::vector<unsigned int> scale;
-	switch (numAccidentals) {
-	case 0: 
-		scale = isMajor ? std::vector<unsigned int>{0,2,4,5,7,9,11} : std::vector<unsigned int>{9,11,0,2,4,5,7}; break;
-	case 1:
-		if (isFlat)
-			scale = isMajor ? std::vector<unsigned int>{5,7,9,10,0,2,4} : std::vector<unsigned int>{2,4,5,7,9,10,0};
-		else
-			scale = isMajor ? std::vector<unsigned int>{7,9,11,0,2,4,6} : std::vector<unsigned int>{4,6,7,9,11,0,2};
-		break;
-	case 2:
-		if (isFlat)
-			scale = isMajor ? std::vector<unsigned int>{10,0,2,3,5,7,9} : std::vector<unsigned int>{7,9,10,0,2,3,5};
-		else
-			scale = isMajor ? std::vector<unsigned int>{2,4,6,7,9,11,1} : std::vector<unsigned int>{11,1,2,4,6,7,9};
-		break;
-	case 3:
-		if (isFlat)
-			scale = isMajor ? std::vector<unsigned int>{3,5,7,8,10,0,2} : std::vector<unsigned int>{0,2,3,5,7,8,10};
-		else
-			scale = isMajor ? std::vector<unsigned int>{9,11,1,2,4,6,8} : std::vector<unsigned int>{6,8,9,11,1,2,4};
-		break;
-	case 4:
-		if (isFlat)
-			scale = isMajor ? std::vector<unsigned int>{8,10,0,1,3,5,7} : std::vector<unsigned int>{5,7,8,10,0,1,3};
-		else
-			scale = isMajor ? std::vector<unsigned int>{4,6,8,9,11,1,3} : std::vector<unsigned int>{1,3,4,6,8,9,11};
-		break;
-	case 5:
-		if (isFlat)
-			scale = isMajor ? std::vector<unsigned int>{1,3,5,6,8,10,0} : std::vector<unsigned int>{10,0,1,3,5,6,8};
-		else
-			scale = isMajor ? std::vector<unsigned int>{11,1,3,4,6,8,10} : std::vector<unsigned int>{8,10,11,1,3,4,6};
-		break;
-	case 6:
-		scale = isMajor ? std::vector<unsigned int>{6,8,10,11,1,3,5} : std::vector<unsigned int>{3,5,6,8,10,11,1};
-		break;
+void Key::SetAccidentalsFromMidi(int midiNumAcc)
+{
+	if (midiNumAcc <= MAX_NOTES_IN_KEY)
+    {
+		m_numAccs = midiNumAcc;
+		m_bIsFlatAccidentals = false;
 	}
-	return scale;
-}
-
-void music::Key::setAccidentalsFromMidi(unsigned int midiNumAcc) {
-	if (midiNumAcc <= 12) {
-		this->n_acc = midiNumAcc;
-		this->b = false;
-	}
-	else {
-		this->n_acc = 256 - midiNumAcc;
-		this->b = true;
+	else
+    {
+		m_numAccs = 256 - midiNumAcc;
+		m_bIsFlatAccidentals = true;
 	}
 }
 
-unsigned int music::Key::nextPitchClass(unsigned int pc) {
-	unsigned int deg = closestDegree(pc) + 1;
-	if (deg == sc_UP.size()) deg = 0;
-	return sc_UP[deg];
+int Key::NextPitchClass(int pc) const
+{
+    auto deg = ClosestDegree(pc) + 1;
+	if (deg == static_cast<int>(m_vecScaleUpwards.size())) 
+        deg = 0;
+	return m_vecScaleUpwards[deg];
 }
 
-unsigned int music::Key::nextUpwardsPitchClass(unsigned int pc) {
-	return nextPitchClass(pc);
+int Key::NextDownwardsPitchClass(int pc) const
+{
+    auto deg = ClosestDegree(pc) + 1;
+	if (deg == static_cast<int>(m_vecScaleUpwards.size()))
+        deg = 0;
+	return m_vecScaleDownwards[deg];
 }
 
-unsigned int music::Key::nextDownwardsPitchClass(unsigned int pc) {
-	unsigned int deg = closestDegree(pc) + 1;
-	if (deg == sc_DN.size()) deg = 0;
-	return sc_DN[deg];
+int Key::PrevPitchClass(int pc) const
+{
+	auto deg = ClosestDegree(pc);
+	if (deg == 0) 
+        deg = static_cast<int>(m_vecScaleUpwards.size()) - 1;
+	return m_vecScaleUpwards[deg];
 }
 
-unsigned int music::Key::prevPitchClass(unsigned int pc) {
-	unsigned int deg = closestDegree(pc);
-	if (deg == 0) deg = static_cast<unsigned int>(sc_UP.size()) - 1;
-	return sc_UP[deg];
+int Key::PrevDownwardsPitchClass(int pc) const
+{
+	auto deg = ClosestDegree(pc);
+	if (deg == 0) 
+        deg = static_cast<int>(m_vecScaleDownwards.size()) - 1;
+	return m_vecScaleDownwards[deg];
 }
 
-unsigned int music::Key::prevUpwardsPitchClass(unsigned int pc) {
-	return prevPitchClass(pc);
-}
-
-unsigned int music::Key::prevDownwardsPitchClass(unsigned int pc) {
-	unsigned int deg = closestDegree(pc);
-	if (deg == 0) deg = static_cast<unsigned int>(sc_DN.size()) - 1;
-	return sc_DN[deg];
-}
-
-unsigned int music::Key::nextPitchClass(Pitch pitch) {
-	return nextPitchClass(pitch.pitchClass());
-}
-
-unsigned int music::Key::nextUpwardsPitchClass(Pitch pitch) {
-	return nextUpwardsPitchClass(pitch.pitchClass());
-}
-
-unsigned int music::Key::nextDownwardsPitchClass(Pitch pitch) {
-	return nextDownwardsPitchClass(pitch.pitchClass());
-}
-
-unsigned int music::Key::prevPitchClass(Pitch pitch) {
-	return prevPitchClass(pitch.pitchClass());
-}
-
-unsigned int music::Key::prevUpwardsPitchClass(Pitch pitch) {
-	return prevUpwardsPitchClass(pitch.pitchClass());
-}
-
-unsigned int music::Key::prevDownwardsPitchClass(Pitch pitch) {
-	return prevDownwardsPitchClass(pitch.pitchClass());
-}
-
-music::Pitch music::Key::nextPitchInKey(Pitch pitch) {
-	unsigned int npc = nextPitchClass(pitch.pitchClass());
-	unsigned int oct = pitch.octave();
-	if (pitch.pitchClass() > npc) oct++;
+Pitch Key::NextPitchInKey(Pitch pitch) const
+{
+	const auto npc = NextPitchClass(pitch.GetPitchClass());
+	auto oct = pitch.GetOctave();
+	if (pitch.GetPitchClass() > npc) oct++;
 	return Pitch(npc, oct);
 }
 
-music::Pitch music::Key::nextPitchInScale(Pitch pitch) {
-	return nextPitchInKey(pitch);
-}
-
-music::Pitch music::Key::nextUpwardsPitchInScale(Pitch pitch) {
-	return nextPitchInKey(pitch);
-}
-
-music::Pitch music::Key::nextDownwardsPitchInScale(Pitch pitch) {
-	unsigned int npc = nextDownwardsPitchClass(pitch.pitchClass());
-	unsigned int oct = pitch.octave();
-	if (pitch.pitchClass() > npc) oct++;
+Pitch Key::NextDownwardsPitchInScale(Pitch pitch) const
+{
+	const auto npc = NextDownwardsPitchClass(pitch.GetPitchClass());
+	auto oct = pitch.GetOctave();
+	if (pitch.GetPitchClass() > npc)
+        oct++;
 	return Pitch(npc, oct);
 }
 
-music::Pitch music::Key::prevPitchInKey(Pitch pitch) {
-	unsigned int ppc = prevPitchClass(pitch.pitchClass());
-	unsigned int oct = pitch.octave();
-	if (pitch.pitchClass() < ppc) oct--;
+Pitch Key::PrevPitchInKey(Pitch pitch) const
+{
+	const auto ppc = PrevPitchClass(pitch.GetPitchClass());
+	auto oct = pitch.GetOctave();
+	if (pitch.GetPitchClass() < ppc)
+        oct--;
 	return Pitch(ppc, oct);
 }
 
-music::Pitch music::Key::prevPitchInScale(Pitch pitch) {
-	return prevPitchInKey(pitch);
+Pitch Key::PrevPitchInScale(Pitch pitch) const
+{
+	return PrevPitchInKey(pitch);
 }
 
-music::Pitch music::Key::prevUpwardsPitchInScale(Pitch pitch) {
-	return prevPitchInKey(pitch);
+Pitch Key::PrevUpwardsPitchInScale(Pitch pitch) const
+{
+	return PrevPitchInKey(pitch);
 }
 
-music::Pitch music::Key::prevDownwardsPitchInScale(Pitch pitch) {
-	unsigned int ppc = prevDownwardsPitchClass(pitch.pitchClass());
-	unsigned int oct = pitch.octave();
-	if (pitch.pitchClass() < ppc) oct--;
+Pitch Key::PrevDownwardsPitchInScale(Pitch pitch) const
+{
+	const auto ppc = PrevDownwardsPitchClass(pitch.GetPitchClass());
+    auto oct = pitch.GetOctave();
+	if (pitch.GetPitchClass() < ppc) 
+        oct--;
 	return Pitch(ppc, oct);
 }
 
-unsigned int music::Key::degree(unsigned int pc) {
-	std::vector<unsigned int>::iterator itr = std::find(sc_UP.begin(), sc_UP.end(), pc);
-	if (itr != sc_UP.cend())
-		return static_cast<unsigned int>(std::distance(sc_UP.begin(), itr));
-	else return -1;
+int Key::Degree(int pc) const
+{
+	const auto itr = find(m_vecScaleUpwards.begin(), m_vecScaleUpwards.end(), pc);
+	if (itr != m_vecScaleUpwards.cend())
+		return static_cast<int>(distance(m_vecScaleUpwards.begin(), itr));
+
+    return -1;
 }
 
-unsigned int music::Key::degreeUpwards(unsigned int pc) {
-	return degree(pc);
+int Key::DegreeDownwards(int pc) const
+{
+    const auto itr = find(m_vecScaleDownwards.begin(), m_vecScaleDownwards.end(), pc);
+	if (itr != m_vecScaleDownwards.cend())
+		return static_cast<int>(distance(m_vecScaleDownwards.begin(), itr));
+
+    return -1;
 }
 
-unsigned int music::Key::degreeDownwards(unsigned int pc) {
-	std::vector<unsigned int>::iterator itr = std::find(sc_DN.begin(), sc_DN.end(), pc);
-	if (itr != sc_DN.cend())
-		return static_cast<unsigned int>(std::distance(sc_DN.begin(), itr));
-	else return -1;
-}
-
-unsigned int music::Key::degree(Pitch pitch) {
-	return degree(pitch.pitchClass());
-}
-
-unsigned int music::Key::degreeUpwards(Pitch pitch) {
-	return degreeUpwards(pitch.pitchClass());
-}
-
-unsigned int music::Key::degreeDownwards(Pitch pitch) {
-	return degreeDownwards(pitch.pitchClass());
-}
-
-unsigned int music::Key::closestDegree(unsigned int pc) {
-	for (int i = 0; i < sc_UP.size() - 1; i++) {
-		if (pc >= sc_UP[i] && pc < sc_UP[i + 1]) {
+int Key::ClosestDegree(int pc) const
+{
+	for (auto i = 0; i < m_vecScaleUpwards.size() - 1; i++)
+    {
+		if (pc >= m_vecScaleUpwards[i] && pc < m_vecScaleUpwards[i + 1u])
+        {
 			return i;
 		}
 	}
-	return static_cast<unsigned int>(sc_UP.size()) - 1;
+	return static_cast<int>(m_vecScaleUpwards.size()) - 1;
 }
 
-unsigned int music::Key::closestUpwardsDegree(unsigned int pc) {
-	return closestDegree(pc);
-}
-
-unsigned int music::Key::closestDownwardsDegree(unsigned int pc) {
-	for (int i = 0; i < sc_DN.size() - 1; i++) {
-		if (pc >= sc_DN[i] && pc < sc_DN[i + 1]) {
+int Key::ClosestDownwardsDegree(int pc) const
+{
+	for (auto i = 0; i < m_vecScaleDownwards.size() - 1; i++)
+    {
+		if (pc >= m_vecScaleDownwards[i] && pc < m_vecScaleDownwards[i + 1u])
+        {
 			return i;
 		}
 	}
-	return static_cast<unsigned int>(sc_DN.size()) - 1;
+	return static_cast<int>(m_vecScaleDownwards.size()) - 1;
 }
 
-unsigned int music::Key::closestDegree(Pitch pitch) {
-	return closestDegree(pitch.pitchClass());
-}
-
-unsigned int music::Key::closestUpwardsDegree(Pitch pitch) {
-	return closestUpwardsDegree(pitch.pitchClass());
-}
-
-unsigned int music::Key::closestDownwardsDegree(Pitch pitch) {
-	return closestDownwardsDegree(pitch.pitchClass());
-}
-
-unsigned int music::Key::closestPitchClassInKey(unsigned int pc) {
-	return sc_UP[closestDegree(pc)];
-}
-
-unsigned int music::Key::closestPitchClassInScale(unsigned int pc) {
-	return closestPitchClassInKey(pc);
-}
-
-unsigned int music::Key::closestPitchClassInUpwardsScale(unsigned int pc) {
-	return sc_UP[closestUpwardsDegree(pc)];
-}
-
-unsigned int music::Key::closestPitchClassInDownwardsScale(unsigned int pc) {
-	return sc_DN[closestDownwardsDegree(pc)];
-}
-
-unsigned int music::Key::closestPitchClassInKey(Pitch pitch) {
-	return closestPitchClassInKey(pitch.pitchClass());
-}
-
-unsigned int music::Key::closestPitchClassInScale(Pitch pitch) {
-	return closestPitchClassInScale(pitch.pitchClass());
-}
-
-unsigned int music::Key::closestPitchClassInUpwardsScale(Pitch pitch) {
-	return closestPitchClassInUpwardsScale(pitch.pitchClass());
-}
-
-unsigned int music::Key::closestPitchClassInDownwardsScale(Pitch pitch) {
-	return closestPitchClassInDownwardsScale(pitch.pitchClass());
-}
-
-void music::Key::forceInKey(Pitch *pitch) {
-	pitch->setPitchClass(closestPitchClassInKey(*pitch));
-}
-
-void music::Key::forceInScale(Pitch * pitch) {
-	forceInKey(pitch);
-}
-
-void music::Key::forceInUpwardsScale(Pitch * pitch) {
-	forceInKey(pitch);
-}
-
-void music::Key::forceInDownwardsScale(Pitch * pitch) {
-	pitch->setPitchClass(closestPitchClassInDownwardsScale(*pitch));
-}
-
-void music::Key::transpose(Pitch *pitch, int deg) {
-	int pcIndex = closestDegree(pitch->pitchClass());
-	int scaleSize = static_cast<int>(sc_UP.size());
+void Key::Transpose(Pitch *pitch, int deg) const
+{
+    const auto pcIndex = ClosestDegree(pitch->GetPitchClass());
+    const int scaleSize = static_cast<int>(m_vecScaleUpwards.size());
 	//proper modulo needs this. (C is weird)
-	int newDegree = (((pcIndex + deg) % scaleSize) + scaleSize) % scaleSize;
-	int newPC = sc_UP[newDegree];
-	int octChange = pcIndex + deg >= 0 ? (pcIndex + deg) / static_cast<int>(sc_UP.size()) :
-		( (pcIndex + deg + 1) / scaleSize ) - 1;
-	int newOct = pitch->octave() + octChange;
-	pitch->setPCandOctave(newPC, newOct);
+    const int newDegree = (((pcIndex + deg) % scaleSize) + scaleSize) % scaleSize;
+    const int newPC = m_vecScaleUpwards[newDegree];
+    const int octChange = pcIndex + deg >= 0 ? (pcIndex + deg) / static_cast<int>(m_vecScaleUpwards.size()) :
+		(pcIndex + deg + 1) / scaleSize - 1;
+    const int newOct = pitch->GetOctave() + octChange;
+	pitch->SetPitch(newPC, newOct);
 }
 
-void music::Key::transpose(Note *note, int degree) {
-	Pitch p = note->pitch();
-	transpose(&p, degree);
-	note->setPitch(p);
+void Key::Transpose(Note *note, int degree) const
+{
+	Pitch p = note->GetPitch();
+	Transpose(&p, degree);
+	note->SetPitch(p);
 }
 
-void music::Key::meanPitch(Pitch pitch1, Pitch pitch2, Pitch *mean) {
-	unsigned int absDegree1 = closestDegree(pitch1.pitchClass()) + (pitch1.octave() * static_cast<unsigned int>(sc_UP.size()));
-	unsigned int absDegree2 = closestDegree(pitch2.pitchClass()) + (pitch2.octave() * static_cast<unsigned int>(sc_UP.size()));
-	unsigned int degMean = (absDegree1 + absDegree2) / 2;
-	unsigned int oct = degMean / static_cast<unsigned int>(sc_UP.size());
-	unsigned int pc = pitchClass(degMean % sc_UP.size());
-	mean->setPCandOctave(pc, oct);
+void Key::MeanPitch(Pitch pitch1, Pitch pitch2, Pitch *mean) const
+{
+	const auto absDegree1 = ClosestDegree(pitch1.GetPitchClass()) + pitch1.GetOctave() * static_cast<int>(m_vecScaleUpwards.size());
+    const auto absDegree2 = ClosestDegree(pitch2.GetPitchClass()) + pitch2.GetOctave() * static_cast<int>(m_vecScaleUpwards.size());
+    const int degMean = (absDegree1 + absDegree2) / 2;
+    const int oct = degMean / static_cast<int>(m_vecScaleUpwards.size());
+    const auto pc = GetPitchClass(degMean % static_cast<int>(m_vecScaleUpwards.size()));
+	mean->SetPitch(pc, oct);
 }
 
-void music::Key::meanPitch(Note note1, Note note2, Note * mean) {
+void Key::MeanPitch(Note note1, Note note2, Note *mean) const
+{
 	Pitch newPitch;
-	meanPitch(note1.pitch(), note2.pitch(), &newPitch);
-	mean->setPitch(newPitch);
+	MeanPitch(note1.GetPitch(), note2.GetPitch(), &newPitch);
+	mean->SetPitch(newPitch);
 }
 
-void music::Key::meanPitch(Note note1, Note note2, Pitch * mean) {
-	meanPitch(note1.pitch(), note2.pitch(), mean);
+ostream& operator<<(ostream& strm, const Key& key)
+{
+    strm << key.GetName() << ", " << key.m_vecScaleDownwards.size() << ", [";
+    const int size = static_cast<int>(key.m_vecScaleDownwards.size());
+    for (auto i = 0; i < size; i++)
+    {
+        strm << to_string(key.m_vecScaleDownwards[i]);
+        if (i != size - 1)
+            strm << ",";
+    }
+    strm << "]";
+    return strm;
 }
