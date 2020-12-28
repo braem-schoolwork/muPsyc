@@ -171,11 +171,9 @@
     <ClInclude Include="include\ChordProgression.h" />
     <ClInclude Include="include\Chords.h" />
     <ClInclude Include="include\Composition.h" />
-    <ClInclude Include="include\Definitions.h" />
     <ClInclude Include="include\Duration.h" />
     <ClInclude Include="include\Durations.h" />
     <ClInclude Include="include\Dynamic.h" />
-    <ClInclude Include="include\Functions.h" />
     <ClInclude Include="include\Instruments.h" />
     <ClInclude Include="include\Intervals.h" />
     <ClInclude Include="include\Key.h" />
@@ -189,19 +187,23 @@
     <ClInclude Include="include\PitchClasses.h" />
     <ClInclude Include="include\Pitches.h" />
     <ClInclude Include="include\TimeSignature.h" />
+    <ClInclude Include="include\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\Chord.cpp" />
-    <ClCompile Include="include\ChordProgression.cpp" />
+    <ClCompile Include="src\BPM.cpp" />
+    <ClCompile Include="src\ChordProgression.cpp" />
     <ClCompile Include="src\Composition.cpp" />
     <ClCompile Include="src\Duration.cpp" />
-    <ClCompile Include="src\Functions.cpp" />
+    <ClCompile Include="src\Dynamic.cpp" />
     <ClCompile Include="src\Key.cpp" />
     <ClCompile Include="src\Measure.cpp" />
     <ClCompile Include="src\MidIO.cpp" />
     <ClCompile Include="src\Note.cpp" />
     <ClCompile Include="src\Part.cpp" />
     <ClCompile Include="src\Pitch.cpp" />
+    <ClCompile Include="src\TimeSignature.cpp" />
+    <ClCompile Include="src\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\midifile\visual-studio\midifile.vcxproj">

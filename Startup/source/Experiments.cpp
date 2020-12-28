@@ -1,24 +1,38 @@
 #include "Experiments.h"
+#include <fstream>
 
-void geneticalgorithm::experimentation::runExp(std::string cfgpath) {
-	inputFileStream.open(cfgpath);
-	inputFileStream >> AlgorithmParameters;
-	inputFileStream.close();
-	runGA();
+#include "GeneticAlgorithm.h"
+#include "Parameters.h"
+
+using namespace std;
+
+static ifstream s_InputFileStream;
+
+void EXP_Run(const std::string& cfgpath)
+{
+	s_InputFileStream.open(cfgpath);
+    Parameters params;
+	s_InputFileStream >> params;
+	s_InputFileStream.close();
+	GA_RunAlgorithm(params);
 }
 
-void geneticalgorithm::experimentation::parallelCPU() {
-	runExp("configs/parallel.cfg");
+void EXP_ParallelCPU()
+{
+	EXP_Run("configs/parallel.cfg");
 }
 
-void geneticalgorithm::experimentation::singleThreaded() {
-	runExp("configs/singlethreaded.cfg");
+void EXP_SingleThreaded()
+{
+	EXP_Run("configs/singlethreaded.cfg");
 }
 
-void geneticalgorithm::experimentation::traditionalRules() {
-	runExp("configs/traditionalrules.cfg");
+void EXP_TraditionalRules()
+{
+	EXP_Run("configs/traditionalrules.cfg");
 }
 
-void geneticalgorithm::experimentation::allRules() {
-	runExp("configs/allrules.cfg");
+void EXP_AllRules()
+{
+	EXP_Run("configs/allrules.cfg");
 }

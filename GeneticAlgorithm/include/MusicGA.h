@@ -1,7 +1,4 @@
 #pragma once
-#include "MusicDS.h"
-#include <omp.h>
-#include <random>
 
 #include "SelectionType.h"
 #include "OptimizationType.h"
@@ -12,13 +9,12 @@
 #include "InitParams.h"
 #include "Parameters.h"
 
-#include "Globals.h"
+#include "RandUtils.h"
 
 #include "CompositionGenerator.h"
 
 #include "FitnessInfo.h"
 #include "Fitness.h"
-#include "Operators.h"
 #include "Selection.h"
 #include "Mutation.h"
 #include "Crossover.h"

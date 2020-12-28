@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Definitions.h"
 #include "Durations.h"
 #include "Keys.h"
 #include "Pitches.h"
@@ -19,6 +18,6 @@
 #include "Measure.h"
 #include "Part.h"
 #include "Composition.h"
-#include "Functions.h"
 
 #include "MidIO.h"
+#include "Utils.h"

@@ -3,225 +3,190 @@
 #include <string>
 #include "Note.h"
 #include "Pitch.h"
+#include "Intervals.h"
+#include "Keys.h"
 
-namespace music {
-	class Key {
-	private:
-		std::string n;
-		std::vector<unsigned int> sc_UP;
-		std::vector<unsigned int> sc_DN;
-		unsigned int n_pcs;
-		unsigned int n_acc;
-		bool b;
-		bool maj;
+class Key
+{
+public:
+	Key();
+	Key(std::string keyStr);
 
-	public:
-		Key() : n_pcs(0) {}
-		Key(std::string keyStr) {
-			*this = Key::getKeyFromString(keyStr);
-		}
+	Key(std::string name, std::vector<int> pitchClasses);
+	Key(std::string name, std::vector<int> pitchClassesUp, std::vector<int> pitchClassesDown);
 
-		Key(std::string name, std::vector<unsigned int> pitchClasses) : n(name), sc_UP(pitchClasses),
-			sc_DN(pitchClasses), n_pcs(static_cast<unsigned int>(pitchClasses.size())) {}
-		Key(std::string name, std::vector<unsigned int> pitchClassesUp, std::vector<unsigned int> pitchClassesDown)
-			: n(name), sc_UP(pitchClassesUp), sc_DN(pitchClassesDown), n_pcs(static_cast<unsigned int>(pitchClassesUp.size())) {}
+	Key(std::string name, std::vector<int> pitchClasses, int numAccidentals, bool isFlatAccidentals, bool isMajor);
+	Key(std::string name, std::vector<int> pitchClassesUp, std::vector<int> pitchClassesDown, int numAccidentals, bool isFlatAccidentals, bool isMajor);
 
-		Key(std::string name, std::vector<unsigned int> pitchClasses, unsigned int numAccidentals, bool isFlatAccidentals, 
-			bool isMajor) : n(name), sc_UP(pitchClasses), sc_DN(pitchClasses), n_pcs(static_cast<unsigned int>(pitchClasses.size())), n_acc(numAccidentals),
-			b(isFlatAccidentals), maj(isMajor) {}
-		Key(std::string name, std::vector<unsigned int> pitchClassesUp, std::vector<unsigned int> pitchClassesDown,
-			unsigned int numAccidentals, bool isFlatAccidentals, bool isMajor) : n(name), sc_UP(pitchClassesUp), sc_DN(pitchClassesDown),
-			n_pcs(static_cast<unsigned int>(pitchClassesUp.size())), n_acc(numAccidentals), b(isFlatAccidentals), maj(isMajor) {}
-		
-		std::string name() const { return n; }
-		unsigned int numAccidentals() { return n_acc; }
-		bool isUsingFlatAccidentals() { return b; }
-		bool isUsingSharpAccidentals() { return !b; }
-		bool isMajor() { return maj; }
-		bool isMinor() { return !maj; }
-		unsigned int fundamental() const { return sc_UP[0]; }
-		unsigned int iUnison() const { return sc_UP[0]; }
-		unsigned int iOctave() const { return sc_UP[0]; }
+    [[nodiscard]] std::string GetName() const { return m_strName; }
+    [[nodiscard]] int GetNumAccidentals() const { return m_numAccs; }
+    [[nodiscard]] bool IsUsingFlatAccidentals() const { return m_bIsFlatAccidentals; }
+    [[nodiscard]] bool IsUsingSharpAccidentals() const { return !m_bIsFlatAccidentals; }
+    [[nodiscard]] bool IsMajor() const { return m_bIsMajor; }
+    [[nodiscard]] bool IsMinor() const { return !m_bIsMajor; }
+    [[nodiscard]] int Fundamental() const { return m_vecScaleUpwards[INT_UNISON]; }
+    [[nodiscard]] int GetUnison() const { return m_vecScaleUpwards[INT_UNISON]; }
+    [[nodiscard]] int GetOctave() const { return m_vecScaleUpwards[INT_UNISON]; }
 
-		unsigned int i2nd() const { return sc_UP[1]; }
-		unsigned int i3rd() const { return sc_UP[2]; }
-		unsigned int i4th() const { return sc_UP[3]; }
-		unsigned int i5th() const { return sc_UP[4]; }
-		unsigned int i6th() const { return sc_UP[5]; }
-		unsigned int i7th() const { return sc_UP[6]; }
+    [[nodiscard]] int Get2nd() const { return m_vecScaleUpwards[INT_2ND]; }
+    [[nodiscard]] int Get3rd() const { return m_vecScaleUpwards[INT_3RD]; }
+    [[nodiscard]] int Get4th() const { return m_vecScaleUpwards[INT_4TH]; }
+    [[nodiscard]] int Get5th() const { return m_vecScaleUpwards[INT_5TH]; }
+    [[nodiscard]] int Get6th() const { return m_vecScaleUpwards[INT_6TH]; }
+    [[nodiscard]] int Get7th() const { return m_vecScaleUpwards[INT_7TH]; }
 
-		unsigned int i2ndUp() const { return sc_UP[1]; }
-		unsigned int i3rdUp() const { return sc_UP[2]; }
-		unsigned int i4thUp() const { return sc_UP[3]; }
-		unsigned int i5thUp() const { return sc_UP[4]; }
-		unsigned int i6thUp() const { return sc_UP[5]; }
-		unsigned int i7thUp() const { return sc_UP[6]; }
+    [[nodiscard]] int Get2ndUp() const { return m_vecScaleUpwards[INT_2ND]; }
+    [[nodiscard]] int Get3rdUp() const { return m_vecScaleUpwards[INT_3RD]; }
+    [[nodiscard]] int Get4thUp() const { return m_vecScaleUpwards[INT_4TH]; }
+    [[nodiscard]] int Get5thUp() const { return m_vecScaleUpwards[INT_5TH]; }
+    [[nodiscard]] int Get6thUp() const { return m_vecScaleUpwards[INT_6TH]; }
+    [[nodiscard]] int Get7thUp() const { return m_vecScaleUpwards[INT_7TH]; }
 
-		unsigned int i2ndDown() const { return sc_DN[1]; }
-		unsigned int i3rdDown() const { return sc_DN[2]; }
-		unsigned int i4thDown() const { return sc_DN[3]; }
-		unsigned int i5thDown() const { return sc_DN[4]; }
-		unsigned int i6thDown() const { return sc_DN[5]; }
-		unsigned int i7thDown() const { return sc_DN[6]; }
+    [[nodiscard]] int Get2ndDown() const { return m_vecScaleDownwards[INT_2ND]; }
+    [[nodiscard]] int Get3rdDown() const { return m_vecScaleDownwards[INT_3RD]; }
+    [[nodiscard]] int Get4thDown() const { return m_vecScaleDownwards[INT_4TH]; }
+    [[nodiscard]] int Get5thDown() const { return m_vecScaleDownwards[INT_5TH]; }
+    [[nodiscard]] int Get6thDown() const { return m_vecScaleDownwards[INT_6TH]; }
+    [[nodiscard]] int Get7thDown() const { return m_vecScaleDownwards[INT_7TH]; }
 
-		unsigned int chr_m2nd() const { return sc_UP[1]; }
-		unsigned int chr_M2nd() const { return sc_UP[2]; }
-		unsigned int chr_m3rd() const { return sc_UP[3]; }
-		unsigned int chr_M3rd() const { return sc_UP[4]; }
-		unsigned int chr_4th() const { return sc_UP[5]; }
-		unsigned int chr_tritone() const { return sc_UP[6]; }
-		unsigned int chr_5th() const { return sc_UP[7]; }
-		unsigned int chr_m6th() const { return sc_UP[8]; }
-		unsigned int chr_M6th() const { return sc_UP[9]; }
-		unsigned int chr_m7th() const { return sc_UP[10]; }
-		unsigned int chr_M7th() const { return sc_UP[11]; }
+    [[nodiscard]] int GetChromaticMin2nd() const { return m_vecScaleUpwards[CHRINT_MIN2ND]; }
+    [[nodiscard]] int GetChromaticMaj2nd() const { return m_vecScaleUpwards[CHRINT_MAJ2ND]; }
+    [[nodiscard]] int GetChromaticMin3rd() const { return m_vecScaleUpwards[CHRINT_MIN3RD]; }
+    [[nodiscard]] int GetChromaticMaj3rd() const { return m_vecScaleUpwards[CHRINT_MAJ3RD]; }
+    [[nodiscard]] int GetChromaticP4th() const { return m_vecScaleUpwards[CHRINT_P4TH]; }
+    [[nodiscard]] int GetChromaticTritone() const { return m_vecScaleUpwards[CHRINT_TRITONE]; }
+    [[nodiscard]] int GetChromaticP5th() const { return m_vecScaleUpwards[CHRINT_P5TH]; }
+    [[nodiscard]] int GetChromaticMin6th() const { return m_vecScaleUpwards[CHRINT_MIN6TH]; }
+    [[nodiscard]] int GetChromaticMaj6th() const { return m_vecScaleUpwards[CHRINT_MAJ6TH]; }
+    [[nodiscard]] int GetChromaticMin7th() const { return m_vecScaleUpwards[CHRINT_MIN7TH]; }
+    [[nodiscard]] int GetChromaticMaj7th() const { return m_vecScaleUpwards[CHRINT_MAJ7TH]; }
 
-		std::vector<unsigned int> triad() const { return {sc_UP[0], sc_UP[2], sc_UP[4]}; }
-		std::vector<unsigned int> I() const { return {sc_UP[0], sc_UP[2], sc_UP[4]}; }
-		std::vector<unsigned int> I7() const { return {sc_UP[0], sc_UP[2], sc_UP[4], sc_UP[6]}; }
-		std::vector<unsigned int> II() const { return {sc_UP[1], sc_UP[3], sc_UP[5]}; }
-		std::vector<unsigned int> II7() const { return { sc_UP[1], sc_UP[3], sc_UP[5], sc_UP[0]}; }
-		std::vector<unsigned int> III() const { return { sc_UP[2], sc_UP[4], sc_UP[6]}; }
-		std::vector<unsigned int> III7() const { return { sc_UP[2], sc_UP[4], sc_UP[6], sc_UP[1]}; }
-		std::vector<unsigned int> IV() const { return { sc_UP[3], sc_UP[5], sc_UP[0]}; }
-		std::vector<unsigned int> IV7() const { return { sc_UP[3], sc_UP[5], sc_UP[0], sc_UP[2]}; }
-		std::vector<unsigned int> V() const { return { sc_UP[4], sc_UP[6], sc_UP[1]}; }
-		std::vector<unsigned int> V7() const { return { sc_UP[4], sc_UP[6], sc_UP[1], sc_UP[3]}; }
-		std::vector<unsigned int> VI() const { return { sc_UP[5], sc_UP[0], sc_UP[2]}; }
-		std::vector<unsigned int> VI7() const { return { sc_UP[5], sc_UP[0], sc_UP[2], sc_UP[4]}; }
-		std::vector<unsigned int> VII() const { return { sc_UP[6], sc_UP[1], sc_UP[3]}; }
-		std::vector<unsigned int> VII7() const { return { sc_UP[6], sc_UP[1], sc_UP[3], sc_UP[5]}; }
+    [[nodiscard]] std::vector<int> Triad() const { return {m_vecScaleUpwards[DEG_1ST], m_vecScaleUpwards[DEG_3RD], m_vecScaleUpwards[DEG_5TH]}; }
+    [[nodiscard]] std::vector<int> I() const { return {m_vecScaleUpwards[DEG_1ST], m_vecScaleUpwards[DEG_3RD], m_vecScaleUpwards[DEG_5TH]}; }
+    [[nodiscard]] std::vector<int> I7() const { return {m_vecScaleUpwards[DEG_1ST], m_vecScaleUpwards[DEG_3RD], m_vecScaleUpwards[DEG_5TH], m_vecScaleUpwards[DEG_7TH]}; }
+    [[nodiscard]] std::vector<int> II() const { return {m_vecScaleUpwards[DEG_2ND], m_vecScaleUpwards[DEG_4TH], m_vecScaleUpwards[DEG_6TH]}; }
+    [[nodiscard]] std::vector<int> II7() const { return { m_vecScaleUpwards[DEG_2ND], m_vecScaleUpwards[DEG_4TH], m_vecScaleUpwards[DEG_6TH], m_vecScaleUpwards[DEG_1ST]}; }
+    [[nodiscard]] std::vector<int> III() const { return { m_vecScaleUpwards[DEG_3RD], m_vecScaleUpwards[DEG_5TH], m_vecScaleUpwards[DEG_7TH]}; }
+    [[nodiscard]] std::vector<int> III7() const { return { m_vecScaleUpwards[DEG_3RD], m_vecScaleUpwards[DEG_5TH], m_vecScaleUpwards[DEG_7TH], m_vecScaleUpwards[DEG_2ND]}; }
+    [[nodiscard]] std::vector<int> IV() const { return { m_vecScaleUpwards[DEG_4TH], m_vecScaleUpwards[DEG_6TH], m_vecScaleUpwards[DEG_1ST]}; }
+    [[nodiscard]] std::vector<int> IV7() const { return { m_vecScaleUpwards[DEG_4TH], m_vecScaleUpwards[DEG_6TH], m_vecScaleUpwards[DEG_1ST], m_vecScaleUpwards[DEG_3RD]}; }
+    [[nodiscard]] std::vector<int> V() const { return { m_vecScaleUpwards[DEG_5TH], m_vecScaleUpwards[DEG_7TH], m_vecScaleUpwards[DEG_2ND]}; }
+    [[nodiscard]] std::vector<int> V7() const { return { m_vecScaleUpwards[DEG_5TH], m_vecScaleUpwards[DEG_7TH], m_vecScaleUpwards[DEG_2ND], m_vecScaleUpwards[DEG_4TH]}; }
+    [[nodiscard]] std::vector<int> VI() const { return { m_vecScaleUpwards[DEG_6TH], m_vecScaleUpwards[DEG_1ST], m_vecScaleUpwards[DEG_3RD]}; }
+    [[nodiscard]] std::vector<int> VI7() const { return { m_vecScaleUpwards[DEG_6TH], m_vecScaleUpwards[DEG_1ST], m_vecScaleUpwards[DEG_3RD], m_vecScaleUpwards[DEG_5TH]}; }
+    [[nodiscard]] std::vector<int> VII() const { return { m_vecScaleUpwards[DEG_7TH], m_vecScaleUpwards[DEG_2ND], m_vecScaleUpwards[DEG_4TH]}; }
+    [[nodiscard]] std::vector<int> VII7() const { return { m_vecScaleUpwards[DEG_7TH], m_vecScaleUpwards[DEG_2ND], m_vecScaleUpwards[DEG_4TH], m_vecScaleUpwards[DEG_6TH]}; }
 
-		std::vector<unsigned int> scale() const { return sc_UP; }
-		std::vector<unsigned int> upwardScale() const { return sc_UP; }
-		std::vector<unsigned int> downwardScale() const { return sc_DN; }
-		unsigned int scaleSize() const { return n_pcs; }
+    [[nodiscard]] std::vector<int> Scale() const { return m_vecScaleUpwards; }
+    [[nodiscard]] std::vector<int> UpwardScale() const { return m_vecScaleUpwards; }
+    [[nodiscard]] std::vector<int> DownwardScale() const { return m_vecScaleDownwards; }
+    [[nodiscard]] int ScaleSize() const { return m_numPCs; }
 
-		unsigned int findNumAccidentals();
-		bool findAccidentalType(); //flat or sharp
-		bool findIfMajor();
-		bool findAndSetScale();
-		std::vector<unsigned int> findScale();
-		static std::vector<unsigned int> findScale(unsigned int numAccidentals, bool isFlat, bool isMajor);
-		void setNumAccidentals(unsigned int numAcc) { this->n_acc = numAcc; }
-		void setAccidentalType(bool type) { this->b = type; }
-		void setIfMajor(bool maj) { this->maj = maj; }
-		void setIfMinor(bool min) { this->maj = !min; }
-		void setAccidentalsFromMidi(unsigned int midiNumAcc);
+	bool FindAndSetScale();
+	void SetNumAccidentals(int numAcc) { m_numAccs = numAcc; }
+	void SetAccidentalType(bool type) { m_bIsFlatAccidentals = type; }
+	void SetIfMajor(bool maj) { m_bIsMajor = maj; }
+	void SetIfMinor(bool min) { m_bIsMajor = !min; }
+	void SetAccidentalsFromMidi(int midiNumAcc);
 
-		unsigned int pitchClass(unsigned int degree) const { return sc_UP[degree]; }
-		unsigned int upwardPitchClass(unsigned int degree) const { return sc_UP[degree]; }
-		unsigned int downwardPitchClass(unsigned int degree) const { return sc_DN[degree]; }
+    [[nodiscard]] int GetPitchClass(int degree) const { return m_vecScaleUpwards[degree]; }
+    [[nodiscard]] int GetUpwardPitchClass(int degree) const { return m_vecScaleUpwards[degree]; }
+    [[nodiscard]] int GetDownwardPitchClass(int degree) const { return m_vecScaleDownwards[degree]; }
 
-		void setScale(std::vector<unsigned int> scaleUp, std::vector<unsigned int> scaleDown) {
-			sc_UP = scaleUp;
-			sc_DN = scaleDown;
-			n_pcs = static_cast<unsigned int>(scaleUp.size());
-		}
-		void setUpwardsScale(std::vector<unsigned int> scaleUp) {
-			sc_UP = scaleUp;
-			n_pcs = static_cast<unsigned int>(scaleUp.size());
-		}
-		void setDownwardsScale(std::vector<unsigned int> scaleDown) {
-			sc_DN = scaleDown;
-			n_pcs = static_cast<unsigned int>(scaleDown.size());
-		}
-		void setScale(std::vector<unsigned int> scale) { sc_UP = scale; sc_DN = scale; n_pcs = static_cast<unsigned int>(scale.size()); }
-		void setName(std::string name) { n = name; }
+	void SetScale(std::vector<int> scaleUp, std::vector<int> scaleDown) {
+		m_vecScaleUpwards = scaleUp;
+		m_vecScaleDownwards = scaleDown;
+		m_numPCs = static_cast<int>(scaleUp.size());
+	}
+	void SetUpwardsScale(std::vector<int> scaleUp) {
+		m_vecScaleUpwards = scaleUp;
+		m_numPCs = static_cast<int>(scaleUp.size());
+	}
+	void SetDownwardsScale(std::vector<int> scaleDown) {
+		m_vecScaleDownwards = scaleDown;
+		m_numPCs = static_cast<int>(scaleDown.size());
+	}
+	void SetScale(std::vector<int> scale) { m_vecScaleUpwards = scale; m_vecScaleDownwards = scale; m_numPCs = static_cast<int>(scale.size()); }
+	void SetName(std::string name) { m_strName = name; }
 
-		bool isInKey(unsigned int pc) const { return std::find(sc_UP.begin(), sc_UP.end(), pc) != sc_UP.end(); }
-		bool isInScale(unsigned int pc) const { return std::find(sc_UP.begin(), sc_UP.end(), pc) != sc_UP.end(); }
-		bool isInUpwardScale(unsigned int pc) const { return std::find(sc_UP.begin(), sc_UP.end(), pc) != sc_UP.end(); }
-		bool isInDownwardScale(unsigned int pc) const { return std::find(sc_DN.begin(), sc_DN.end(), pc) != sc_DN.end(); }
-		bool isInKey(Pitch pitch) const { return isInKey(pitch.pitchClass()); }
-		bool isInScale(Pitch pitch) const { return isInScale(pitch.pitchClass()); }
-		bool isInUpwardScale(Pitch pitch) const { return isInUpwardScale(pitch.pitchClass()); }
-		bool isInDownwardScale(Pitch pitch) const { return isInDownwardScale(pitch.pitchClass()); }
-		bool isInKey(Note note) const { return isInKey(note.pitch().pitchClass()); }
-		bool isInScale(Note note) const { return isInScale(note.pitch().pitchClass()); }
-		bool isInUpwardScale(Note note) const { return isInUpwardScale(note.pitch().pitchClass()); }
-		bool isInDownwardScale(Note note) const { return isInDownwardScale(note.pitch().pitchClass()); }
+    [[nodiscard]] bool IsInKey(int pc) const { return std::find(m_vecScaleUpwards.begin(), m_vecScaleUpwards.end(), pc) != m_vecScaleUpwards.end(); }
+    [[nodiscard]] bool IsInScale(int pc) const { return std::find(m_vecScaleUpwards.begin(), m_vecScaleUpwards.end(), pc) != m_vecScaleUpwards.end(); }
+    [[nodiscard]] bool IsInUpwardScale(int pc) const { return std::find(m_vecScaleUpwards.begin(), m_vecScaleUpwards.end(), pc) != m_vecScaleUpwards.end(); }
+    [[nodiscard]] bool IsInDownwardScale(int pc) const { return std::find(m_vecScaleDownwards.begin(), m_vecScaleDownwards.end(), pc) != m_vecScaleDownwards.end(); }
+    [[nodiscard]] bool IsInKey(Pitch pitch) const { return IsInKey(pitch.GetPitchClass()); }
+    [[nodiscard]] bool IsInScale(Pitch pitch) const { return IsInScale(pitch.GetPitchClass()); }
+    [[nodiscard]] bool IsInUpwardScale(Pitch pitch) const { return IsInUpwardScale(pitch.GetPitchClass()); }
+    [[nodiscard]] bool IsInDownwardScale(Pitch pitch) const { return IsInDownwardScale(pitch.GetPitchClass()); }
+    [[nodiscard]] bool IsInKey(Note note) const { return IsInKey(note.GetPitch().GetPitchClass()); }
+    [[nodiscard]] bool IsInScale(Note note) const { return IsInScale(note.GetPitch().GetPitchClass()); }
+    [[nodiscard]] bool IsInUpwardScale(Note note) const { return IsInUpwardScale(note.GetPitch().GetPitchClass()); }
+    [[nodiscard]] bool IsInDownwardScale(Note note) const { return IsInDownwardScale(note.GetPitch().GetPitchClass()); }
 
-		unsigned int nextPitchClass(unsigned int pc);
-		unsigned int nextUpwardsPitchClass(unsigned int pc);
-		unsigned int nextDownwardsPitchClass(unsigned int pc);
-		unsigned int prevPitchClass(unsigned int pc);
-		unsigned int prevUpwardsPitchClass(unsigned int pc);
-		unsigned int prevDownwardsPitchClass(unsigned int pc);
-		unsigned int nextPitchClass(Pitch pitch);
-		unsigned int nextUpwardsPitchClass(Pitch pitch);
-		unsigned int nextDownwardsPitchClass(Pitch pitch);
-		unsigned int prevPitchClass(Pitch pitch);
-		unsigned int prevUpwardsPitchClass(Pitch pitch);
-		unsigned int prevDownwardsPitchClass(Pitch pitch);
+    [[nodiscard]] int NextPitchClass(int pc) const;
+    [[nodiscard]] int NextUpwardsPitchClass(int pc) const { return NextPitchClass(pc); }
+    [[nodiscard]] int NextDownwardsPitchClass(int pc) const;
+    [[nodiscard]] int PrevPitchClass(int pc) const;
+    [[nodiscard]] int PrevUpwardsPitchClass(int pc) const { return PrevPitchClass(pc); }
+    [[nodiscard]] int PrevDownwardsPitchClass(int pc) const;
+    [[nodiscard]] int NextPitchClass(Pitch pitch) const { return NextPitchClass(pitch.GetPitchClass()); }
+    [[nodiscard]] int NextUpwardsPitchClass(Pitch pitch) const { return NextUpwardsPitchClass(pitch.GetPitchClass()); }
+    [[nodiscard]] int NextDownwardsPitchClass(Pitch pitch) const { return NextDownwardsPitchClass(pitch.GetPitchClass()); }
+    [[nodiscard]] int PrevPitchClass(Pitch pitch) const { return PrevPitchClass(pitch.GetPitchClass()); }
+    [[nodiscard]] int PrevUpwardsPitchClass(Pitch pitch) const { return PrevUpwardsPitchClass(pitch.GetPitchClass()); }
+    [[nodiscard]] int PrevDownwardsPitchClass(Pitch pitch) const { return PrevDownwardsPitchClass(pitch.GetPitchClass()); }
 
-		Pitch nextPitchInKey(Pitch pitch);
-		Pitch nextPitchInScale(Pitch pitch);
-		Pitch nextUpwardsPitchInScale(Pitch pitch);
-		Pitch nextDownwardsPitchInScale(Pitch pitch);
-		Pitch prevPitchInKey(Pitch pitch);
-		Pitch prevPitchInScale(Pitch pitch);
-		Pitch prevUpwardsPitchInScale(Pitch pitch);
-		Pitch prevDownwardsPitchInScale(Pitch pitch);
+    [[nodiscard]] Pitch NextPitchInKey(Pitch pitch) const;
+    [[nodiscard]] Pitch NextPitchInScale(Pitch pitch) const { return NextPitchInKey(pitch); }
+    [[nodiscard]] Pitch NextUpwardsPitchInScale(Pitch pitch) const { return NextPitchInKey(pitch); }
+    [[nodiscard]] Pitch NextDownwardsPitchInScale(Pitch pitch) const;
+    [[nodiscard]] Pitch PrevPitchInKey(Pitch pitch) const;
+    [[nodiscard]] Pitch PrevPitchInScale(Pitch pitch) const;
+    [[nodiscard]] Pitch PrevUpwardsPitchInScale(Pitch pitch) const;
+    [[nodiscard]] Pitch PrevDownwardsPitchInScale(Pitch pitch) const;
 
-		unsigned int degree(unsigned int pc);
-		unsigned int degreeUpwards(unsigned int pc);
-		unsigned int degreeDownwards(unsigned int pc);
-		unsigned int degree(Pitch pitch);
-		unsigned int degreeUpwards(Pitch pitch);
-		unsigned int degreeDownwards(Pitch pitch);
+    [[nodiscard]] int Degree(int pc) const;
+    [[nodiscard]] int DegreeUpwards(int pc) const { return Degree(pc); }
+    [[nodiscard]] int DegreeDownwards(int pc) const;
+    [[nodiscard]] int Degree(Pitch pitch) const { return Degree(pitch.GetPitchClass()); }
+    [[nodiscard]] int DegreeUpwards(Pitch pitch) const { return DegreeUpwards(pitch.GetPitchClass()); }
+    [[nodiscard]] int DegreeDownwards(Pitch pitch) const { return DegreeDownwards(pitch.GetPitchClass()); }
 
-		unsigned int closestDegree(unsigned int pc);
-		unsigned int closestUpwardsDegree(unsigned int pc);
-		unsigned int closestDownwardsDegree(unsigned int pc);
-		unsigned int closestDegree(Pitch pitch);
-		unsigned int closestUpwardsDegree(Pitch pitch);
-		unsigned int closestDownwardsDegree(Pitch pitch);
+    [[nodiscard]] int ClosestDegree(int pc) const;
+    [[nodiscard]] int ClosestUpwardsDegree(int pc) const { return ClosestDegree(pc); }
+    [[nodiscard]] int ClosestDownwardsDegree(int pc) const;
+    [[nodiscard]] int ClosestDegree(Pitch pitch) const { return ClosestDegree(pitch.GetPitchClass()); }
+    [[nodiscard]] int ClosestUpwardsDegree(Pitch pitch) const { return ClosestUpwardsDegree(pitch.GetPitchClass()); }
+    [[nodiscard]] int ClosestDownwardsDegree(Pitch pitch) const { return ClosestDownwardsDegree(pitch.GetPitchClass()); }
 
-		unsigned int closestPitchClassInKey(unsigned int pc);
-		unsigned int closestPitchClassInScale(unsigned int pc);
-		unsigned int closestPitchClassInUpwardsScale(unsigned int pc);
-		unsigned int closestPitchClassInDownwardsScale(unsigned int pc);
-		unsigned int closestPitchClassInKey(Pitch pitch);
-		unsigned int closestPitchClassInScale(Pitch pitch);
-		unsigned int closestPitchClassInUpwardsScale(Pitch pitch);
-		unsigned int closestPitchClassInDownwardsScale(Pitch pitch);
+    [[nodiscard]] int ClosestPitchClassInKey(int pc) const { return m_vecScaleUpwards[ClosestDegree(pc)]; }
+    [[nodiscard]] int ClosestPitchClassInScale(int pc) const { return ClosestPitchClassInKey(pc); }
+    [[nodiscard]] int ClosestPitchClassInUpwardsScale(int pc) const { return m_vecScaleUpwards[ClosestUpwardsDegree(pc)]; }
+    [[nodiscard]] int ClosestPitchClassInDownwardsScale(int pc) const { return m_vecScaleDownwards[ClosestDownwardsDegree(pc)]; }
+    [[nodiscard]] int ClosestPitchClassInKey(Pitch pitch) const { return ClosestPitchClassInKey(pitch.GetPitchClass()); }
+    [[nodiscard]] int ClosestPitchClassInScale(Pitch pitch) const { return ClosestPitchClassInScale(pitch.GetPitchClass()); }
+    [[nodiscard]] int ClosestPitchClassInUpwardsScale(Pitch pitch) const { return ClosestPitchClassInUpwardsScale(pitch.GetPitchClass()); }
+    [[nodiscard]] int ClosestPitchClassInDownwardsScale(Pitch pitch) const { return ClosestPitchClassInDownwardsScale(pitch.GetPitchClass()); }
 
-		void forceInKey(Pitch *pitch);
-		void forceInScale(Pitch *pitch);
-		void forceInUpwardsScale(Pitch *pitch);
-		void forceInDownwardsScale(Pitch *pitch);
+	void ForceInKey(Pitch *pitch) const { pitch->SetPitchClass(ClosestPitchClassInKey(*pitch)); }
+	void ForceInScale(Pitch *pitch) const { ForceInKey(pitch); }
+	void ForceInUpwardsScale(Pitch *pitch) const { ForceInKey(pitch); }
+	void ForceInDownwardsScale(Pitch *pitch) const { pitch->SetPitchClass(ClosestPitchClassInDownwardsScale(*pitch)); }
 
-		void transpose(Pitch *pitch, int degree);
-		void transpose(Note *note, int degree);
+	void Transpose(Pitch *pitch, int degree) const;
+	void Transpose(Note *note, int degree) const;
 
-		void meanPitch(Pitch pitch1, Pitch pitch2, Pitch *mean);
-		void meanPitch(Note note1, Note note2, Note *mean);
-		void meanPitch(Note note1, Note note2, Pitch *mean);
+	void MeanPitch(Pitch pitch1, Pitch pitch2, Pitch *mean) const;
+	void MeanPitch(Note note1, Note note2, Note *mean) const;
+	void MeanPitch(Note note1, Note note2, Pitch *mean) const { MeanPitch(note1.GetPitch(), note2.GetPitch(), mean); }
 
-		static Key getKeyFromString(std::string keyStr) {
-			Key newKey;
-			std::string delim = ",";
-			size_t pos = keyStr.find_first_of(delim);
-			newKey.n = keyStr.substr(0, pos);
-			keyStr = keyStr.substr(pos + 2, keyStr.length());
-			pos = keyStr.find_first_of(delim);
-			newKey.n_pcs = std::stoi(keyStr.substr(0, pos));
-			keyStr = keyStr.substr(pos + 3, keyStr.length());
-			for (unsigned int i = 0; i < newKey.n_pcs; i++) {
-				if (i == newKey.n_pcs - 1) {
-					newKey.sc_DN.push_back(std::stoi(keyStr.substr(0, keyStr.length() - 1)));
-					break;
-				}
-				pos = keyStr.find_first_of(delim);
-				newKey.sc_DN.push_back(std::stoi(keyStr.substr(0, pos)));
-				keyStr = keyStr.substr(pos + 1, keyStr.length());
-			}
-			newKey.sc_UP = newKey.sc_DN;
-			return newKey;
-		}
+	friend std::ostream& operator<<(std::ostream &strm, const Key &key);
 
-		friend std::ostream& operator<<(std::ostream &strm, const Key &key);
-	};
-	
-}
+private:
+    std::string m_strName;
+    std::vector<int> m_vecScaleUpwards;
+    std::vector<int> m_vecScaleDownwards;
+    int m_numPCs;
+    int m_numAccs;
+    bool m_bIsFlatAccidentals;
+    bool m_bIsMajor;
+};

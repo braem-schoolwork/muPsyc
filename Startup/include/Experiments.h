@@ -1,19 +1,10 @@
 #pragma once
-#include "MusicGA.h"
 #include <string>
-#include <fstream>
-#include <iostream>
 
-namespace geneticalgorithm {
-	namespace experimentation {
-		static std::ifstream inputFileStream;
+void EXP_Run(const std::string& cfgpath);
 
-		void runExp(std::string cfgpath);
+void EXP_ParallelCPU();
+void EXP_SingleThreaded();
 
-		void parallelCPU();
-		void singleThreaded();
-
-		void traditionalRules();
-		void allRules();
-	}
-}
+void EXP_TraditionalRules();
+void EXP_AllRules();

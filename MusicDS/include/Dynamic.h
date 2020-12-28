@@ -1,34 +1,29 @@
 #pragma once
 
-namespace music {
-	class Dynamic {
-	private:
-		bool t; //cres/decres
-		unsigned int m_start;
-		unsigned int b_start;
-		unsigned int m_end;
-		unsigned int b_end;
+class Dynamic
+{
+public:
+	Dynamic(bool type, int iStartingMeasure, int iStartingBeat, int iEndingMeasure, int iEndingBeat);
 
-	public:
-		Dynamic(bool type, unsigned int startingMeasure, unsigned int startingBeat, unsigned int endingMeasure, unsigned int endingBeat)
-			: t(type), m_start(startingMeasure), b_start(startingBeat), m_end(endingMeasure), b_end(endingBeat) {}
+    [[nodiscard]] bool Type() const { return m_bCres; }
+    [[nodiscard]] int StartingMeasure() const { return m_iMeasureStart; }
+    [[nodiscard]] int StartingBeat() const { return m_iBeatStart; }
+    [[nodiscard]] int EndingMeasure() const { return m_iMeasureEnd; }
+    [[nodiscard]] int EndingBeat() const { return m_iBeatEnd; }
 
-		bool type() const { return t; }
-		unsigned int startingMeasure() const { return m_start; }
-		unsigned int startingBeat() const { return b_start; }
-		unsigned int endingMeasure() const { return m_end; }
-		unsigned int endingBeat() const { return b_end; }
+	void SetType(bool bCres) { m_bCres = bCres; }
+	void SetStartingMeasure(int iStartingMeasure) { m_iMeasureStart = iStartingMeasure; }
+	void SetStartingBeat(int iStartingBeat) { m_iBeatStart = iStartingBeat; }
+	void SetEndingMeasure(int iEndingMeasure) { m_iMeasureEnd = iEndingMeasure; }
+	void SetEndingBeat(int iEndingBeat) { m_iBeatEnd = iEndingBeat; }
+	void SetStart(int iStartingMeasure, int iStartingBeat) { m_iMeasureStart = iStartingMeasure; m_iBeatStart = iStartingBeat; }
+	void SetEnd(int iEndingMeasure, int iEndingBeat) { m_iMeasureEnd = iEndingMeasure; m_iBeatEnd = iEndingBeat; }
+	void SetPosition(int iStartingMeasure, int iStartingBeat, int iEndingMeasure, int iEndingBeat);
 
-		void setType(bool type) { t = type; }
-		void setStartingMeasure(unsigned int startingMeasure) { m_start = startingMeasure; }
-		void setStartingBeat(unsigned int startingBeat) { b_start = startingBeat; }
-		void setEndingMeasure(unsigned int endingMeasure) { m_end = endingMeasure; }
-		void setEndingBeat(unsigned int endingBeat) { b_end = endingBeat; }
-		void setStart(unsigned int startingMeasure, unsigned int startingBeat) { m_start = startingMeasure; b_start = startingBeat; }
-		void setEnd(unsigned int endingMeasure, unsigned int endingBeat) { m_end = endingMeasure; b_end = endingBeat; }
-		void setPosition(unsigned int startingMeasure, unsigned int startingBeat, unsigned int endingMeasure, unsigned int endingBeat) {
-			m_start = startingMeasure; b_start = startingBeat;
-			m_end = endingMeasure; b_end = endingBeat;
-		}
-	};
-}
+private:
+    bool m_bCres; //cres/decres
+    int m_iMeasureStart;
+    int m_iBeatStart;
+    int m_iMeasureEnd;
+    int m_iBeatEnd;
+};

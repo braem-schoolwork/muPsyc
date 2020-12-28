@@ -1,24 +1,21 @@
 #pragma once
 #include "Chromosome.h"
 #include "Population.h"
-#include "FitnessInfo.h"
 #include <time.h>
 
-namespace geneticalgorithm {
-	class RunInfo {
-	public:
-		Chromosome best;
-		Population finalPop;
+struct RunInfo
+{
+	Chromosome m_Best;
+	Population m_FinalPop;
 
-		std::vector<Chromosome> bestIndividuals;
-		std::vector<double> popFitnesses;
+	std::vector<Chromosome> m_vecBestIndividuals;
+	std::vector<double> m_vecPopFitnesses;
 
-		double finalPopFitness;
+	double m_dbFinalPopFitness;
 
-		clock_t totalRuntime;
-		clock_t fitnessRuntime;
-		clock_t selectionRuntime;
-		clock_t mutationRuntime;
-		clock_t crossoverRuntime;
-	};
-}
+	clock_t m_clkTotalRuntime;
+	clock_t m_clkFitnessRuntime;
+	clock_t m_clkSelectionRuntime;
+	clock_t m_clkMutationRuntime;
+	clock_t m_clkCrossoverRuntime;
+};

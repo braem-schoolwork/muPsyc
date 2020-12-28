@@ -1,52 +1,68 @@
 #pragma once
-#include <iostream>
-#include "BPM.h"
 
-namespace music {
-	class Duration {
-	private:
-		unsigned int t;
-		unsigned int d; //0 = not, 1 = 1dot, 2 = 2dot, etc.
+class BPM;
 
-	public:
-		Duration() : t(4), d(0) {}
-		Duration(unsigned int type) : t(type), d(0) {}
-		Duration(unsigned int type, int dots) : t(type), d(dots) {}
+enum Duration_t
+{
+    DURATION_INVALID = 0,
 
-		unsigned int type() const { return t; }
-		unsigned int dots() const { return d; }
+    DURATION_WHOLE = 1,
+    DURATION_HALF = 2,
+    DURATION_QUARTER = 4,
+    DURATION_EIGHTH = 8,
+    DURATION_SIXTEENTH = 16,
+    DURATION_THIRTYSECONDS = 32,
+    DURATION_SIXTYFOURTHS = 64,
+    DURATION_HUNDREDTWENTYEIGHTHS = 128,
 
-		void setType(unsigned int t) { this->t = t; }
-		void setDots(unsigned int d) { this->d = d; }
+    DURATION_FIRST = DURATION_WHOLE,
+    DURATION_LAST = DURATION_HUNDREDTWENTYEIGHTHS
+};
 
-		bool isDotted() const { return d > 0; }
-		void addDot() { d++; }
-		void removeDot() { d--; }
-		void removeAllDots() { d = 0; }
+class Duration
+{
+public:
+	Duration();
+	Duration(int type);
+	Duration(int type, int dots);
 
-		void doubleDuration() { t /= 2; }
-		void halfDuration() { t *= 2; }
+    [[nodiscard]] Duration_t GetType() const { return static_cast<Duration_t>(m_iType); }
+    [[nodiscard]] int GetDots() const { return m_iDots; }
 
-		void fraction(unsigned int* numerator, unsigned int* denominator) const;
-		double realDuration();
-		double getMillis(BPM bpm);
-		double getSeconds(BPM bpm);
+    void SetType(Duration_t t) { m_iType = t; }
+	void SetType(int t);
+	void SetDots(int d) { m_iDots = d; }
 
-		static Duration getDurationFromMidiTick(unsigned int tick, unsigned int tpq);
+    [[nodiscard]] bool IsDotted() const { return m_iDots > 0; }
+	void AddDot() { m_iDots++; }
+	void RemoveDot() { m_iDots--; }
+	void RemoveAllDots() { m_iDots = 0; }
 
-		unsigned int tickLength() const;
+	void DoubleDuration() { m_iType /= 2; }
+	void HalfDuration() { m_iType *= 2; }
 
-		static bool add(Duration first, Duration second, Duration *result);
+	void Fraction(int &numerator, int &denominator) const;
+    [[nodiscard]] double RealDuration() const;
+    [[nodiscard]] double GetMillis(BPM bpm) const;
+    [[nodiscard]] double GetSeconds(BPM bpm) const;
 
-		bool operator==(const Duration &other) const;
-		bool operator!=(const Duration &other) const;
-		bool operator>=(const Duration &other) const;
-		bool operator>(const Duration &other) const;
-		bool operator<=(const Duration &other) const;
-		bool operator<(const Duration &other) const;
-		unsigned int operator+(const Duration &other) const;
-		unsigned int operator-(const Duration &other) const;
-		friend std::ostream& operator<<(std::ostream &strm, const Duration &d);
-	};
-	
-}
+	static Duration GetDurationFromMidiTick(int tick, int tpq);
+
+    [[nodiscard]] int TickLength() const;
+
+	static bool Add(Duration first, Duration second, Duration *result);
+
+	bool operator==(const Duration &other) const;
+	bool operator!=(const Duration &other) const;
+	bool operator>=(const Duration &other) const;
+	bool operator>(const Duration &other) const;
+	bool operator<=(const Duration &other) const;
+	bool operator<(const Duration &other) const;
+	int operator+(const Duration &other) const;
+	int operator-(const Duration &other) const;
+	friend std::ostream& operator<<(std::ostream &strm, const Duration &d);
+
+private:
+    int m_iType;
+    int m_iDots;
+};

@@ -3,82 +3,79 @@
 #include "Duration.h"
 #include <iostream>
 
-namespace music {
-	class Note {
-	private:
-		Pitch p;
-		Duration d;
-		bool tie_start;
-		bool tie_end;
-		unsigned char v;
+class BPM;
 
-	public:
-		Note() : p(Pitch()), d(Duration()), tie_start(false), tie_end(false), v(75) {}
-		Note(Pitch pitch, Duration duration) : p(pitch), d(duration), tie_start(false), tie_end(false), v(75) {}
-		Note(Pitch pitch, Duration duration, unsigned char velocity) : p(pitch), d(duration),
-			tie_start(false), tie_end(false), v(velocity) {}
-		Note(Pitch pitch, Duration duration, bool tie_start, bool tie_end, unsigned char velocity) : p(pitch), d(duration),
-			tie_start(tie_start), tie_end(tie_end), v(velocity) {}
+class Note
+{
+public:
+	Note();
+	Note(Pitch pitch, Duration duration);
+	Note(Pitch pitch, Duration duration, char velocity);
+	Note(Pitch pitch, Duration duration, bool tie_start, bool tie_end, char velocity);
 
-		Pitch pitch() const { return p; }
-		Duration duration() const { return d; }
-		unsigned char velocity() const { return v; }
-		bool isTieStart() const { return tie_start; }
-		bool isTieEnd() const { return tie_end; }
-		bool isTie() const { return tie_start || tie_end; }
-		unsigned int tickLength() const { return d.tickLength(); }
+    [[nodiscard]] Pitch GetPitch() const { return m_Pitch; }
+    [[nodiscard]] Duration GetDuration() const { return m_Duration; }
+    [[nodiscard]] char GetVelocity() const { return m_cVelocity; }
+    [[nodiscard]] bool IsTieStart() const { return m_bTieStart; }
+    [[nodiscard]] bool IsTieEnd() const { return m_bTieEnd; }
+    [[nodiscard]] bool IsTie() const { return m_bTieStart || m_bTieEnd; }
+    [[nodiscard]] int TickLength() const { return m_Duration.TickLength(); }
 
-		void removeTies() { tie_start = false; tie_end = false; }
+	void RemoveTies() { m_bTieStart = false; m_bTieEnd = false; }
 
-		void setPitch(Pitch pitch) { p = pitch; }
-		void setDuration(Duration duration) { d = duration; }
-		void setTieStart(bool tie_start) { this->tie_start = tie_start; }
-		void setTieEnd(bool tie_end) { this->tie_end = tie_end; }
-		void setVelocity(unsigned char velocity) { v = velocity; }
+	void SetPitch(Pitch pitch) { m_Pitch = pitch; }
+	void SetDuration(Duration duration) { m_Duration = duration; }
+	void SetTieStart(bool tie_start) { m_bTieStart = tie_start; }
+	void SetTieEnd(bool tie_end) { m_bTieEnd = tie_end; }
+	void SetVelocity(unsigned char velocity) { m_cVelocity = velocity; }
 
-		bool isDotted() const { return d.isDotted(); }
-		void addDot() { d.addDot(); }
-		void removeDot() { d.removeDot(); }
-		void removeAllDots() { d.removeAllDots(); }
+    [[nodiscard]] bool IsDotted() const { return m_Duration.IsDotted(); }
+	void AddDot() { m_Duration.AddDot(); }
+	void RemoveDot() { m_Duration.RemoveDot(); }
+	void RemoveAllDots() { m_Duration.RemoveAllDots(); }
 
-		void doubleDuration() { d.doubleDuration(); }
-		void halfDuration() { d.halfDuration(); }
+	void DoubleDuration() { m_Duration.DoubleDuration(); }
+	void HalfDuration() { m_Duration.HalfDuration(); }
 
-		double getMillis(BPM bpm) { return d.getMillis(bpm); }
-		double getSeconds(BPM bpm) { return d.getSeconds(bpm); }
+	double GetMillis(BPM bpm);
+	double GetSeconds(BPM bpm);
 
-		int difference(Note note) const { return p.difference(note.p); }
-		int difference(Pitch pitch) const { return p.difference(pitch); }
-		static int difference(Note note1, Note note2) { return Pitch::difference(note1.p, note2.p); }
-		static int difference(Pitch pitch1, Pitch pitch2) { return Pitch::difference(pitch1, pitch2); }
+    [[nodiscard]] int Difference(Note note) const { return m_Pitch.Difference(note.m_Pitch); }
+    [[nodiscard]] int Difference(Pitch pitch) const { return m_Pitch.Difference(pitch); }
+	static int Difference(Note note1, Note note2) { return Pitch::Difference(note1.m_Pitch, note2.m_Pitch); }
+	static int Difference(Pitch pitch1, Pitch pitch2) { return Pitch::Difference(pitch1, pitch2); }
 
-		bool operator==(const Note &other) const;
-		bool operator!=(const Note &other) const;
-		bool operator>=(const Note &other) const;
-		bool operator>(const Note &other) const;
-		bool operator<=(const Note &other) const;
-		bool operator<(const Note &other) const;
+	bool operator==(const Note &other) const;
+	bool operator!=(const Note &other) const;
+	bool operator>=(const Note &other) const;
+	bool operator>(const Note &other) const;
+	bool operator<=(const Note &other) const;
+	bool operator<(const Note &other) const;
 
-		bool operator==(const Pitch &other) const;
-		bool operator!=(const Pitch &other) const;
-		bool operator>=(const Pitch &other) const;
-		bool operator>(const Pitch &other) const;
-		bool operator<=(const Pitch &other) const;
-		bool operator<(const Pitch &other) const;
+	bool operator==(const Pitch &other) const;
+	bool operator!=(const Pitch &other) const;
+	bool operator>=(const Pitch &other) const;
+	bool operator>(const Pitch &other) const;
+	bool operator<=(const Pitch &other) const;
+	bool operator<(const Pitch &other) const;
 
-		bool operator==(const Duration &other) const;
-		bool operator!=(const Duration &other) const;
-		bool operator>=(const Duration &other) const;
-		bool operator>(const Duration &other) const;
-		bool operator<=(const Duration &other) const;
-		bool operator<(const Duration &other) const;
+	bool operator==(const Duration &other) const;
+	bool operator!=(const Duration &other) const;
+	bool operator>=(const Duration &other) const;
+	bool operator>(const Duration &other) const;
+	bool operator<=(const Duration &other) const;
+	bool operator<(const Duration &other) const;
 
-		//difference
-		unsigned int operator-(const Pitch& other) const;
-		unsigned int operator-(const Note& other) const;
-		Note operator+(const unsigned int& amt) const;
+	int operator-(const Pitch& other) const;
+	int operator-(const Note& other) const;
+	Note operator+(const int& amt) const;
 
-		friend std::ostream& operator<<(std::ostream &strm, const Note &n);
-	};
-	
-}
+	friend std::ostream& operator<<(std::ostream &strm, const Note &n);
+
+private:
+    Pitch m_Pitch;
+    Duration m_Duration;
+    bool m_bTieStart;
+    bool m_bTieEnd;
+    char m_cVelocity;
+};

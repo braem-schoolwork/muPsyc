@@ -1,10 +1,7 @@
 #pragma once
-#include "Composition.h"
 #include <string>
 
-namespace music {
-	namespace IO {
-		void writeCompositionToMIDI(std::string path, Composition comp);
-		Composition readMIDI(std::string path);
-	}
-}
+class Composition;
+
+void MidIO_CompToMIDI(const std::string &path, const Composition &comp);
+Composition MidIO_MIDIToComp(const std::string &path);
